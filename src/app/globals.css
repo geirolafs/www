@@ -2,10 +2,10 @@
    globals.css — Tailwind v4 entry point and the whole design token set
 
    Tokens were harvested by hand from Figma `1912:4822` (desktop, 1440) and
-   `1912:5781` (mobile, 402). The file has no Figma variables to sync — see the
-   decision log in .private/REDESIGN.md.
+   `1912:5781` (mobile, 402). The Figma file has no variables, so there is
+   nothing to sync; this file is the source of truth.
 
-   Two values deviate from the frames. Both are deliberate, both are logged:
+   Two values deviate from the frames. Both are deliberate:
 
    1. `--color-muted` is #767676, not the frame's #8c8c8c. #8c8c8c measures
       3.36:1 on white and fails WCAG AA on the 20px work descriptions, which
@@ -289,16 +289,10 @@
      point keeping a token whose only caller is gone. */
   --duration-feedback: 120ms; /* hover, press */
 
-  /* `--duration-reveal` and `--stagger-step` lived here 2026-08-01 through
-     2026-08-04, driving the scroll reveal's CSS transition. Motion replaced
-     that transition with an imperative spring — `visualDuration: 0.6`,
-     `bounce: 0.12`, per-row `delay: index * 0.07` — in `reveal-observer.tsx`,
-     so both tokens are gone; the values now live as `animate()` options, not
-     custom properties, because nothing else reads them.
-     `--duration-stripe-slide` (700ms, a slide-in on load) and
-     `--duration-stripe-wipe` (900ms, a five-column band opening and closing
-     at the top of the page) went on 2026-09-03 with the motions they timed;
-     the 2026-08-04 entry in .private/REDESIGN.md has the geometry they came from. */
+  /* The scroll reveal's timing is not a token: it is a Motion spring —
+     `visualDuration: 0.6`, `bounce: 0.12`, per-row `delay: index * 0.07` —
+     passed as `animate()` options in `reveal-observer.tsx`, because nothing
+     else reads it. */
 
   /* The stripe growing from nothing to `--spacing-stripe` once the visitor
      has scrolled past the threshold in `stripe.tsx`, and shrinking back on
@@ -489,8 +483,7 @@ article p + p {
    foreground-medium-over-muted-book relationship an entry row runs between
    its title and its description, one level up in size.
 
-   shadcn/typeset was the plan of record for this (see .private/REDESIGN.md Phase 5)
-   and is deliberately not used. It arrives as a vendored file carrying its
+   shadcn/typeset was considered for this and is deliberately not used. It arrives as a vendored file carrying its
    own `--typeset-size` / `--typeset-leading` / `--typeset-flow` namespace,
    which would duplicate the type scale twenty lines above this one and give
    the project two places to change a prose size. Forty lines against the
@@ -627,7 +620,7 @@ article a:active {
    media-query guard testing whether the browser *can* run JS was used here
    before and was removed: it tests capability, not whether this page's
    bundle *did* run — a blocked or broken bundle strands the same content
-   either way. See the 2026-08-04 entry in .private/REDESIGN.md.
+   either way.
 
    `data-revealed` is set together with clearing `data-reveal-armed`, only
    once Motion's animation resolves — never at the start. Setting it earlier
@@ -739,9 +732,7 @@ article a:active {
    `REVEAL_THRESHOLD_PX` (100px, in `stripe.tsx`), then grows to
    `--spacing-stripe` over `--duration-stripe-reveal`; back above the
    threshold it shrinks away again, same transition. Nothing animates on
-   load. A slide-in on load and a five-column band
-   that opened at the top of the page both lived here until 2026-09-03; that
-   entry in .private/REDESIGN.md says why they went.
+   load.
 
    Triggered by scroll, not linked to it. A `scroll()` timeline was built on
    this element once and taken back out: a width tied to scroll offset is

@@ -47,7 +47,6 @@ import shadowMask from "./metal-ball-shadow.webp";
  * Shadow masks avoid becoming LCP candidates; their lossless grain tile avoids
  * banding. The ball image is preloaded because it can be LCP. Both rest poses
  * are mirrored in scripts/render-metal-ball.ts: regenerate after shader edits.
- * See .private/REDESIGN.md, 2026-09-02 through 2026-09-05, for design tradeoffs.
  */
 
 // The tuning numbers live in `metal-ball-config.ts`; these are the loop's

@@ -122,7 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             to its rendered, visible default — nothing is ever stranded. A
             marker with no failsafe was tried and rejected for exactly this
             case, because the JS that would clear the marker is the same JS
-            that failed to run. See the 2026-08-04 entry in .private/REDESIGN.md.
+            that failed to run.
 
             The script has a second, unrelated job: pre-revealing the stripe
             on a restored scroll position.

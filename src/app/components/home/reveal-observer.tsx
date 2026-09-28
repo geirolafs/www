@@ -21,7 +21,6 @@ const IDLE_REVEAL_MS = 5000;
  * Load targets reveal on mount; other targets wait for scroll or the 5s
  * idle fallback. Restored scroll positions bypass that gate. Focus reveals
  * immediately; animation rejection must also leave content visible.
- * See .private/REDESIGN.md, 2026-08-04, for the reveal contracts.
  */
 export function RevealObserver() {
   const prefersReducedMotion = useLiveReducedMotion();

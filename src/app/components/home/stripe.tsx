@@ -33,7 +33,6 @@ const REVEALED_STORAGE_KEY = "stripe:revealed";
  * Toggles the stripe at the scroll threshold. CSS owns the timed width
  * transition; it is never linked to scroll offset. The layout boot script
  * restores the marker before paint on reload/back navigation.
- * See .private/REDESIGN.md, 2026-09-03, for the fallback and restoration rules.
  */
 export function Stripe() {
   useEffect(() => {

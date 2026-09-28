@@ -30,10 +30,9 @@ const nextConfig: NextConfig = {
   // Required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
 
-  // Aliases for the paths agents and people guess. Watching a real agent walk
-  // the site (ora.ai trace, 2026-08-22) showed it trying /work and /contact
-  // cold, then falling back to web search when they 404ed — a 308 to the
-  // right place keeps that visit on-site. Config redirects run before the
+  // Aliases for the paths agents and people guess. Agents walking the site
+  // try /work and /contact cold, then fall back to web search when they 404 —
+  // a 308 to the right place keeps that visit on-site. Config redirects run before the
   // proxy, so an aliased path still content-negotiates markdown after the
   // redirect lands.
   async redirects() {

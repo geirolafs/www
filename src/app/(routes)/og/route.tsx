@@ -17,8 +17,14 @@ import {
  * Dynamic OG Image Generation
  *
  * Satori cannot read woff2, so this uses a static TTF instanced from the
- * Same Univers variable font at wght=600. Regenerate with:
- *   uvx --from fonttools --with brotli python -c "..."  (see .private/REDESIGN.md)
+ * Same Univers variable font at wght=600. Regenerate after a font re-export,
+ * from `src/app/styles/local-fonts/`:
+ *
+ *   uvx --from fonttools --with brotli python -c "
+ *   from fontTools.ttLib import TTFont
+ *   from fontTools.varLib import instancer
+ *   f = TTFont('SameUnivers-beta_IP4VF.woff2'); f.flavor = None
+ *   instancer.instantiateVariableFont(f, {'wght': 600}).save('SameUnivers-600.ttf')"
  */
 export async function GET(request: Request) {
   // Cards are keyed by slug and filled from the post's own frontmatter, never

@@ -2,7 +2,7 @@ import { siteConfig } from "@/lib/config/site";
 
 /**
  * Homepage copy, harvested verbatim from Figma frames `1912:4822` (desktop,
- * 1440) and `1912:5781` (mobile, 402). See .private/REDESIGN.md for the harvest log.
+ * 1440) and `1912:5781` (mobile, 402).
  *
  * Two copy bugs in the frames are fixed here, not carried over:
  *   1. Selected work / Sjóvá description: frame says "it's highest", shipped
