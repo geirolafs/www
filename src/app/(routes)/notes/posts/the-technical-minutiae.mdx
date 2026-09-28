@@ -1,0 +1,55 @@
+---
+title: "The Technical Minutiae"
+publishedAt: "2025-10-16"
+summary: "AI handles the technical grunt work—ffmpeg commands, format conversions, export settings—so I can focus on whether something actually feels right."
+tags: ai, tools, workflow, design
+---
+
+<Image
+  src="https://ve7o52t8ra.ufs.sh/f/HDca0BEpV67XXCBn7srGfj8KlzAcsY54yqOa9VtvoFSkpLix"
+  alt="This is fine dog sitting in burning room"
+  aspectRatio="16/9"
+/>
+
+Last Tuesday I thought I'd quickly edit a video for a website I was working on. Thirty minutes tops, I said to the person waiting for this to be finished.
+
+At about 4pm I was still editing, exporting, noticing something off, then editing and exporting again, waiting another 30 minutes.
+
+AI doesn't know that the transition at 0:47 feels off. It can't hear the score and understand why it's ridiculous to even try to put it under a mobile phone rotating with some UI on it. It doesn't understand when something just needs to breathe. Or even really what I mean by that sentence.
+
+## The Tools Are Changing
+
+Not even three years ago, my toolbox was Figma and Adobe Creative Cloud. That's what I used to create and design. But if I wanted those things to exist in the world, I needed other people. Developers. Engineers. Companies who still think TV ads are something they should do.
+
+Then OpenAi made a chat interface called ChatGPT. I used it like a different kind of Google. A text randomizer so I didn't have to start with a blank page. To pretend I knew what a CSAT score was. "Help me write this brand strategy." "Give me twenty headlines for this campaign, based on our brand idea flow." It was amazing. It was helpful. It was revolutionary.
+
+Then a lot of other similar products started to pop up and I started working with it as a thinking partner. Something I help maintain context for and reason through problems alongside me. It mostly says my work is great and that I'm right. I've since learned to live with the fact that this is not true. But using it as a pseudo thinking partner who can do pretty complex things while simultaneously is a loose cannon that absolutely cannot be trusted is, in my opinion, a great thing.
+
+ChatGPT, Claude, and other LLMs pushed me into technical territory I hadn't fully explored before. I became comfortable with terminal apps and development workflows that previously felt outside my core expertise. AI lowered the barrier to expanding my technical skills.
+
+I'm used to designing and then there's some sort of handoff. Our very thought-out design is never exactly how it was supposed to be. Not because someone destroyed this perfect piece of design, most of the time, at least. It's because it's really hard to know how a website will be like until it's actually in a browser, on your phone, or on a big screen.
+
+## The Code I'll Never Write
+
+```bash
+for f in *-mov; do
+  ffmpeg -i "$f" \
+    -c:v libx264 -profile:v high -level 4.2 -crf 18 -preset slow \
+    -g 60 -keyint_min 60 -movflags +faststart -pix_fmt yuv420p \
+    "${f%.*}_desktop.mp4" -y && \
+  ffmpeg -i "$f" \
+    -c:v libx264 -profile:v high -level 4.2 -crf 20 -preset slow \
+    -g 60 -keyint_min 60 -movflags +faststart -pix_fmt yuv420p \
+    -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2" \
+    "${f%.*}_mobile.mp4" -y
+```
+
+It doesn't even matter what this does. I will never be able to write this on my own. I asked Claude Code to help me optimize a video export, and it gave me this, I tried some different variations and it works.
+
+This is one of the many technicalities I'm really glad I don't need to spend as much time on. I can focus on something else. It's making some job definitions obsolete, but not the jobs themselves.
+
+Front-end developer. Designer. Art director. Creative director. They don't need to be exactly the same they were three years ago. This most definitely applies to other professions as well.
+
+What do I spend my time on then? I spent all day on that video. Not on figuring out the best format for a scroll-driven scrub animation or finding the right codec. I spent it trying to make it feel the way I think it should, and I don't need to sit with an editor that is increasingly annoyed by me. AI handled the export settings, the format conversion, the technical execution. But it couldn't tell me when it felt _right_.
+
+What separates good work from generic output is the judgment behind it. The branding, the design, how it looks and feels. The value of creativity has increased. This isn't a "maybe we should consider exploring AI" situation. The plane has taken off and we're either on it or we're not.

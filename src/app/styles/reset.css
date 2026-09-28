@@ -1,0 +1,65 @@
+/* ==========================================================================
+    RESET - Base elements, selection, form reset
+   ========================================================================== */
+
+html {
+  /* Use small viewport height for stable mobile sizing (no resize when browser UI hides) */
+  min-height: 100svh;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Match html min-height for mobile viewport stability */
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   SELECTION
+   ========================================================================== */
+::selection {
+  background-color: #111;
+  color: #ff4404;
+}
+
+/* ==========================================================================
+   FORM RESETS
+   ========================================================================== */
+input[type="text"],
+input[type="email"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+table {
+  display: block;
+  max-width: fit-content;
+  overflow-x: auto;
+  white-space: nowrap;
+}

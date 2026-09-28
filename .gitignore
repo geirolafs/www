@@ -1,0 +1,64 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+**/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+coverage
+
+# next.js
+/.next/
+/out/
+apps/**/.next/
+
+# production
+/build
+dist
+**/dist
+
+# misc
+.DS_Store
+*.pem
+.turbo
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — never commit any of them; .env.example is the only exception
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# lockfiles — bun.lock is committed on purpose (reproducible installs).
+# This project uses bun; don't let npm re-introduce a second lockfile.
+package-lock.json
+
+# editor
+Session.vim
+
+# temp/dev assets
+public/temp/
+
+# claude — machine-local permission grants only. Commands, skills and
+# ultracite.md stay tracked; they are shared config.
+.claude/settings.local.json
+
+# local-only notes: planning docs, decision logs. This repo is public.
+.private/
+
+# third-party agent skills — reinstall from skills-lock.json, don't redistribute
+.agents/
+.claude/skills/

@@ -1,0 +1,64 @@
+{
+  "name": "portfolio-website",
+  "private": true,
+  "packageManager": "bun@1.2.21",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check src/ scripts/ *.ts",
+    "lint:fix": "biome check --write src/ scripts/ *.ts",
+    "format": "bun run format:biome",
+    "format:biome": "biome format --write src/ scripts/ *.ts",
+    "format:prettier": "prettier --write '**/*.{md,mdx,html,yml,yaml}'",
+    "format:check": "biome check src/ scripts/ *.ts && prettier --check '**/*.{md,mdx,html,yml,yaml}'",
+    "generate:ball": "bun run scripts/render-metal-ball.ts",
+    "generate:blur": "bun run scripts/generate-portfolio-blur.ts",
+    "generate:posters": "bun run scripts/generate-portfolio-posters.ts",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@base-ui-components/react": "^1.0.0-rc.0",
+    "@opentelemetry/api-logs": "^0.222.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.222.0",
+    "@opentelemetry/resources": "^2.11.0",
+    "@opentelemetry/sdk-logs": "^0.222.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "clsx": "^2.1.1",
+    "motion": "^13.4.4",
+    "next": "^16.3.6",
+    "next-mdx-remote": "^6.0.0",
+    "postcss": "^8.5.28",
+    "posthog-js": "^1.434.17",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "sharp": "^0.35.5",
+    "sugar-high": "^2.5.0",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@react-grab/mcp": "^0.1.37",
+    "@types/bun": "^1.4.2",
+    "@types/node": "^26.6.3",
+    "@types/react-dom": "^19.3.0",
+    "baseline-browser-mapping": "^2.11.26",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.9",
+    "react-grab": "^0.2.0",
+    "typescript": "^7.0.2",
+    "ultracite": "^7.12.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
+      "bun x ultracite format"
+    ]
+  },
+  "trustedDependencies": [
+    "react-grab"
+  ]
+}

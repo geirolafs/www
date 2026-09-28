@@ -1,0 +1,829 @@
+/* ==========================================================================
+   globals.css — Tailwind v4 entry point and the whole design token set
+
+   Tokens were harvested by hand from Figma `1912:4822` (desktop, 1440) and
+   `1912:5781` (mobile, 402). The file has no Figma variables to sync — see the
+   decision log in .private/REDESIGN.md.
+
+   Two values deviate from the frames. Both are deliberate, both are logged:
+
+   1. `--color-muted` is #767676, not the frame's #8c8c8c. #8c8c8c measures
+      3.36:1 on white and fails WCAG AA on the 20px work descriptions, which
+      are body copy. #767676 is the lightest grey that clears 4.5:1.
+   2. Weights follow the Book/Regular rule in AGENTS.md. The frames apply it
+      the other way round; the rule wins. Book for paragraphs, Regular for a
+      word, a line, or a lone sentence.
+
+   Fluid values interpolate 402px → 1440px, the two frame widths. Anything not
+   wrapped in clamp() measured identical at both — static on purpose.
+
+   Values live here once. `@theme` emits both the CSS custom property and the
+   matching utility, so `--color-muted` gives you `text-muted` AND
+   `var(--color-muted)`. There is no second raw-token layer to keep in sync.
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* `layer(base)` is load-bearing. Unlayered CSS outranks every cascade layer,
+   so an unlayered reset imported after Tailwind beats the utilities layer —
+   `a { text-decoration: none }` was silently killing `underline` on every link
+   on the page. These are all element defaults; utilities must win over them. */
+@import "./styles/reset.css" layer(base);
+@import "./styles/typography.css";
+
+@theme {
+  /* ---- Colour ---------------------------------------------------------- */
+  /* Five values and a gradient. That is the whole palette. */
+
+  --color-background: #fff;
+  --color-foreground: #121212; /* 18.9:1 on white */
+  --color-muted: #767676; /* 4.54:1 on white — see note 1 above */
+  --color-border: #949494; /* 3.03:1 — borders need 3:1, text rules do not apply */
+  --color-border-strong: #8c8c8c; /* 3.36:1 — the section-label pill outline */
+  --color-surface-footer: #d8d8d8; /* foreground on it is 13.3:1 */
+
+  /* ---- Font ------------------------------------------------------------ */
+
+  --font-sans: var(--font-same-univers), ui-sans-serif, system-ui, sans-serif;
+
+  /* One `wght` axis, 400–900. Four of the seven instances are used. Never
+     rely on `font-weight: normal` — it resolves to Book. */
+  --font-weight-book: 400; /* paragraphs, multi-line body copy */
+  --font-weight-regular: 430; /* a word, a line, a lone sentence */
+  --font-weight-medium: 500; /* work titles, the contact email */
+  --font-weight-semibold: 600; /* the clock, footer labels */
+
+  /* ---- Type ------------------------------------------------------------ */
+  /* Five steps. `display` and `meta` are fluid 402 → 1440; `body` and `label`
+     measured identical at both frame widths and are static. Those four come
+     off the frames. `prose` does not — the frames stop at the home page, and
+     /notes had no type treatment at all — so its numbers are reasoned below
+     rather than measured, and are the only ones here that are safe to retune
+     by eye. */
+
+  /* Display — 23 → 32, leading 29 → 45. Name, role, intro paragraphs.
+     The 402 frame drew this at 26/32, but that read too large against the
+     20px body on a phone, so the mobile end is tuned down to 23/29 by eye;
+     the 1440 end is still the measured 32/45. Tracking is a flat -0.02em. */
+  --text-display: clamp(1.4375rem, 1.2196rem + 0.8671vw, 2rem);
+  --text-display--line-height: clamp(1.8125rem, 1.4252rem + 1.5414vw, 2.8125rem);
+  --text-display--letter-spacing: -0.02em;
+
+  /* Body — 18 → 20. Work titles, subtitles, descriptions. Both frames drew
+     this at a static 20, but alongside the tuned-down display step 20 read
+     large on a phone, so the mobile end is 18 by eye; 1440 keeps the measured
+     20. Leading is unitless (27.52/20) so it rides along with the size. */
+  --text-body: clamp(1.125rem, 1.0766rem + 0.1927vw, 1.25rem);
+  --text-body--line-height: 1.376;
+  --text-body--letter-spacing: 0.005em;
+
+  /* Prose — 18 → 20, the notes body face. Deliberately the same size as `body`
+     rather than a new one — it reads `body`'s clamp so the two cannot drift
+     apart; what it cannot share is the leading. 1.376 is
+     tuned for the things `body` actually sets — work titles, subtitles, a
+     one-line description — where the text is short and a tight line box keeps
+     the row heights the frames specify. A 900-word essay at that leading is a
+     wall. 1.6 (32px) is the long-form setting, and Same Univers wants the
+     upper half of the 1.5–1.6 range because its x-height is large: more ink
+     per line needs more space between lines to stay separable.
+
+     Tracking matches `body`/`meta`/`link` at 0.005em. Nothing about sustained
+     reading argues for changing it, and an odd one out here would show. */
+  --text-prose: var(--text-body);
+  --text-prose--line-height: 1.6;
+  --text-prose--letter-spacing: 0.005em;
+
+  /* Meta — 14 → 16. The header bar, and only the header bar: its mobile text
+     boxes are 10 tall, the cap height of 14px. */
+  --text-meta: clamp(0.875rem, 0.8266rem + 0.1927vw, 1rem);
+  --text-meta--line-height: 1.72;
+  --text-meta--letter-spacing: 0.005em;
+
+  /* Link — 16px, static. The contact links measure 28 in both frames, which is
+     16px at the same 1.72 leading. They do not shrink on mobile the way the
+     header bar does, so they cannot share `meta`. */
+  --text-link: 1rem;
+  --text-link--line-height: 1.72;
+  --text-link--letter-spacing: 0.005em;
+
+  /* Label — 12.5px. Section-label pills, the year column, the footer. */
+  --text-label: 0.78125rem;
+  --text-label--line-height: 1.6;
+  --text-label--letter-spacing: 0.06em;
+
+  /* The introduction's paragraphs run looser than the name, 38 → 48. The role
+     line has no variant of its own: in both frames it sits exactly one display
+     line below the name, so it uses the display leading. */
+  --leading-prose: clamp(2.375rem, 2.1329rem + 0.9634vw, 3rem);
+
+  /* ---- Space ----------------------------------------------------------- */
+  /* 24px is the layout module. Larger spaces are its multiples; the smaller
+     steps keep related text together. Fluid gaps interpolate 402 → 1440. */
+
+  --spacing-2xs: 0.5rem; /* 8  — title / subtitle gap, desktop */
+  --spacing-xs: 0.75rem; /* 12 — header bar gap, mobile */
+  --spacing-sm: 1rem; /* 16 — work entry gaps, mobile */
+  --spacing-md: 1.5rem; /* 24 — the default rhythm */
+  --spacing-xl: calc(var(--spacing-md) * 2); /* 48 — desktop history rows */
+  --spacing-group: calc(var(--spacing-md) * 3); /* 72 — mobile groups */
+  --spacing-project: calc(var(--spacing-md) * 4); /* 96 — project entries */
+  --spacing-paragraph: clamp(
+    var(--spacing-xl),
+    2.4191rem +
+    2.3121vw,
+    var(--spacing-group)
+  ); /* 48 → 72 */
+
+  /* ---- Layout ---------------------------------------------------------- */
+
+  /* Outer page padding. 24 at both widths; independent of the stripe width. */
+  --spacing-site: 1.5rem;
+
+  /* The 12-column grid. At 1440: 24 margin + 12 × 94 + 11 × 24 gutter = 1440,
+     so content runs 24 → 1416 and column n starts at 24 + (n-1) × 118.
+     Columns are fluid `1fr`, not fixed px — the grid then holds its
+     proportions between `lg` and 1440 instead of overflowing.
+
+     Below `lg` the same utility switches to the mobile frame's 8-column grid;
+     see `page-grid`. Its margin and gutter are both 16, which is
+     `--spacing-sm`, so it needs no tokens of its own. */
+  --grid-margin: var(--spacing-site);
+  --grid-gutter: 1.5rem; /* 24 */
+
+  /* The left stripe. 8 → 12, full height, flush left — half its original
+     width at every viewport. It is hidden (width 0) until the visitor has
+     scrolled 100px, then grows to this; see "Stripe reveal" below. */
+  --spacing-stripe: calc(clamp(1rem, 0.8064rem + 0.7707vw, 1.5rem) / 2);
+
+  /* Footer: separate contact from the colophon with space between rows. */
+  --spacing-footerrow: calc(var(--spacing-md) * 6); /* 144 */
+  --spacing-footerpad: calc(var(--spacing-md) * 4); /* 96 */
+
+  /* The hero ball. The frame is 234.18 square and the ball fills it; the
+     shadow that bleeds down the page is the full render's 1299 × 1008.
+     Fixed at 234.18 from `lg` up, where the frames draw it and where the
+     live canvases run against it. Below `lg` the frames have no ball, so
+     the ball scales down on its own: 140 at 402, 234.18 by `lg`. The
+     shadow boxes are the ball times the render's ratios, so mask and ball
+     keep their alignment at every size. See `metal-ball.tsx`. */
+  --spacing-ball: clamp(8.75rem, 4.95rem + 15.14vw, 14.6365rem); /* 140 → 234.18 */
+  --spacing-ball-render-w: calc(var(--spacing-ball) * 5.547); /* 1299 at 234.18 */
+  --spacing-ball-render-h: calc(var(--spacing-ball) * 4.3044); /* 1008 at 234.18 */
+
+  /* The fixed box an entry row occupies: 36 in the frames, against a 27.52
+     line box. Experience and Awards rows are exactly this tall, so their
+     pitch is 36 + 8 = 44. In Selected work it is the title row's height, and
+     the description follows it with no gap. */
+  --spacing-row: 2.25rem; /* 36 */
+
+  /* Major sections: 8 → 12 modules (192 → 288) across 402 → 1440.
+     The hero keeps its original 352 → 416. */
+  --spacing-section: clamp(
+    calc(var(--spacing-md) * 8),
+    9.6763rem +
+    9.2486vw,
+    calc(var(--spacing-md) * 12)
+  );
+  --spacing-hero: clamp(22rem, 20.4509rem + 6.1656vw, 26rem);
+
+  --radius-pill: 0.625rem; /* 10px */
+
+  /* ---- Motion ---------------------------------------------------------- */
+
+  /* One curve for the whole site. This deliberately overrides Tailwind's own
+     `--ease-out` (`cubic-bezier(0, 0, 0.2, 1)`), so the two places already
+     written against `ease-out` — the shared `Button` and the blog post cards —
+     retune with it. That is the point: one deceleration defined once, rather
+     than a second curve living alongside the default and no way to tell from a
+     call site which of the two you got.
+
+     Durations are in `:root` below, not here. Tailwind v4 has an `--ease-*`
+     theme namespace but no `--duration-*` one, so a duration declared here
+     would emit no utility and be tree-shaken out — the same trap `--pill-inset`
+     documents. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ==========================================================================
+   Values with no Tailwind namespace
+
+   These are read straight out of components as `var(--…)` inside arbitrary
+   values, because no utility scale fits them: grid track widths, a gradient,
+   sub-pixel border and padding metrics, fixed card dimensions.
+   ========================================================================== */
+
+:root {
+  /* The left stripe. The gradient itself is static — only the stripe's width
+     is scroll-linked, and a vertical gradient is unaffected by that. */
+  --gradient-stripe: linear-gradient(
+    180deg,
+    #044588 0%,
+    #347dc8 8.1731%,
+    #ededed 46.074%,
+    #f6bfb3 76.935%,
+    #ffe577 100%
+  );
+
+  /* The section-label pill. `--pill-inset` is the band it reserves on mobile:
+     21.75 above and below a 22.5 pill makes 66, and the wrapper's 24 row gap
+     then puts the first entry 90 below the section top, where the frame has
+     it. `--year-box` is the entry year's box on mobile, 22 against a 20 line.
+
+     These live here rather than in `@theme` because Tailwind v4 will not
+     resolve a hyphenated key in the spacing namespace — `--spacing-pill-inset`
+     silently produces no `my-pill-inset` utility and is then tree-shaken out,
+     so the margin just never applies. Single-word spacing keys (`--spacing-
+     row`) are fine; multi-word ones have to be read as arbitrary values. */
+  --pill-inset: 1.359375rem; /* 21.75 */
+  --year-box: 1.375rem; /* 22 */
+
+  /* The hero ball's live shadow canvas is the render box plus three radii
+     above the ball: with the cursor at the bottom of the page the lamp is
+     below the ball and its shadow reaches that far up. The static mask
+     never needs the room — the rest cone only runs down — so it keeps the
+     render box. Same reason as above for living here: `-top-ball-shadow-
+     reach` never resolved. See `metal-ball-canvas.tsx`. */
+  --ball-shadow-reach: calc(var(--spacing-ball) * 1.5031); /* 352 at 234.18, 3 radii */
+  --ball-shadow-height: calc(var(--spacing-ball) * 5.8075); /* 1008 + 352 at 234.18 */
+
+  --pill-border-width: 1.25px;
+  --pill-padding-x: 0.546875rem; /* 8.75px */
+  --pill-padding-y: 0.078125rem; /* 1.25px */
+
+  /* Card dimensions stay as drawn; the spacing review opens the gutters. */
+  --carousel-card-width: 303.75px;
+  --carousel-card-height: 429.47px;
+  --carousel-gap: clamp(
+    var(--spacing-md),
+    0.9191rem +
+    2.3121vw,
+    var(--spacing-xl)
+  ); /* 24 → 48 — retain the next-card peek on phones */
+
+  /* The notes column. 34em against `--text-prose` is 680px, and at Same
+     Univers' roughly 0.5em average advance that lands near 68 characters —
+     inside the 45–75 band where line-to-line eye returns stay accurate.
+
+     `em` and not `ch`, though `ch` is the unit that sounds correct here. `ch`
+     is the advance of "0", so the measure is computed from a glyph and
+     changes when the fallback font is swapped for the real one — the column
+     visibly reflows on load. `em` reads only the font-size, so it is stable
+     across the swap and still scales automatically if `--text-prose` moves,
+     preserving the character count rather than the pixel width.
+
+     Tailwind ships `--max-width-prose: 65ch` and it is deliberately unused:
+     it carries the `ch` reflow, and a theme var referenced only through
+     `var()` in a plain rule is a tree-shaking risk of the kind `--pill-inset`
+     documents above. */
+  --measure-prose: 34em;
+
+  /* Links are underlined in foreground even where the text is muted. */
+  --underline-thickness: 8%;
+  --underline-color: var(--color-foreground);
+
+  /* Read as an arbitrary value — `duration-[var(--duration-feedback)]` — for
+     the namespace reason logged next to `--ease-out` above.
+
+     One step, because one thing animates. A second, `--duration-reveal`, was
+     added for the clock's hydration fade and removed with it; there is no
+     point keeping a token whose only caller is gone. */
+  --duration-feedback: 120ms; /* hover, press */
+
+  /* `--duration-reveal` and `--stagger-step` lived here 2026-08-01 through
+     2026-08-04, driving the scroll reveal's CSS transition. Motion replaced
+     that transition with an imperative spring — `visualDuration: 0.6`,
+     `bounce: 0.12`, per-row `delay: index * 0.07` — in `reveal-observer.tsx`,
+     so both tokens are gone; the values now live as `animate()` options, not
+     custom properties, because nothing else reads them.
+     `--duration-stripe-slide` (700ms, a slide-in on load) and
+     `--duration-stripe-wipe` (900ms, a five-column band opening and closing
+     at the top of the page) went on 2026-09-03 with the motions they timed;
+     the 2026-08-04 entry in .private/REDESIGN.md has the geometry they came from. */
+
+  /* The stripe growing from nothing to `--spacing-stripe` once the visitor
+     has scrolled past the threshold in `stripe.tsx`, and shrinking back on
+     the way up. One value for both directions, so it leaves and returns at
+     the same speed. This is the one number in the whole stripe that is
+     taste, not geometry — tune here. */
+  --duration-stripe-reveal: 900ms;
+  --reveal-distance: 1.5rem; /* 24 */
+}
+
+/* ==========================================================================
+   The page grid
+
+   One 12-column grid, shared by every band on the homepage — header, hero,
+   introduction, the three labelled sections, the carousel and the footer.
+   Placement is by `col-start-*` / `col-span-*` against this grid and nothing
+   else; no band carries its own left padding.
+
+   Column map at 1440 (start x): 1:24  2:142  3:260  4:378  5:496  6:614
+   7:732  8:850  9:968  10:1086  11:1204  12:1322 (ends 1416).
+
+   Below `lg` it is a single column. The 402 frame is an 8-column grid and
+   travels with the mobile pass — desktop first, on purpose.
+   ========================================================================== */
+
+@utility page-grid {
+  display: grid;
+
+  /* 402: 16 margin + 8 × 32.25 + 7 × 16 gutter = 402. Column n starts at
+     16 + (n-1) × 48.25, so column 2 is 64 and columns 2–7 span 64 → 337.75 —
+     a 273.75-wide content column, derived rather than set. Column 8 stays
+     empty as a right-hand breathing margin. */
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  column-gap: var(--spacing-sm);
+  padding-inline: var(--spacing-sm);
+
+  /* Nearly everything on mobile is that one column, so it is the default and
+     components only declare their desktop placement. `:where()` keeps the
+     specificity at zero so any explicit `col-start-*` still wins. */
+  > :where(*) {
+    grid-column: 2 / span 6;
+  }
+
+  @variant lg {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    padding-inline: var(--grid-margin);
+
+    > :where(*) {
+      grid-column: auto;
+    }
+  }
+}
+
+/* ==========================================================================
+   Cap-height text boxes
+
+   The frames measure text from cap top to alphabetic baseline, not from the
+   line box — a 32px name reads as a 22px box, and the introduction's 238 is
+   the distance from the first cap to the last baseline. `text-box` reproduces
+   exactly that: it trims the first line's half-leading and the last line's
+   descent, and leaves the leading between lines alone.
+
+   Applied only where the frame trims — the hero, the introduction and the
+   header bar. Elsewhere the natural line box already lands the text where the
+   frame puts it, so trimming there would move it.
+
+   Firefox has not shipped `text-box` yet. It degrades to a normal line box:
+   these blocks sit a few pixels lower and the page grows by roughly 40px.
+   Nothing breaks, and no other browser we target is affected.
+
+   Named `cap-trim` and not `text-trim` on purpose. tailwind-merge sorts an
+   unknown `text-*` class into the colour group, so `cn("text-trim text-
+   foreground")` silently drops one of the two — the same trap `cn.ts`
+   documents for `text-display`, and it cost a debugging round here. Staying
+   off the `text-` prefix sidesteps it instead of adding another config entry.
+   ========================================================================== */
+
+@utility cap-trim {
+  text-box: trim-both cap alphabetic;
+}
+
+/* ==========================================================================
+   The carousel's lead-in
+
+   The strip is the one band that bleeds to *both* viewport edges — it has to,
+   or cards pile up against an invisible wall at column 2 instead of travelling
+   off the side of the screen. But its first card still rests on column 2 like
+   every other band, so the space to the left of it is padding inside the
+   scroller rather than margin outside it.
+
+   That inset is column 2's start, derived from the same grid constants the
+   page grid uses rather than restated as a magic 142. `100%` resolves against
+   the scroller's content box, which the negative margins have made the full
+   container width — not `100vw`, which would count the scrollbar and drift a
+   few pixels on desktop.
+
+   1440: 24 + 24 + (1440 − 48 − 264) / 12 = 142.
+   402:  32 + (402 − 144) / 8 = 64.25.
+   ========================================================================== */
+
+@utility carousel-lead-in {
+  padding-inline-start: calc(var(--spacing-sm) * 2 + (100% - var(--spacing-sm) * 9) / 8);
+
+  @variant lg {
+    padding-inline-start: calc(
+      var(--grid-margin) +
+      var(--grid-gutter) +
+      (100% - var(--grid-margin) * 2 - var(--grid-gutter) * 11) /
+      12
+    );
+  }
+}
+
+/* Prose paragraphs use 48 → 72px between full line boxes. Cap-trimmed
+ * paragraphs add back the removed
+ * leading so the same gap survives in browsers that support text-box.
+ *
+ * The `@supports` guard is the point of writing this as a utility rather than
+ * an arbitrary value. Where `text-box` is unsupported the trim is a no-op, so
+ * the paragraphs keep their full line boxes and the compensation would stack
+ * on top of them — 26px of spacing the design never asked for. */
+@utility prose-gap {
+  margin-top: var(--spacing-paragraph);
+
+  @supports (text-box: trim-both cap alphabetic) {
+    margin-top: calc(var(--spacing-paragraph) + var(--leading-prose) - 1cap);
+  }
+}
+
+/* ==========================================================================
+   Notes prose — first-line indents
+
+   `p + p` rather than indenting every `p` and resetting after block tags.
+   The MDX components wrap their output in whatever suits them — `BlogImage`
+   and `YouTube` emit a plain `div`, `CodeBlock` a `pre`, `Table` a scrolling
+   `div` — so a reset list keyed on tag names would have to enumerate every
+   wrapper and would silently miss the next one added. The adjacent-sibling
+   rule inverts that: only a paragraph directly following another paragraph
+   indents, so the first paragraph after a heading, image, code block or list
+   stays flush regardless of what element preceded it. That is also the
+   typographic rule — the indent marks a new paragraph where the previous one
+   ended flush, and after a block there is nothing to disambiguate.
+
+   The zeroed margin is load-bearing, not tidying. An indent and a blank line
+   are two signals for the same break; running both reads as a mistake, and
+   the indent stops being legible once a gap has already announced the break.
+   Only paragraph-to-paragraph is zeroed — headings and the MDX blocks carry
+   their own spacing, so every other gap is untouched.
+
+   `em` and not `rem`: the indent scales with the paragraph it belongs to. On
+   a narrow measure 1.5em is roughly three characters, which stays readable;
+   below that it stops registering as deliberate.
+   ========================================================================== */
+
+/* `text-wrap: pretty` for the orphan, not the ragged edge. It costs a little
+   layout work per paragraph, which is why it is scoped to the notes column
+   and not set globally — on short strings it has nothing to fix. Unsupported
+   browsers fall back to `wrap`, which is what they were already doing. */
+article {
+  max-width: var(--measure-prose);
+  font-size: var(--text-prose);
+  line-height: var(--text-prose--line-height);
+  letter-spacing: var(--text-prose--letter-spacing);
+  font-weight: var(--font-weight-book);
+  text-wrap: pretty;
+}
+
+article p {
+  margin-block: 0;
+}
+
+article p + p {
+  text-indent: 1.5em;
+}
+
+/* ==========================================================================
+   Notes prose — everything that is not a paragraph
+
+   Tailwind's preflight zeroes every margin and strips list markers, so each
+   block here has to restate its own spacing. Paragraphs are the exception
+   and stay at zero — the indent above is their break.
+
+   No new sizes are invented and none are needed. The site differentiates by
+   weight and colour, and the three steps a note actually uses already exist:
+   `--text-display` for an h2, `--text-prose` at medium for an h3, and
+   `--text-prose` at book for the body. That is the same
+   foreground-medium-over-muted-book relationship an entry row runs between
+   its title and its description, one level up in size.
+
+   shadcn/typeset was the plan of record for this (see .private/REDESIGN.md Phase 5)
+   and is deliberately not used. It arrives as a vendored file carrying its
+   own `--typeset-size` / `--typeset-leading` / `--typeset-flow` namespace,
+   which would duplicate the type scale twenty lines above this one and give
+   the project two places to change a prose size. Forty lines against the
+   existing tokens keeps that number at one.
+   ========================================================================== */
+
+/* Whatever a post opens with sits flush against the meta column beside it. */
+article > :first-child {
+  margin-block-start: 0;
+}
+
+article h2 {
+  margin-block: calc(var(--spacing-md) * 2) var(--spacing-sm);
+  font-size: var(--text-display);
+  line-height: var(--text-display--line-height);
+  letter-spacing: var(--text-display--letter-spacing);
+  font-weight: var(--font-weight-regular);
+  text-wrap: balance;
+}
+
+article h3 {
+  margin-block: var(--spacing-md) var(--spacing-2xs);
+  font-weight: var(--font-weight-medium);
+  text-wrap: balance;
+}
+
+article :is(ul, ol) {
+  margin-block: var(--spacing-md);
+  /* Markers hang in the indent the first-line rule already establishes, so a
+     list reads as part of the paragraph flow rather than a panel beside it. */
+  padding-inline-start: 1.5em;
+}
+
+article ul {
+  list-style: disc;
+}
+
+article ol {
+  list-style: decimal;
+}
+
+article li + li {
+  margin-block-start: var(--spacing-2xs);
+}
+
+article li::marker {
+  color: var(--color-muted);
+}
+
+/* Muted glyphs plus a rule at the non-text 3:1 threshold — the quote is set
+   apart by colour and the rule, not by an italic. */
+article blockquote {
+  margin-block: var(--spacing-md);
+  padding-inline-start: var(--spacing-md);
+  border-inline-start: var(--pill-border-width) solid var(--color-border);
+  color: var(--color-muted);
+}
+
+article hr {
+  margin-block: calc(var(--spacing-md) * 2);
+  border: 0;
+  border-block-start: var(--pill-border-width) solid var(--color-border);
+}
+
+article strong {
+  font-weight: var(--font-weight-medium);
+}
+
+/* The site's one surface tone, reused. `pre > code` is excluded — the code
+   block draws its own container and sugar-high colours the tokens inside it
+   through the `--sh-*` variables in `typography.css`. */
+article :not(pre) > code {
+  padding: var(--pill-padding-y) var(--pill-padding-x);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-footer);
+  font-size: 0.9em;
+}
+
+article pre {
+  margin-block: var(--spacing-md);
+}
+
+/* The same three-step underline `TextLink` runs, for the links MDX emits —
+   `CustomLink` renders a bare anchor, so this is where they get it. Kept in
+   sync with `components/home/text-link.tsx`; that file carries the reasoning
+   for why only the underline responds and why the press step is its own
+   colour rather than a snap back to foreground. */
+article a {
+  text-decoration: underline;
+  text-decoration-color: var(--underline-color);
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-position: from-font;
+  transition: text-decoration-color var(--duration-feedback) var(--ease-out);
+}
+
+article a:hover {
+  text-decoration-color: var(--color-muted);
+}
+
+article a:active {
+  text-decoration-color: var(--color-border);
+  transition-duration: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article a {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Scroll reveal
+
+   `RevealObserver` (`src/app/components/home/reveal-observer.tsx`) is the
+   only thing that ever sets `data-reveal-armed`, on mount, for a section that
+   is not yet on screen — and the only thing that ever sets `data-revealed`,
+   once that section has crossed 15% into the viewport *and* finished
+   animating in. Everything below is CSS state driven by those two
+   attributes — no per-frame scroll handler, no `animation-timeline` — but
+   the animation itself is Motion's `animate()`, called imperatively from
+   `RevealObserver`, not a CSS `transition`. Motion writes inline styles,
+   which beat any selector here regardless of specificity or source order;
+   the rules below are the hidden state Motion animates away from, plus a
+   transition-less `[data-revealed]` fallback that keeps content visible
+   even if `animate()` never resolves.
+
+   JS owns the hidden state, not CSS, and that ownership direction is
+   load-bearing. Server HTML renders every section visible; nothing here
+   hides anything by default. Only `[data-reveal-armed]` — set by JS after it
+   has confirmed via `getBoundingClientRect()` that the section is not
+   already in view — drops it to the hidden state. If the bundle 404s, is
+   blocked, or throws before the effect attaches, `data-reveal-armed` never
+   gets set and every section stays at its rendered, visible default. A
+   media-query guard testing whether the browser *can* run JS was used here
+   before and was removed: it tests capability, not whether this page's
+   bundle *did* run — a blocked or broken bundle strands the same content
+   either way. See the 2026-08-04 entry in .private/REDESIGN.md.
+
+   `data-revealed` is set together with clearing `data-reveal-armed`, only
+   once Motion's animation resolves — never at the start. Setting it earlier
+   would race Motion's own read of the element's current value: `animate()`
+   is called with only a target value (`{ opacity: 1, y: 0 }`), so it reads
+   the *current* computed style as its start point. If `[data-revealed]`'s
+   fallback were already active at that moment, Motion would read opacity 1
+   as the start and animate nothing.
+
+   `[data-reveal]` covers two shapes:
+     - plain (`data-reveal`, e.g. the contact footer) — the section itself
+       fades and rises.
+     - `data-reveal="items"` (Selected work, Experience, Awards) — the
+       section is visible immediately and only its `[data-reveal-item]` rows
+       animate, staggered off `--index`. Without this split both rules would
+       fire on the same reveal: the section fading in *and* its rows fading
+       in inside it reads as a double fade, not one motion.
+
+   `[data-reveal-boot="armed"]` is the pre-paint version of the same hidden
+   state, set on `<html>` by the inline script in `layout.tsx` before any CSS
+   or JS on this page has a chance to run. Sections already in view at load
+   used to be skipped by `RevealObserver`'s mount-time rect check, so they
+   never got `[data-reveal-armed]` and never animated. Removing that skip so
+   they *do* reveal on load meant they had to start hidden in the
+   server-rendered HTML — otherwise they render visible, then `RevealObserver`
+   arms them ~190ms into hydration, then they animate: a visible-hidden-
+   visible flash. `[data-reveal-boot]` closes that gap: the boot script sets
+   it synchronously in `<head>`, before first paint, so these rules apply from
+   frame one. `RevealObserver` flips it to `"ready"` in the same synchronous
+   pass it arms `[data-reveal-armed]` in, so the two hiding mechanisms never
+   overlap. If the bundle never boots, a 2s `setTimeout` in the same inline
+   script flips it to `"off"` on its own — see `layout.tsx`. */
+
+/* `:where()` around the boot-marker prefix zeroes its specificity
+   contribution — these three rules would otherwise outrank the reduced-motion
+   block's plain `[data-reveal]` selector later in this file purely by virtue
+   of the extra attribute, tripping `noDescendingSpecificity` for a conflict
+   that was never real: the two rule sets never touch the same property. */
+:where([data-reveal-boot="armed"]) [data-reveal] {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+}
+
+:where([data-reveal-boot="armed"]) [data-reveal="items"] {
+  opacity: 1;
+  transform: none;
+}
+
+:where([data-reveal-boot="armed"]) [data-reveal="items"] [data-reveal-item] {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+}
+
+[data-reveal][data-reveal-armed] {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+}
+
+/* The header bar fades, it does not rise. Every other target travels
+   `--reveal-distance` upward on the way in, which reads correctly for a band
+   of content arriving as you scroll to it. The header is the topmost element
+   on the page and nothing sits above it to move against, so the same 24px of
+   travel reads as the page shifting under you rather than as content
+   arriving — reported as a layout shift, though CLS measures 0 for it: a
+   transform never moves layout, only pixels.
+
+   Zeroing `--reveal-distance` rather than overriding `transform` is what
+   makes this hold end to end. Motion animates toward `y: 0` and reads its
+   start value from the computed style, so with the offset at zero the start
+   and end match and no vertical movement is ever generated — the fade is all
+   that is left, in the pre-paint state, the armed state and the animation
+   alike. */
+[data-reveal="load"] {
+  --reveal-distance: 0rem;
+}
+
+/* No transition — Motion animates this element directly via inline styles.
+   This is the resting value once `animate()` resolves, and also the
+   anti-stranding fallback if it never does. */
+[data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* `items` sections skip their own opacity/transform — see the file
+   comment above. Equal specificity to the armed rule above, so this has to
+   stay declared after it to win on source order. */
+[data-reveal="items"][data-reveal-armed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Rows inside an armed section stagger off `--index`, read by
+   `RevealObserver` and passed to `animate()` as a per-row delay. */
+[data-reveal][data-reveal-armed] [data-reveal-item] {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+}
+
+[data-reveal][data-revealed] [data-reveal-item] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Stripe reveal
+
+   The stripe is hidden — `width: 0` — until the visitor has scrolled
+   `REVEAL_THRESHOLD_PX` (100px, in `stripe.tsx`), then grows to
+   `--spacing-stripe` over `--duration-stripe-reveal`; back above the
+   threshold it shrinks away again, same transition. Nothing animates on
+   load. A slide-in on load and a five-column band
+   that opened at the top of the page both lived here until 2026-09-03; that
+   entry in .private/REDESIGN.md says why they went.
+
+   Triggered by scroll, not linked to it. A `scroll()` timeline was built on
+   this element once and taken back out: a width tied to scroll offset is
+   half-finished through the whole middle of the gesture, which is a state
+   nobody designed. A threshold plus a transition means the stripe is only
+   ever hidden, shown, or crossing between the two at a duration this file
+   picks.
+
+   The trigger is `data-stripe="revealed"` on `<html>`, owned by `stripe.tsx`
+   — the threshold and the one-shot listener live there.
+
+   Hidden only while the bundle is alive or still might be — gated on
+   `data-reveal-boot`, which is set to "armed" pre-paint by the inline script
+   in `layout.tsx`, to "ready" when `RevealObserver` mounts, and to "off" by
+   that script's own 2s failsafe if the bundle never boots. Hidden is scoped
+   to "armed" and "ready", so:
+
+     no JS at all        never "armed"  → visible, static. The pre-2026 stripe.
+     bundle never boots  "off" after 2s → appears on its own.
+     bundle boots        "ready"        → hidden within 100px of the top.
+     visitor scrolls     data-stripe    → grows in, and shrinks away up top.
+     reload part-way     data-stripe    → already there on the first frame.
+
+   That last row is the one that is not self-evident. `data-stripe` is owned
+   by an effect, so on a reload it does not exist until hydration — the stripe
+   would be missing on the first frame and grow in 900ms later on a page that
+   was already scrolled. The boot script cannot avoid it by checking
+   `scrollY`, because it runs during head parse, before the browser has
+   restored anything. So `stripe.tsx` mirrors the revealed state into
+   `sessionStorage` and the boot script sets the attribute from there, ahead
+   of first paint, on a reload or back/forward. No transition runs on a value
+   that was already correct at the first style resolution.
+
+   Borrowing `data-reveal-boot` rather than minting a second boot marker is
+   deliberate: the question both would answer is the same one — "is this
+   page's JS alive?" — and two markers answering it could disagree. Stranding
+   matters here because the stripe is the page's main design element: with
+   the gate, the only route to a hidden stripe is a live bundle whose visitor
+   has not scrolled 100px yet, which is the design.
+
+   `width` rather than `scaleX`, deliberately. The landed value has to be
+   `--spacing-stripe` exactly — the stripe's own width — and a
+   scale would make it a ratio. The element is absolutely positioned,
+   `pointer-events: none` and childless, so a width change lays out itself and
+   nothing else: one transition on one out-of-flow box, not a per-frame
+   scroll handler, which is what makes the layout cost a non-issue.
+
+   The vertical parallax that used to live here is gone for good: the
+   gradient is stretched over the full page height and one screen of
+   scrolling already traverses 36% of it, so the colour at eye level changes
+   dramatically with no scroll handler at all, and anything moving the stripe
+   up or down competed with a shift that was already happening.
+   ========================================================================== */
+
+[data-stripe-reveal] {
+  transition: width var(--duration-stripe-reveal) var(--ease-out);
+}
+
+/* Hidden until the threshold, and only while JS is alive or still might be —
+   see the failsafe table above. */
+:root:is([data-reveal-boot="armed"], [data-reveal-boot="ready"]):not(
+  [data-stripe="revealed"]
+) [data-stripe-reveal] {
+  width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Custom properties inherit, so setting this on `[data-reveal]` alone
+     already reaches `[data-reveal-item]` descendants — no compound selector
+     needed, and one less selector for `noDescendingSpecificity` to flag
+     against the higher-specificity armed/revealed rules above. Motion itself
+     is skipped in JS (`useReducedMotion()`), so this only has to zero the
+     hidden state's translate offset for the brief window between mount and
+     reveal — there is no transition left here to shorten. */
+  [data-reveal] {
+    --reveal-distance: 0rem;
+  }
+
+  /* The stripe appears in place at the threshold rather than growing in. It
+     is decorative and `aria-hidden`, so there is nothing to soften — the
+     honest reduced state is the state change with no movement. */
+  [data-stripe-reveal] {
+    transition: none;
+  }
+}

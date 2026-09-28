@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json",
+  "default": true,
+  "MD013": {
+    "line_length": 130,
+    "heading_line_length": 130,
+    "code_block_line_length": 130,
+    "code_blocks": true,
+    "tables": false,
+    "headings": true,
+    "strict": false,
+    "stern": false
+  },
+  "MD033": false,
+  "MD040": false,
+  "MD041": false
+}

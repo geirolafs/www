@@ -1,0 +1,4 @@
+# Target modern browsers with native ES module support
+# This prevents unnecessary transpilation and polyfills
+# Covers ~95% of global traffic (Chrome 92+, Safari 15.4+, Firefox 92+, Edge 92+)
+defaults and supports es6-module

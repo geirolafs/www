@@ -1,0 +1,66 @@
+/* ==========================================================================
+   TYPOGRAPHY — code blocks only
+
+   The v1 prose system (`.same-size-typography*`, `.prose-blog`) lived here and
+   was removed in Phase 1. Nothing referenced either class after the Phase 0
+   strip, and both were driven by the `--typography-*` tokens that the token
+   rewrite replaced. Prose now lives in `globals.css` under the `article`
+   rules, built on the `@theme` type scale rather than a vendored system.
+
+   What is left is used by `components/blog/code-block.tsx`.
+   ========================================================================== */
+
+.code-block-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.code-block-gradient-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4rem;
+  pointer-events: none;
+  background: linear-gradient(to left, var(--color-background), transparent);
+  transition: opacity 0.25s ease-out;
+}
+
+.code-block-gradient-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 1rem;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--color-background), transparent);
+  transition: opacity 0.15s ease-out;
+  z-index: 1;
+}
+
+/* Blog list perf rule — keeps long lists cheap to render. */
+.blog-post-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+}
+
+/* ==========================================================================
+   SYNTAX HIGHLIGHTING
+
+   sugar-high ships no stylesheet, but it does not need one: it writes
+   `style="color: var(--sh-<token>)"` onto every span it emits alongside the
+   `sh__token--*` class. Declaring the variables here is the whole wiring —
+   there is no selector to write. Light only; the site has no dark mode.
+   ========================================================================== */
+
+:root {
+  --sh-class: #2d5e9d;
+  --sh-identifier: #354150;
+  --sh-sign: #8996a3;
+  --sh-string: #007f7a;
+  --sh-keyword: #e02518;
+  --sh-comment: #a19595;
+  --sh-jsxliterals: #6266d1;
+  --sh-property: #e25a1c;
+  --sh-entity: #e25a1c;
+}

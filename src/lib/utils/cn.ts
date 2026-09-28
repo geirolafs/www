@@ -1,0 +1,59 @@
+import { type ClassValue, clsx } from "clsx";
+import { extendTailwindMerge } from "tailwind-merge";
+
+/**
+ * The custom `@theme` scales tailwind-merge cannot infer on its own.
+ *
+ * Custom *colours* are not listed here on purpose — tailwind-merge validates
+ * `--color-*` permissively and accepts any name, so they work untouched. Sizes,
+ * weights, leading, spacing and radii are the opposite: unknown names fall
+ * through to that same permissive colour validator, so `text-display` gets
+ * classed as a colour, lands in the same conflict group as `text-foreground`,
+ * and one of the two is silently dropped.
+ *
+ * Keys are the `@theme` namespace; values are the variable names minus the
+ * prefix. `cn.test.ts` fails if this drifts from globals.css.
+ *
+ * @see https://github.com/dcastil/tailwind-merge/blob/main/docs/configuration.md
+ */
+export const THEME_SCALES = {
+  text: ["display", "body", "prose", "meta", "link", "label"],
+  // `medium` and `semibold` are Tailwind defaults, so listing them changes
+  // nothing — but it keeps the invariant "everything in @theme appears here"
+  // simple enough to assert.
+  "font-weight": ["book", "regular", "medium", "semibold"],
+  leading: ["prose"],
+  spacing: [
+    "site",
+    "gutter",
+    "stripe",
+    "row",
+    "footerrow",
+    "footerpad",
+    "section",
+    "hero",
+    "ball",
+    "ball-render-w",
+    "ball-render-h",
+    "2xs",
+    "xs",
+    "sm",
+    "md",
+    "xl",
+    "group",
+    "project",
+    "paragraph",
+  ],
+  radius: ["pill"],
+} as const;
+
+const twMerge = extendTailwindMerge({
+  extend: { theme: THEME_SCALES as unknown as Record<string, string[]> },
+});
+
+/**
+ * Conditional class names with Tailwind conflict resolution — the standard
+ * shadcn `cn`, plus the theme config above that this project's custom scales
+ * require.
+ */
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));

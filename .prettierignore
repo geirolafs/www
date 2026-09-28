@@ -1,0 +1,11 @@
+# Build output.
+.next/
+out/
+coverage/
+
+# Vendored agent skills. These track upstream copies — reformatting them
+# creates diff noise against the source they are synced from.
+.agents/
+
+# Generated.
+src/data/*.json
