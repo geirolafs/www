@@ -20,7 +20,6 @@ const REQUIRED_FIELDS: (keyof Metadata)[] = ["title", "publishedAt", "summary"];
 // Top-level regex patterns for better performance
 const FRONTMATTER_REGEX = /---\s*([\s\S]*?)\s*---/;
 const QUOTE_REGEX = /^['"](.*)['"]$/;
-const IMAGE_REGEX = /<Image\s+[^>]*src=["']([^"']+)["']/;
 
 function validateMetadata(metadata: Partial<Metadata>): metadata is Metadata {
   return REQUIRED_FIELDS.every(
@@ -133,7 +132,6 @@ function getMDXData(dir: string) {
     metadata: Metadata;
     slug: string;
     content: string;
-    image: string | null;
   }> = [];
 
   for (const file of mdxFiles) {
@@ -141,8 +139,6 @@ function getMDXData(dir: string) {
       const filePath = path.join(dir, file);
       const { metadata, content } = readMDXFile(filePath);
       const slug = path.basename(file, path.extname(file));
-      const imageMatch = IMAGE_REGEX.exec(content);
-      const firstImage = imageMatch?.[1] ?? null;
 
       // Pre-calculate reading time at build time
       const readingTime = getReadingTime(content);
@@ -151,7 +147,6 @@ function getMDXData(dir: string) {
         metadata: { ...metadata, readingTime },
         slug,
         content,
-        image: firstImage,
       });
     } catch (error) {
       logger.error("mdx post parse failed", {

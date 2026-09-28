@@ -17,7 +17,7 @@ import { type NextRequest, NextResponse } from "next/server";
  * the cached HTML variant, or vice versa.
  *
  * The matcher keeps this away from everything that is not a page: Next
- * internals, the PostHog `/ingest` rewrites, `/api`, the `/og`, `/rss` and
+ * internals, the PostHog `/ingest` rewrites, `/api`, the `/rss` and
  * `/md` routes themselves, and any path with a dot (llms.txt, sitemap.xml,
  * cv.pdf, favicons).
  */
@@ -46,5 +46,5 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/|ingest/|api/|og$|og/|rss$|rss/|md$|md/|.*\\..*).*)"],
+  matcher: ["/((?!_next/|ingest/|api/|rss$|rss/|md$|md/|.*\\..*).*)"],
 };

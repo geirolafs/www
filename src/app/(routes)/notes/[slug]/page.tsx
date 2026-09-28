@@ -11,10 +11,14 @@ import { siteConfig } from "@/lib/config/site";
 import { notesContent } from "@/lib/content";
 import { jsonLd } from "@/lib/utils";
 
-/** The `/og` route reads the post's title, summary and image itself. */
-function buildOgImageUrl(post: ReturnType<typeof getNotesPosts>[number]): string {
-  return `${siteConfig.url}/og?${new URLSearchParams({ slug: post.slug })}`;
-}
+// Every note shares the site's pre-made card. The page's `openGraph` replaces
+// the layout's wholesale, so the image has to be restated here.
+const ogImage = {
+  url: `${siteConfig.url}${siteConfig.ogImage.path}`,
+  width: siteConfig.ogImage.width,
+  height: siteConfig.ogImage.height,
+  alt: siteConfig.ogImage.alt,
+};
 
 export function generateStaticParams() {
   const posts = getNotesPosts();
@@ -36,7 +40,6 @@ export async function generateMetadata({
   }
 
   const { title, publishedAt: publishedTime, summary: description } = post.metadata;
-  const ogImage = buildOgImageUrl(post);
 
   const postUrl = `${siteConfig.url}/notes/${post.slug}`;
 
@@ -52,19 +55,13 @@ export async function generateMetadata({
       type: "article",
       publishedTime,
       url: postUrl,
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-        },
-      ],
+      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [ogImage],
+      images: [ogImage.url],
     },
   };
 }
@@ -103,7 +100,7 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
               datePublished: post.metadata.publishedAt,
               dateModified: post.metadata.updatedAt ?? post.metadata.publishedAt,
               description: post.metadata.summary,
-              image: buildOgImageUrl(post),
+              image: ogImage.url,
               url: `${siteConfig.url}/notes/${post.slug}`,
               author: {
                 "@type": "Person",

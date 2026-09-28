@@ -25,7 +25,6 @@ type NotesPostsProps = {
  * The cover images the v1 list ran are deliberately not here. The v2
  * language for a list is a text row; the one band that carries imagery is
  * the portfolio carousel, and it earns that by being the work itself.
- * `post.image` is still used for the OG card.
  */
 export function NotesPosts({
   posts,
