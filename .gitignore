@@ -52,8 +52,7 @@ Session.vim
 # temp/dev assets
 public/temp/
 
-# claude — machine-local permission grants only. Commands, skills and
-# ultracite.md stay tracked; they are shared config.
+# claude — machine-local settings
 .claude/settings.local.json
 
 # local-only notes: planning docs, decision logs. This repo is public.
