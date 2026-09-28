@@ -22,6 +22,17 @@ import { type NextRequest, NextResponse } from "next/server";
  * cv.pdf, favicons).
  */
 export default function proxy(request: NextRequest) {
+  // A malformed escape makes Next throw while decoding route params, which
+  // surfaces as a 500. Next 16 runs a second decode over the already-decoded
+  // param, so `/notes/tag/%25E0` fails as well as `/notes/tag/%E0` — checked
+  // against 16.3. Anything that cannot survive two decodes is the client's
+  // mistake: answer 400 before Next gets to it.
+  try {
+    decodeURIComponent(decodeURIComponent(request.nextUrl.pathname));
+  } catch {
+    return new NextResponse("Bad request", { status: 400 });
+  }
+
   const accept = request.headers.get("accept") ?? "";
 
   if (accept.includes("text/markdown")) {

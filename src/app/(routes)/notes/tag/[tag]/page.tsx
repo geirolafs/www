@@ -31,25 +31,26 @@ export async function generateMetadata({
 }: {
   params: Promise<{ tag: string }>;
 }): Promise<Metadata> {
+  // Next has already percent-decoded the param; decoding again would
+  // mangle any tag containing `%`.
   const { tag } = await params;
-  const decodedTag = decodeURIComponent(tag);
 
   return {
-    title: `Posts tagged "${decodedTag}"`,
-    description: `Articles and notes about ${decodedTag}`,
+    title: `Posts tagged "${tag}"`,
+    description: `Articles and notes about ${tag}`,
     alternates: {
-      canonical: `${siteConfig.url}/notes/tag/${tag}`,
+      canonical: `${siteConfig.url}/notes/tag/${encodeURIComponent(tag)}`,
     },
   };
 }
 
 export default async function ({ params }: { params: Promise<{ tag: string }> }) {
   const { tag } = await params;
-  const decodedTag = decodeURIComponent(tag).toLowerCase();
+  const normalizedTag = tag.toLowerCase();
 
   const allPosts = sortPostsByDate(getNotesPosts());
   const filteredPosts = allPosts.filter(post =>
-    post.metadata.tags?.some(t => t.toLowerCase() === decodedTag)
+    post.metadata.tags?.some(t => t.toLowerCase() === normalizedTag)
   );
 
   if (filteredPosts.length === 0) {
@@ -73,7 +74,7 @@ export default async function ({ params }: { params: Promise<{ tag: string }> })
             </TextLink>
           </p>
           <h1 className="lg:cap-trim mt-md text-balance font-regular text-display text-foreground">
-            #{decodedTag}
+            #{normalizedTag}
           </h1>
           <p className="lg:cap-trim text-balance font-regular text-display text-muted lg:mt-md">
             {filteredPosts.length}{" "}

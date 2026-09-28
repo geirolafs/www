@@ -9,14 +9,11 @@ import { SectionWrapper } from "@/components/home/section-wrapper";
 import { getNotesPosts, sortPostsByDate } from "@/lib/blog";
 import { siteConfig } from "@/lib/config/site";
 import { notesContent } from "@/lib/content";
+import { jsonLd } from "@/lib/utils";
 
-/** Build OG image URL with title overlay and optional background image */
+/** The `/og` route reads the post's title, summary and image itself. */
 function buildOgImageUrl(post: ReturnType<typeof getNotesPosts>[number]): string {
-  const { title, summary } = post.metadata;
-  const params = new URLSearchParams({ title });
-  if (summary) params.set("description", summary);
-  if (post.image) params.set("image", post.image);
-  return `${siteConfig.url}/og?${params.toString()}`;
+  return `${siteConfig.url}/og?${new URLSearchParams({ slug: post.slug })}`;
 }
 
 export function generateStaticParams() {
@@ -98,7 +95,7 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
       <script
         // biome-ignore lint/security/noDangerouslySetInnerHtml: Recommended way to add JSON-LD schema
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+          __html: jsonLd([
             {
               "@context": "https://schema.org",
               "@type": "BlogPosting",

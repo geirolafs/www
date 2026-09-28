@@ -60,7 +60,8 @@ export async function GET(
   }
 
   if (path.length === 3 && path[0] === "notes" && path[1] === "tag") {
-    const tagIndex = tagIndexMarkdown(decodeURIComponent(path[2]));
+    // Next has already percent-decoded the segments.
+    const tagIndex = tagIndexMarkdown(path[2]);
     if (tagIndex) {
       return markdownResponse(tagIndex);
     }

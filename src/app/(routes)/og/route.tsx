@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { getNotesPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/config/site";
 import { tokens } from "@/lib/design-tokens";
 import { logger } from "@/lib/logger";
@@ -20,16 +21,25 @@ import {
  *   uvx --from fonttools --with brotli python -c "..."  (see .private/REDESIGN.md)
  */
 export async function GET(request: Request) {
-  const url = new URL(request.url);
+  // Cards are keyed by slug and filled from the post's own frontmatter, never
+  // from the query string — otherwise anyone could render arbitrary text
+  // under the site's name. No slug is the plain site card; an unknown slug is
+  // a cheap 404 rather than a render.
+  const slug = new URL(request.url).searchParams.get("slug");
+  const post = slug ? getNotesPosts().find(candidate => candidate.slug === slug) : null;
+  if (slug && !post) {
+    return new Response("Not found", { status: 404 });
+  }
+
   const title = truncateOgText(
-    url.searchParams.get("title") || siteConfig.name,
+    post?.metadata.title || siteConfig.name,
     OG_TITLE_MAX_CHARS
   );
   const description = truncateOgText(
-    url.searchParams.get("description") || "",
+    post?.metadata.summary || "",
     OG_DESCRIPTION_MAX_CHARS
   );
-  const imageParam = url.searchParams.get("image");
+  const imageParam = post?.image;
 
   // Parallelize image fetch and font read (both are independent)
   const [image, fontData] = await Promise.all([

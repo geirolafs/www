@@ -8,6 +8,7 @@ import dynamic from "next/dynamic";
 import Script from "next/script";
 import { Providers } from "@/components/providers/providers";
 import { siteConfig } from "@/lib/config/site";
+import { jsonLd } from "@/lib/utils";
 import { SameUnivers } from "./styles/fonts";
 
 const { name, url, title, description, socialDescription, ogImage } = siteConfig;
@@ -180,7 +181,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD schema requires dangerouslySetInnerHTML
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
+            __html: jsonLd([
               {
                 "@context": "https://schema.org",
                 "@type": "Person",

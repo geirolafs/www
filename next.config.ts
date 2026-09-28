@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
   // Enable Cache Components for explicit caching control
   cacheComponents: true,
 
+  // No `X-Powered-By: Next.js` — it tells a scanner what to probe for.
+  poweredByHeader: false,
+
   // Dev only. A phone on the LAN loads the dev server by the Mac's address,
   // and Next refuses the HMR socket from any origin not listed here — which
   // leaves the client bundle waiting on it and the page never hydrates: no
