@@ -2,8 +2,8 @@ Run Biome formatter and auto-fix across entire codebase.
 
 # Process
 
-1. Run `bun run format` across all workspaces to format code
-2. Run `bun run lint` with auto-fix flags to resolve fixable issues
+1. Run `bun run format` to format code
+2. Run `bun run lint:fix` to resolve fixable issues
 3. Show summary of changes made
 4. Report any remaining issues that require manual intervention
 5. Display files that were modified

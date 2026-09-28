@@ -2,13 +2,11 @@ Clean all caches, reinstall dependencies, and rebuild everything from scratch.
 
 # Process
 
-1. Remove node_modules directories from all workspaces
-2. Remove .next build directories
-3. Clear Bun cache with `bun pm cache rm`
-4. Clear Turbo cache
-5. Reinstall all dependencies with `bun install`
-6. Run full build with `bun run build`
-7. Report completion status
+1. Remove `node_modules` and `.next`
+2. Clear Bun cache with `bun pm cache rm`
+3. Reinstall all dependencies with `bun install`
+4. Run full build with `bun run build`
+5. Report completion status
 
 # Output
 
