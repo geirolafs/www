@@ -58,6 +58,7 @@ public/temp/
 # local-only notes: planning docs, decision logs. This repo is public.
 .private/
 
-# third-party agent skills — reinstall from skills-lock.json, don't redistribute
+# third-party agent skills and their lock — local only, don't redistribute
 .agents/
 .claude/skills/
+skills-lock.json

@@ -31,11 +31,9 @@
     "motion": "^13.4.4",
     "next": "^16.3.6",
     "next-mdx-remote": "^6.0.0",
-    "postcss": "^8.5.28",
     "posthog-js": "^1.434.17",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "sharp": "^0.35.5",
     "sugar-high": "^2.5.0",
     "tailwind-merge": "^3.7.0",
     "tailwindcss": "^4.3.3"
@@ -47,18 +45,9 @@
     "@types/node": "^26.6.3",
     "@types/react-dom": "^19.3.0",
     "baseline-browser-mapping": "^2.11.26",
-    "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
-    "react-grab": "^0.2.0",
+    "sharp": "^0.35.5",
     "typescript": "^7.0.2",
     "ultracite": "^7.12.1"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
-      "bun x ultracite format"
-    ]
-  },
-  "trustedDependencies": [
-    "react-grab"
-  ]
+  }
 }
