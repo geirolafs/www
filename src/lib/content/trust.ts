@@ -10,7 +10,7 @@ import { siteConfig } from "@/lib/config/site";
  * copy is written here rather than derived.
  */
 
-export interface TrustLink {
+interface TrustLink {
   label: string;
   href: string;
   external?: boolean;

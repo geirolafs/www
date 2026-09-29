@@ -18,7 +18,7 @@ import { siteConfig } from "@/lib/config/site";
  * fallback shown until the visitor's own zone is known, and to the visitors who
  * share it; everyone else gets their own time and the gap. See `VisitorTime`.
  */
-export interface HeaderBarContent {
+interface HeaderBarContent {
   location: string;
   timezone: string;
 }
@@ -41,7 +41,7 @@ export const headerBarContent: HeaderBarContent = {
  * way — someone enquires about a month that is fuller than the line implies,
  * and that is a reply, not a lost enquiry.
  */
-export interface AvailabilityContent {
+interface AvailabilityContent {
   lead: string;
   email: string;
 }
@@ -53,7 +53,7 @@ export const availabilityContent: AvailabilityContent = {
 
 // ---- Name + role -----------------------------------------------------------
 
-export interface HeroContent {
+interface HeroContent {
   name: string;
   role: string;
 }
@@ -65,7 +65,7 @@ export const heroContent: HeroContent = {
 
 // ---- Introduction -----------------------------------------------------------
 
-export interface IntroductionContent {
+interface IntroductionContent {
   paragraphs: readonly string[];
 }
 
@@ -83,12 +83,12 @@ export const introductionContent: IntroductionContent = {
  * decorative `▸` glyph and is hidden from assistive tech; `accessible` is the
  * plain-text equivalent read out instead.
  */
-export interface YearRange {
+interface YearRange {
   display: string;
   accessible: string;
 }
 
-export type DescriptionSegment =
+type DescriptionSegment =
   | { kind: "text"; value: string }
   | { kind: "link"; label: string; href: string; external?: boolean };
 
@@ -103,7 +103,7 @@ export interface Entry {
 
 // ---- Selected work -----------------------------------------------------------
 
-export interface WorkSectionContent {
+interface WorkSectionContent {
   label: string;
   entries: readonly Entry[];
 }
@@ -202,7 +202,7 @@ export const selectedWorkContent: WorkSectionContent = {
  * the argument about how he works, the footer one is a credit, and they are
  * 500px apart with different readers.
  */
-export interface HowIWorkContent {
+interface HowIWorkContent {
   label: string;
   paragraphs: readonly string[];
 }
@@ -322,7 +322,7 @@ export interface ContactLink {
   hidden?: boolean;
 }
 
-export interface ContactFooterContent {
+interface ContactFooterContent {
   name: string;
   copyright: string;
   colophon: string;

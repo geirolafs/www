@@ -22,7 +22,7 @@ import { VIDEO_EXTENSION } from "@/lib/utils/video-extension";
  * are served as-is. Their posters are local files, so those are optimized.
  */
 
-export type PortfolioMediaKind = "image" | "video";
+type PortfolioMediaKind = "image" | "video";
 
 export interface PortfolioMedia {
   /** The UploadThing key. Unique per file, and stable across re-exports. */
