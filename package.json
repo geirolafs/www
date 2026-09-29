@@ -1,5 +1,5 @@
 {
-  "name": "portfolio-website",
+  "name": "go-www",
   "private": true,
   "packageManager": "bun@1.2.21",
   "scripts": {
