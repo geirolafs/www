@@ -101,4 +101,18 @@ describe("cn", () => {
       ).toEqual([]);
     }
   });
+
+  test("THEME_SCALES lists nothing that globals.css no longer declares", () => {
+    const inCss = themeKeysFromCss();
+
+    for (const [namespace, names] of Object.entries(THEME_SCALES)) {
+      const stale = names.filter(n => !inCss[namespace]?.includes(n));
+
+      expect(
+        stale,
+        `THEME_SCALES in cn.ts lists ${namespace}: ${stale.join(", ")}, which ` +
+          "globals.css no longer declares. Remove it."
+      ).toEqual([]);
+    }
+  });
 });

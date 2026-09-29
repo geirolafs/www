@@ -1,13 +1,8 @@
 /* ==========================================================================
    TYPOGRAPHY — code blocks only
 
-   The v1 prose system (`.same-size-typography*`, `.prose-blog`) lived here and
-   was removed in Phase 1. Nothing referenced either class after the Phase 0
-   strip, and both were driven by the `--typography-*` tokens that the token
-   rewrite replaced. Prose now lives in `globals.css` under the `article`
-   rules, built on the `@theme` type scale rather than a vendored system.
-
-   What is left is used by `components/blog/code-block.tsx`.
+   Chrome for `components/blog/code-block.tsx` and sugar-high's colours. Prose
+   lives in `globals.css` under the `article` rules.
    ========================================================================== */
 
 .code-block-wrapper {
@@ -36,12 +31,6 @@
   background: linear-gradient(to right, var(--color-background), transparent);
   transition: opacity 0.15s ease-out;
   z-index: 1;
-}
-
-/* Blog list perf rule — keeps long lists cheap to render. */
-.blog-post-item {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 320px;
 }
 
 /* ==========================================================================

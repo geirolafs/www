@@ -25,7 +25,6 @@ export const THEME_SCALES = {
   leading: ["prose"],
   spacing: [
     "site",
-    "gutter",
     "stripe",
     "row",
     "footerrow",
