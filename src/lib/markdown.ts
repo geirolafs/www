@@ -81,6 +81,12 @@ export function homeMarkdown(): string {
   ].join("\n");
 }
 
+type Post = ReturnType<typeof getNotesPosts>[number];
+
+function postListLine(post: Post): string {
+  return `- [${post.metadata.title}](/notes/${post.slug}) — ${post.metadata.publishedAt}. ${post.metadata.summary}`;
+}
+
 export function notesIndexMarkdown(): string {
   const posts = getNotesPosts();
   return [
@@ -88,10 +94,7 @@ export function notesIndexMarkdown(): string {
     "",
     `Writing by ${siteConfig.name} on design, typography and frontend engineering.`,
     "",
-    ...posts.map(
-      post =>
-        `- [${post.metadata.title}](/notes/${post.slug}) — ${post.metadata.publishedAt}. ${post.metadata.summary}`
-    ),
+    ...posts.map(postListLine),
     "",
   ].join("\n");
 }
@@ -126,10 +129,7 @@ export function tagIndexMarkdown(tag: string): string | null {
   return [
     `# Notes tagged “${normalized}”`,
     "",
-    ...posts.map(
-      post =>
-        `- [${post.metadata.title}](/notes/${post.slug}) — ${post.metadata.publishedAt}. ${post.metadata.summary}`
-    ),
+    ...posts.map(postListLine),
     "",
     "All writing: [/notes](/notes)",
     "",

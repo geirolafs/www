@@ -6,23 +6,26 @@ import {
   awardsContent,
   type ExperienceSectionContent,
   experienceContent,
+  selectedWorkContent,
 } from "@/lib/content/home";
 
 /**
- * Awards and Work share a rhythm: 72 between mobile groups, 48 on desktop.
- * SelectedWork stays separate because its longer summaries need more space.
+ * Awards and Experience share a rhythm: 72 between mobile groups, 48 on
+ * desktop. Selected Work's longer summaries get the roomier `gap-project`.
  */
 function EntrySection({
   id,
   content,
+  listClassName = "gap-group lg:gap-y-xl",
 }: {
   id: string;
-  content: AwardsSectionContent | ExperienceSectionContent;
+  content: AwardsSectionContent | ExperienceSectionContent | typeof selectedWorkContent;
+  listClassName?: string;
 }) {
   return (
     <SectionWrapper id={id} label={content.label} reveal="items">
       <ul
-        className="flex flex-col gap-group lg:col-span-8 lg:grid lg:grid-cols-subgrid lg:gap-x-md lg:gap-y-xl"
+        className={`flex flex-col lg:col-span-8 lg:grid lg:grid-cols-subgrid lg:gap-x-md ${listClassName}`}
         style={{ "--entry-year-gap": "var(--spacing-xs)" } as CSSProperties}
       >
         {content.entries.map((entry, index) => (
@@ -30,6 +33,16 @@ function EntrySection({
         ))}
       </ul>
     </SectionWrapper>
+  );
+}
+
+export function SelectedWork() {
+  return (
+    <EntrySection
+      content={selectedWorkContent}
+      id="selected-work-heading"
+      listClassName="gap-project"
+    />
   );
 }
 

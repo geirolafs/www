@@ -31,6 +31,7 @@ import { write } from "bun";
 import sharp from "sharp";
 import portfolioAssets from "../src/data/random-portfolio.json";
 import { VIDEO_EXTENSION } from "../src/lib/utils/video-extension";
+import { grabVideoFrame, mapWithConcurrency } from "./lib";
 
 const POSTER_DIR = new URL("../public/portfolio-posters/", import.meta.url);
 const MANIFEST_PATH = new URL("../src/data/portfolio-posters.json", import.meta.url);
@@ -59,43 +60,13 @@ function posterFileName(key: string): string {
   return `${key}.webp`;
 }
 
-/**
- * Decodes exactly the first frame of a remote video. No `-ss`: the point is
- * frame zero, not a frame near it, and input seeking to `0` is a no-op that
- * only adds a code path.
- */
+/** Exactly frame zero: no seek, so no near-miss frame. */
 async function extractFirstFrame(url: string): Promise<Buffer> {
-  const proc = Bun.spawn(
-    [
-      "ffmpeg",
-      "-y",
-      "-loglevel",
-      "error",
-      "-i",
-      url,
-      "-frames:v",
-      "1",
-      "-an",
-      "-f",
-      "image2pipe",
-      "-vcodec",
-      "png",
-      "pipe:1",
-    ],
-    { stdin: "ignore", stdout: "pipe", stderr: "pipe" }
-  );
-
-  const [stdout, stderr, exitCode] = await Promise.all([
-    new Response(proc.stdout).arrayBuffer(),
-    new Response(proc.stderr).text(),
-    proc.exited,
-  ]);
-
-  const buffer = Buffer.from(stdout);
-  if (exitCode !== 0 || buffer.length === 0) {
-    throw new Error(stderr.trim() || `ffmpeg exited with code ${exitCode}`);
+  const frame = await grabVideoFrame(url);
+  if (!frame.ok) {
+    throw new Error(frame.stderr);
   }
-  return buffer;
+  return frame.buffer;
 }
 
 async function generatePoster(entry: ManifestEntry): Promise<void> {
@@ -105,21 +76,6 @@ async function generatePoster(entry: ManifestEntry): Promise<void> {
     .webp({ quality: POSTER_WEBP_QUALITY })
     .toBuffer();
   await write(new URL(posterFileName(entry.key), POSTER_DIR), encoded);
-}
-
-/** Same plain chunked loop as the blur script; the list is 11 items. */
-async function mapWithConcurrency<T, R>(
-  items: readonly T[],
-  concurrency: number,
-  task: (item: T) => Promise<R>
-): Promise<R[]> {
-  const results: R[] = [];
-  for (let start = 0; start < items.length; start += concurrency) {
-    const chunk = items.slice(start, start + concurrency);
-    const chunkResults = await Promise.all(chunk.map(task));
-    results.push(...chunkResults);
-  }
-  return results;
 }
 
 async function listExistingPosters(): Promise<Set<string>> {

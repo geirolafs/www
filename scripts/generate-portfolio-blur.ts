@@ -31,6 +31,7 @@ import { write } from "bun";
 import sharp from "sharp";
 import portfolioAssets from "../src/data/random-portfolio.json";
 import { VIDEO_EXTENSION } from "../src/lib/utils/video-extension";
+import { grabVideoFrame, mapWithConcurrency } from "./lib";
 
 const OUTPUT_PATH = new URL("../src/data/portfolio-blur.json", import.meta.url);
 
@@ -86,50 +87,6 @@ async function generateImageBlurDataUrl(entry: ManifestEntry): Promise<string> {
   return toBlurDataUrl(Buffer.from(arrayBuffer));
 }
 
-type FfmpegResult = { ok: true; buffer: Buffer } | { ok: false; stderr: string };
-
-/**
- * Grabs a single decoded frame from a remote video URL without downloading
- * the whole file — ffmpeg reads the URL directly over HTTP range requests.
- * `-ss` is placed before `-i` (input seeking), which is the fast path: it
- * seeks the container before decoding rather than decoding from the start.
- */
-async function runFfmpeg(url: string, seekSeconds: number): Promise<FfmpegResult> {
-  const proc = Bun.spawn(
-    [
-      "ffmpeg",
-      "-y",
-      "-loglevel",
-      "error",
-      "-ss",
-      String(seekSeconds),
-      "-i",
-      url,
-      "-frames:v",
-      "1",
-      "-an",
-      "-f",
-      "image2pipe",
-      "-vcodec",
-      "png",
-      "pipe:1",
-    ],
-    { stdin: "ignore", stdout: "pipe", stderr: "pipe" }
-  );
-
-  const [stdout, stderr, exitCode] = await Promise.all([
-    new Response(proc.stdout).arrayBuffer(),
-    new Response(proc.stderr).text(),
-    proc.exited,
-  ]);
-
-  const buffer = Buffer.from(stdout);
-  if (exitCode !== 0 || buffer.length === 0) {
-    return { ok: false, stderr: stderr.trim() || `ffmpeg exited with code ${exitCode}` };
-  }
-  return { ok: true, buffer };
-}
-
 async function extractVideoFrame(url: string): Promise<Buffer> {
   // Seek to 0.5s rather than 0. Several of these clips fade in from black,
   // and a frame grabbed at t=0 would encode as a solid black placeholder —
@@ -138,11 +95,11 @@ async function extractVideoFrame(url: string): Promise<Buffer> {
   // shorter than 0.5s, or a seek offset its container does not support),
   // retry once at t=0 before giving up — a possibly-black frame still beats
   // a hard failure.
-  const primary = await runFfmpeg(url, 0.5);
+  const primary = await grabVideoFrame(url, 0.5);
   if (primary.ok) {
     return primary.buffer;
   }
-  const fallback = await runFfmpeg(url, 0);
+  const fallback = await grabVideoFrame(url, 0);
   if (fallback.ok) {
     return fallback.buffer;
   }
@@ -154,26 +111,6 @@ async function extractVideoFrame(url: string): Promise<Buffer> {
 async function generateVideoBlurDataUrl(entry: ManifestEntry): Promise<string> {
   const frame = await extractVideoFrame(entry.url);
   return toBlurDataUrl(frame);
-}
-
-/**
- * Runs `task` over `items` with at most `concurrency` in flight at once. A
- * plain chunked loop rather than a queue library — the list is 41 items at
- * most, so the extra dependency and complexity of a proper task queue is not
- * worth it here.
- */
-async function mapWithConcurrency<T, R>(
-  items: readonly T[],
-  concurrency: number,
-  task: (item: T) => Promise<R>
-): Promise<R[]> {
-  const results: R[] = [];
-  for (let start = 0; start < items.length; start += concurrency) {
-    const chunk = items.slice(start, start + concurrency);
-    const chunkResults = await Promise.all(chunk.map(task));
-    results.push(...chunkResults);
-  }
-  return results;
 }
 
 async function main() {

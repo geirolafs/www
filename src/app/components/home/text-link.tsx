@@ -62,23 +62,16 @@ export function TextLink({
     </>
   );
 
-  if (external) {
+  // Next's <Link> is for in-site navigation; external and mailto: stay <a>.
+  if (external || href.startsWith("mailto:")) {
     return (
       <a
         className={cn(UNDERLINE_CLASSES, className)}
         href={href}
         onClick={onClick}
-        rel="noopener noreferrer"
-        target="_blank"
+        rel={external ? "noopener noreferrer" : undefined}
+        target={external ? "_blank" : undefined}
       >
-        {content}
-      </a>
-    );
-  }
-
-  if (href.startsWith("mailto:")) {
-    return (
-      <a className={cn(UNDERLINE_CLASSES, className)} href={href} onClick={onClick}>
         {content}
       </a>
     );

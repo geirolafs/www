@@ -1,6 +1,6 @@
 export { Availability } from "./availability";
 export { ContactFooter } from "./contact-footer";
-export { Awards, Experience } from "./entry-section";
+export { Awards, Experience, SelectedWork } from "./entry-section";
 export { HeaderBar } from "./header-bar";
 export { HowIWork } from "./how-i-work";
 export { Introduction } from "./introduction";
@@ -9,5 +9,4 @@ export { NameRole } from "./name-role";
 export { PortfolioCarousel } from "./portfolio-carousel";
 export { RevealObserver } from "./reveal-observer";
 export { ScatterText } from "./scatter-text";
-export { SelectedWork } from "./selected-work";
 export { Stripe } from "./stripe";
