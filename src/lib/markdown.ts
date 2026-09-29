@@ -1,5 +1,5 @@
 import { formatNextMonth } from "@/lib/availability";
-import { getNotesPosts, sortPostsByDate } from "@/lib/blog";
+import { getNotesPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/config/site";
 import { agent404Content, llmsContent } from "@/lib/content/agents";
 import {
@@ -46,7 +46,7 @@ function entryToMarkdown(entry: Entry): string {
 }
 
 export function homeMarkdown(): string {
-  const posts = sortPostsByDate(getNotesPosts());
+  const posts = getNotesPosts();
   const contactLinks = contactFooterContent.links
     .filter(link => !link.hidden)
     .map(link => `- [${link.label}](${link.href})`);
@@ -82,7 +82,7 @@ export function homeMarkdown(): string {
 }
 
 export function notesIndexMarkdown(): string {
-  const posts = sortPostsByDate(getNotesPosts());
+  const posts = getNotesPosts();
   return [
     "# Notes",
     "",
@@ -117,7 +117,7 @@ export function notePostMarkdown(slug: string): string | null {
 
 export function tagIndexMarkdown(tag: string): string | null {
   const normalized = tag.toLowerCase();
-  const posts = sortPostsByDate(getNotesPosts()).filter(post =>
+  const posts = getNotesPosts().filter(post =>
     (post.metadata.tags ?? []).some(candidate => candidate.toLowerCase() === normalized)
   );
   if (posts.length === 0) {
@@ -157,7 +157,7 @@ export function trustPageMarkdown(content: TrustPageContent): string {
 }
 
 export function llmsTxtMarkdown(): string {
-  const posts = sortPostsByDate(getNotesPosts());
+  const posts = getNotesPosts();
   return [
     llmsContent.heading,
     "",

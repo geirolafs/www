@@ -1,25 +1,16 @@
-import { getNotesPosts, sortPostsByDate } from "@/lib/blog";
+import { getNotesPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/config/site";
-import { logger } from "@/lib/logger";
 
-// XML escape function to prevent XML injection
+const XML_ENTITIES: Record<string, string> = {
+  "<": "&lt;",
+  ">": "&gt;",
+  "&": "&amp;",
+  "'": "&apos;",
+  '"': "&quot;",
+};
+
 function escapeXml(unsafe: string): string {
-  return unsafe.replace(/[<>&'"]/g, c => {
-    switch (c) {
-      case "<":
-        return "&lt;";
-      case ">":
-        return "&gt;";
-      case "&":
-        return "&amp;";
-      case "'":
-        return "&apos;";
-      case '"':
-        return "&quot;";
-      default:
-        return c;
-    }
-  });
+  return unsafe.replace(/[<>&'"]/g, c => XML_ENTITIES[c]);
 }
 
 // Extract first paragraph from MDX content for RSS preview
@@ -49,15 +40,7 @@ function getContentPreview(content: string): string {
 }
 
 export async function GET() {
-  let allBlogs: ReturnType<typeof getNotesPosts> = [];
-  try {
-    allBlogs = sortPostsByDate(getNotesPosts());
-  } catch (error) {
-    logger.warn("rss posts load failed", {
-      route: "/rss",
-      error: error instanceof Error ? error.message : String(error),
-    });
-  }
+  const allBlogs = getNotesPosts();
 
   const itemsXml = allBlogs
     .map(post => {
@@ -83,9 +66,9 @@ export async function GET() {
   const rssFeed = `<?xml version="1.0" encoding="UTF-8" ?>
   <rss version="2.0">
     <channel>
-        <title>${siteConfig.name} - Blog</title>
+        <title>${escapeXml(siteConfig.name)} - Blog</title>
         <link>${siteConfig.url}</link>
-        <description>${siteConfig.description}</description>
+        <description>${escapeXml(siteConfig.description)}</description>
         <language>en-us</language>
         <lastBuildDate>${lastBuildDate}</lastBuildDate>
         <generator>Next.js</generator>

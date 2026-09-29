@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { NoteRow } from "@/components/blog/note-row";
 import { SectionWrapper } from "@/components/home/section-wrapper";
-import { getNotesPosts, sortPostsByDate } from "@/lib/blog";
+import { getNotesPosts } from "@/lib/blog";
 import { notesContent } from "@/lib/content";
 
 type NotesPostsProps = {
@@ -32,7 +32,7 @@ export function NotesPosts({
   id = "notes-heading",
   gapVariant,
 }: NotesPostsProps) {
-  const allBlogs = posts ?? sortPostsByDate(getNotesPosts());
+  const allBlogs = posts ?? getNotesPosts();
 
   if (allBlogs.length === 0) {
     return (

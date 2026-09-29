@@ -4,7 +4,7 @@ import { ContactFooter, HeaderBar, RevealObserver, Stripe } from "@/app/componen
 import { NotesPosts } from "@/components/blog/posts";
 import { SectionWrapper } from "@/components/home/section-wrapper";
 import { TextLink } from "@/components/home/text-link";
-import { getNotesPosts, sortPostsByDate } from "@/lib/blog";
+import { getNotesPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/config/site";
 import { notesContent } from "@/lib/content";
 
@@ -48,7 +48,7 @@ export default async function ({ params }: { params: Promise<{ tag: string }> })
   const { tag } = await params;
   const normalizedTag = tag.toLowerCase();
 
-  const allPosts = sortPostsByDate(getNotesPosts());
+  const allPosts = getNotesPosts();
   const filteredPosts = allPosts.filter(post =>
     post.metadata.tags?.some(t => t.toLowerCase() === normalizedTag)
   );

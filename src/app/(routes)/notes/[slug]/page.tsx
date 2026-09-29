@@ -6,7 +6,7 @@ import { PostViewTracker } from "@/components/blog/post-view-tracker";
 import { NotesPosts } from "@/components/blog/posts";
 import { RelativeDate } from "@/components/blog/relative-date";
 import { SectionWrapper } from "@/components/home/section-wrapper";
-import { getNotesPosts, sortPostsByDate } from "@/lib/blog";
+import { getNotesPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/config/site";
 import { notesContent } from "@/lib/content";
 import { jsonLd } from "@/lib/utils";
@@ -68,7 +68,7 @@ export async function generateMetadata({
 
 export default async function ({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const allPosts = sortPostsByDate(getNotesPosts());
+  const allPosts = getNotesPosts();
   const post = allPosts.find(blogPost => blogPost.slug === slug);
   const readingTime = post?.metadata.readingTime ?? 0;
   const hasUpdate =
