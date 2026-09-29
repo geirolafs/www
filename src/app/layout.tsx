@@ -6,7 +6,6 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import type { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import { Providers } from "@/components/providers/providers";
 import { siteConfig } from "@/lib/config/site";
 import { jsonLd } from "@/lib/utils";
 import { SameUnivers } from "./styles/fonts";
@@ -208,11 +207,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]),
           }}
         />
-        <Providers>
-          <main className="flex flex-auto flex-col">{children}</main>
-          <Analytics />
-          <SpeedInsights />
-        </Providers>
+        <main className="flex flex-auto flex-col">{children}</main>
+        <Analytics />
+        <SpeedInsights />
         {/* shift+G, as in Figma. In production this is the `() => null` stub
             defined above, not a dropped element — see the note there. */}
         <GridOverlay />
