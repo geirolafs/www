@@ -75,6 +75,7 @@ export const privacyContent: TrustPageContent = {
   paragraphs: [
     "There are no advertising trackers here, no third-party ad networks, and nothing is sold or shared for marketing. What the site does collect exists so I can see whether it works and fix it when it breaks.",
     "Analytics run on PostHog, hosted in the European Union and served through this site’s own domain. They record pageviews, approximate location derived from your IP address, browser and device type, anonymous usage events, and client-side errors. PostHog stores a small identifier in your browser to tell returning sessions apart. This data describes sessions, not people — I don’t know who you are and don’t try to find out.",
+    "Vercel Web Analytics and Speed Insights also count page views and measure how fast pages load. They set no cookies and don’t identify you; visits are counted with a hash of the request that is discarded daily.",
     "The site is hosted on Vercel, whose infrastructure keeps standard server logs — IP address, user agent, requested URL — for operational purposes.",
     `If you email me, the correspondence stays between us and is kept only as long as it’s relevant. Questions about any of this, including asking for data connected to you to be deleted, go to ${siteConfig.email}.`,
   ],
