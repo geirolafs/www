@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import { ContactFooter, HeaderBar, RevealObserver, Stripe } from "@/app/components/home";
 import { SectionWrapper } from "@/app/components/home/section-wrapper";
-import { TextLink } from "@/app/components/home/text-link";
+import { ExperimentReel } from "@/app/components/localhost/experiment-reel";
 import { localhostContent } from "@/lib/content/localhost";
 
 export const metadata: Metadata = {
@@ -14,17 +13,16 @@ export const metadata: Metadata = {
 };
 
 /**
- * Unlisted index of experiments, on the notes index's shell: header bar, a
- * hero pair on columns 6–12, then the stripe wrapper holding the list and the
- * footer. Each row is `NoteRow`'s anatomy — a label-sized column on 4–5, the
- * details on 6–11 — with the experiment's number where a note has its date.
+ * Unlisted index of experiments: the notes index's header bar and hero pair,
+ * then a full-bleed pinned reel of the experiments (see `ExperimentReel`),
+ * then the stripe and footer.
  *
  * Not linked from the footer, home page, or any nav — `robots: { index: false,
  * follow: false }` above keeps it out of search, and it is deliberately absent
  * from `sitemap.ts`.
  */
 export default function Page() {
-  const { hero, listHeading, experiments } = localhostContent;
+  const { hero } = localhostContent;
 
   return (
     <>
@@ -40,39 +38,11 @@ export default function Page() {
           </p>
         </div>
       </SectionWrapper>
-      <div className="relative mt-section">
+      <div className="mt-section">
+        <ExperimentReel />
+      </div>
+      <div className="relative">
         <Stripe />
-        <SectionWrapper
-          gapVariant="none"
-          id="experiments-heading"
-          label={listHeading}
-          reveal="items"
-        >
-          <ul className="flex flex-col gap-md lg:col-span-8 lg:grid lg:grid-cols-subgrid lg:gap-y-md">
-            {experiments.map((experiment, index) => (
-              <li
-                className="grid grid-cols-1 gap-sm lg:col-span-8 lg:grid lg:grid-cols-subgrid lg:items-baseline lg:gap-x-md lg:gap-y-0"
-                data-reveal-item
-                key={experiment.href}
-                style={{ "--index": index + 1 } as CSSProperties}
-              >
-                <p className="min-h-[var(--year-box)] font-regular text-foreground text-label tabular-nums lg:col-span-2 lg:min-h-0">
-                  {String(index + 1).padStart(2, "0")}
-                </p>
-                <div className="flex flex-col lg:col-span-6">
-                  <p className="text-balance font-medium text-body text-foreground lg:min-h-row">
-                    <TextLink external={experiment.external} href={experiment.href}>
-                      {experiment.title}
-                    </TextLink>
-                  </p>
-                  <p className="mt-sm text-pretty font-book text-body text-muted lg:mt-0">
-                    {experiment.description}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </SectionWrapper>
         <ContactFooter />
       </div>
     </>

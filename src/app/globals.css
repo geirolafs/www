@@ -33,7 +33,7 @@
 
 @theme {
   /* ---- Colour ---------------------------------------------------------- */
-  /* Seven values here and the stripe gradient in `:root`. That is the whole
+  /* Eight values here and the stripe gradient in `:root`. That is the whole
      palette. */
 
   --color-background: #fff;
@@ -43,6 +43,7 @@
   --color-border-strong: #8c8c8c; /* 3.36:1 — the section-label pill outline */
   --color-surface-footer: #d8d8d8; /* foreground on it is 13.3:1 */
   --color-selection: #ffe577; /* the stripe's last stop; foreground 14.9:1, muted 3.62:1 */
+  --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
 
   /* ---- Font ------------------------------------------------------------ */
 
@@ -793,5 +794,47 @@ article a:active {
      honest reduced state is the state change with no movement. */
   [data-stripe-reveal] {
     transition: none;
+  }
+}
+
+/* ==========================================================================
+   /localhost reel — the frame growing in and out
+   ========================================================================== */
+
+/* Inset to full bleed as the reel scrolls in, and back as it leaves. */
+@keyframes reel-frame-in {
+  from {
+    clip-path: inset(0 var(--reel-inset));
+  }
+  to {
+    clip-path: inset(0 0);
+  }
+}
+
+@keyframes reel-frame-out {
+  from {
+    clip-path: inset(0 0);
+  }
+  to {
+    clip-path: inset(0 var(--reel-inset));
+  }
+}
+
+/* `--reel-inset` is set on the element. */
+.reel {
+  view-timeline-name: --reel;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reel-media {
+      animation:
+        reel-frame-in linear both,
+        reel-frame-out linear both;
+      animation-timeline: --reel, --reel;
+      animation-range:
+        entry 0% entry 100%,
+        exit 0% exit 100%;
+    }
   }
 }
