@@ -1,4 +1,3 @@
-import { startMcpServer } from "@react-grab/mcp/server";
 import type { NextConfig } from "next";
 import {
   IMAGE_CACHE_TTL,
@@ -8,10 +7,13 @@ import {
 } from "./src/lib/config/image";
 
 if (process.env.NODE_ENV === "development") {
-  // Dev-only tooling — surface failures but never block `next dev`
-  startMcpServer().catch((error: unknown) => {
-    console.warn("[react-grab] MCP server failed to start:", error);
-  });
+  // Dev-only tooling, imported lazily so a production install without
+  // devDependencies can still load this config. Never blocks `next dev`.
+  import("@react-grab/mcp/server")
+    .then(({ startMcpServer }) => startMcpServer())
+    .catch((error: unknown) => {
+      console.warn("[react-grab] MCP server failed to start:", error);
+    });
 }
 
 const nextConfig: NextConfig = {
@@ -63,12 +65,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
-  // Disable source maps in production for smaller builds
-  productionBrowserSourceMaps: false,
-
-  // Optimize output structure
-  output: "standalone",
 
   // Additional performance optimizations
   compiler: {

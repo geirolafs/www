@@ -159,11 +159,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {process.env.NODE_ENV === "development" && (
           <>
-            {/* Pinned to match the versions in bun.lock — the browser client
-                and the local MCP server speak a private protocol over
-                /context, so they must not drift apart. Bump both together. */}
+            {/* Pinned to the react-grab that @react-grab/mcp@0.1.37 depends on
+                in bun.lock — the browser client and the local MCP server speak
+                a private protocol, so they must not drift apart. Bump all
+                three together. */}
             <Script
-              src="//unpkg.com/react-grab@0.1.50/dist/index.global.js"
+              src="//unpkg.com/react-grab@0.1.37/dist/index.global.js"
               data-options='{"theme":{"toolbar":{"enabled":false}}}'
               crossOrigin="anonymous"
               strategy="beforeInteractive"
