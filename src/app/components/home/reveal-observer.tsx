@@ -4,15 +4,13 @@ import { animate } from "motion";
 import { useEffect } from "react";
 import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
 
-// Reproduces the CSS stagger this replaced: --stagger-step was 70ms per row.
+// 70ms between rows.
 const STAGGER_STEP_SECONDS = 0.07;
 
 // How long a visitor who never scrolls waits before a section that was
-// already in view at load reveals anyway. 5s is deliberately generous —
-// essentially every visitor scrolls well inside it, so this failsafe stays
-// invisible in normal use and only fires for someone who parks on the page
-// without touching it. See the "idle failsafe" note on the scroll gate below
-// for why leaving such a section hidden forever is not an option.
+// already in view at load reveals anyway. Generous on purpose: nearly
+// everyone scrolls well inside it, so it only fires for someone who parks on
+// the page — who would otherwise never see that section at all.
 const IDLE_REVEAL_MS = 5000;
 
 /**
@@ -101,7 +99,7 @@ export function RevealObserver() {
         );
 
         animations.push(controls);
-        // Both handlers, deliberately — see the note on stranding above.
+        // Settle on rejection too: a failed animation must not strand content hidden.
         controls.then(onSettled, onSettled);
       }
     };
@@ -133,7 +131,7 @@ export function RevealObserver() {
           // that was already in view at mount — IntersectionObserver fires
           // for those on its first callback regardless of scroll, so this
           // flag is what actually distinguishes "the visitor scrolled here"
-          // from "this was on screen the whole time". See the file comment.
+          // from "this was on screen the whole time".
           if (hasScrolled) {
             reveal(target);
           } else {
@@ -177,8 +175,8 @@ export function RevealObserver() {
 
     window.addEventListener("scroll", onScroll, { passive: true, once: true });
 
-    // See the file comment: a visitor who never scrolls would otherwise
-    // leave an in-view-at-load section hidden forever.
+    // A visitor who never scrolls would otherwise leave an in-view-at-load
+    // section hidden forever.
     const idleTimer = setTimeout(() => {
       if (!hasScrolled) {
         hasScrolled = true;

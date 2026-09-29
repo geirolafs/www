@@ -77,16 +77,9 @@ export const metadata: Metadata = {
  *
  * Behind a conditional `dynamic()` the whole expression constant-folds to
  * `() => null` once `NODE_ENV` is inlined at build time, so the `import()`
- * disappears with the dead branch and no chunk is emitted. Verified by
- * grepping `.next/static` after a production build; if you touch this, grep
- * again rather than assuming.
- *
- * The *JS* is what this strips. Tailwind scans source files for class strings
- * independently of the module graph, so the overlay's two marker-colour
- * utilities (`bg-[#ff2d55]/10`, `text-[#ff2d55]`) are still emitted into the
- * production stylesheet — about 150 bytes of rules nothing references. Left
- * alone deliberately: the alternatives are inline styles or fighting the
- * content scan, and neither is worth 150 bytes.
+ * disappears with the dead branch and no chunk is emitted. If you touch this,
+ * grep `.next/static` after a production build rather than assuming.
+ * (Tailwind still emits the overlay's two colour utilities, ~150 bytes.)
  */
 const GridOverlay =
   process.env.NODE_ENV === "development"
@@ -118,37 +111,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             The `setTimeout` is the whole point of this script: if the bundle
             never boots (404, blocked, throws before mount), the attribute
             flips to "off" on its own after 2s and every section falls back
-            to its rendered, visible default — nothing is ever stranded. A
-            marker with no failsafe was tried and rejected for exactly this
-            case, because the JS that would clear the marker is the same JS
-            that failed to run.
+            to its rendered, visible default — nothing is ever stranded,
+            because the JS that would clear the marker may be the JS that
+            failed to run.
 
-            The script has a second, unrelated job: pre-revealing the stripe
-            on a restored scroll position.
-
-            `globals.css` hides the stripe whenever boot is armed/ready and
-            `data-stripe="revealed"` is absent, and only `stripe.tsx` ever
-            sets that attribute — from an effect, so not until hydration.
-            Reload half-way down the page and the stripe is therefore missing
-            on the first frame and grows in 900ms later, on a page that was
-            already scrolled past its threshold. The obvious fix — have this
-            script check `scrollY` — does not work: it runs during head parse,
-            before `<body>` exists and long before the browser restores the
-            position, so it always reads 0.
-
-            So `stripe.tsx` mirrors the revealed state into `sessionStorage`
-            and this script reads it back before first paint. Gated on the
-            navigation type, because a stored "revealed" only describes where
-            the page will land when the browser is *restoring* a position: on
-            a reload or a back/forward. (`stripe.tsx` clears it whenever the
-            page is back within the threshold of the top, so a reload from up
-            there starts hidden.) Arriving by an ordinary link starts at the
-            top and should get the hidden stripe regardless of what the last
-            visit stored. Anything unexpected — no navigation entry,
-            storage throwing in a locked-down context — falls through to the
-            hidden stripe, which is the behaviour without this block at all.
-            Wrapped in `try` for that reason, and placed last so a throw here
-            cannot cost us the reveal marker or its failsafe above. */}
+            Second job: on a reload or back/forward to a scrolled position,
+            show the stripe from the first frame. `stripe.tsx` only sets
+            `data-stripe="revealed"` after hydration, and this script can't
+            read `scrollY` (it runs before the browser restores the
+            position), so `stripe.tsx` mirrors the state into
+            `sessionStorage` and this reads it back. Ordinary navigations
+            start at the top and ignore it. Wrapped in `try` and placed last,
+            so a storage error falls back to the hidden stripe without
+            costing the reveal marker above. */}
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: blocking pre-paint boot marker must run before hydration, cannot be an external/deferred script
           dangerouslySetInnerHTML={{

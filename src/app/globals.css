@@ -33,7 +33,8 @@
 
 @theme {
   /* ---- Colour ---------------------------------------------------------- */
-  /* Five values and a gradient. That is the whole palette. */
+  /* Six values here and the stripe gradient in `:root`. That is the whole
+     palette. */
 
   --color-background: #fff;
   --color-foreground: #121212; /* 18.9:1 on white */
@@ -54,12 +55,10 @@
   --font-weight-semibold: 600; /* the clock, footer labels */
 
   /* ---- Type ------------------------------------------------------------ */
-  /* Five steps. `display` and `meta` are fluid 402 → 1440; `body` and `label`
-     measured identical at both frame widths and are static. Those four come
-     off the frames. `prose` does not — the frames stop at the home page, and
-     /notes had no type treatment at all — so its numbers are reasoned below
-     rather than measured, and are the only ones here that are safe to retune
-     by eye. */
+  /* Six steps. `display`, `body` and `meta` are fluid 402 → 1440; `link` and
+     `label` are static. Those five come off the frames. `prose` does not —
+     the frames stop at the home page — so its numbers are reasoned below
+     rather than measured, and are the only ones safe to retune by eye. */
 
   /* Display — 23 → 32, leading 29 → 45. Name, role, intro paragraphs.
      The 402 frame drew this at 26/32, but that read too large against the
@@ -77,18 +76,12 @@
   --text-body--line-height: 1.376;
   --text-body--letter-spacing: 0.005em;
 
-  /* Prose — 18 → 20, the notes body face. Deliberately the same size as `body`
-     rather than a new one — it reads `body`'s clamp so the two cannot drift
-     apart; what it cannot share is the leading. 1.376 is
-     tuned for the things `body` actually sets — work titles, subtitles, a
-     one-line description — where the text is short and a tight line box keeps
-     the row heights the frames specify. A 900-word essay at that leading is a
-     wall. 1.6 (32px) is the long-form setting, and Same Univers wants the
-     upper half of the 1.5–1.6 range because its x-height is large: more ink
-     per line needs more space between lines to stay separable.
-
-     Tracking matches `body`/`meta`/`link` at 0.005em. Nothing about sustained
-     reading argues for changing it, and an odd one out here would show. */
+  /* Prose — 18 → 20, the notes body face. It reads `body`'s clamp so the two
+     cannot drift apart; only the leading differs. `body`'s 1.376 keeps short
+     rows at the heights the frames specify, but a long essay at that leading
+     is a wall. 1.6 is the long-form setting: the top of the usual range,
+     because Same Univers's large x-height puts more ink on every line.
+     Tracking matches `body`/`meta`/`link`. */
   --text-prose: var(--text-body);
   --text-prose--line-height: 1.6;
   --text-prose--letter-spacing: 0.005em;
@@ -150,8 +143,7 @@
   --grid-margin: var(--spacing-site);
   --grid-gutter: 1.5rem; /* 24 */
 
-  /* The left stripe. 8 → 12, full height, flush left — half its original
-     width at every viewport. It is hidden (width 0) until the visitor has
+  /* The left stripe. 8 → 12, full height, flush left. It is hidden (width 0) until the visitor has
      scrolled 100px, then grows to this; see "Stripe reveal" below. */
   --spacing-stripe: calc(clamp(1rem, 0.8064rem + 0.7707vw, 1.5rem) / 2);
 
@@ -177,7 +169,7 @@
   --spacing-row: 2.25rem; /* 36 */
 
   /* Major sections: 8 → 12 modules (192 → 288) across 402 → 1440.
-     The hero keeps its original 352 → 416. */
+     The hero has its own, `--spacing-hero`: 352 → 416. */
   --spacing-section: clamp(
     calc(var(--spacing-md) * 8),
     9.6763rem +
@@ -282,11 +274,8 @@
   --underline-color: var(--color-foreground);
 
   /* Read as an arbitrary value — `duration-[var(--duration-feedback)]` — for
-     the namespace reason logged next to `--ease-out` above.
-
-     One step, because one thing animates. A second, `--duration-reveal`, was
-     added for the clock's hydration fade and removed with it; there is no
-     point keeping a token whose only caller is gone. */
+     the namespace reason logged next to `--ease-out` above. One step,
+     because one thing animates. */
   --duration-feedback: 120ms; /* hover, press */
 
   /* The scroll reveal's timing is not a token: it is a Motion spring —
@@ -314,8 +303,7 @@
    Column map at 1440 (start x): 1:24  2:142  3:260  4:378  5:496  6:614
    7:732  8:850  9:968  10:1086  11:1204  12:1322 (ends 1416).
 
-   Below `lg` it is a single column. The 402 frame is an 8-column grid and
-   travels with the mobile pass — desktop first, on purpose.
+   Below `lg` it is the 402 frame's 8-column grid, below.
    ========================================================================== */
 
 @utility page-grid {
@@ -483,11 +471,8 @@ article p + p {
    foreground-medium-over-muted-book relationship an entry row runs between
    its title and its description, one level up in size.
 
-   shadcn/typeset was considered for this and is deliberately not used. It arrives as a vendored file carrying its
-   own `--typeset-size` / `--typeset-leading` / `--typeset-flow` namespace,
-   which would duplicate the type scale twenty lines above this one and give
-   the project two places to change a prose size. Forty lines against the
-   existing tokens keeps that number at one.
+   No vendored prose system (shadcn/typeset and the like): each brings its
+   own type scale, and a prose size would then have two places to change.
    ========================================================================== */
 
 /* Whatever a post opens with sits flush against the meta column beside it. */
@@ -616,11 +601,9 @@ article a:active {
    has confirmed via `getBoundingClientRect()` that the section is not
    already in view — drops it to the hidden state. If the bundle 404s, is
    blocked, or throws before the effect attaches, `data-reveal-armed` never
-   gets set and every section stays at its rendered, visible default. A
-   media-query guard testing whether the browser *can* run JS was used here
-   before and was removed: it tests capability, not whether this page's
-   bundle *did* run — a blocked or broken bundle strands the same content
-   either way.
+   gets set and every section stays at its rendered, visible default. (A
+   "can this browser run JS" media query would not help: it tests capability,
+   not whether this page's bundle actually ran.)
 
    `data-revealed` is set together with clearing `data-reveal-armed`, only
    once Motion's animation resolves — never at the start. Setting it earlier
@@ -642,14 +625,11 @@ article a:active {
    `[data-reveal-boot="armed"]` is the pre-paint version of the same hidden
    state, set on `<html>` by the inline script in `layout.tsx` before any CSS
    or JS on this page has a chance to run. Sections already in view at load
-   used to be skipped by `RevealObserver`'s mount-time rect check, so they
-   never got `[data-reveal-armed]` and never animated. Removing that skip so
-   they *do* reveal on load meant they had to start hidden in the
-   server-rendered HTML — otherwise they render visible, then `RevealObserver`
-   arms them ~190ms into hydration, then they animate: a visible-hidden-
-   visible flash. `[data-reveal-boot]` closes that gap: the boot script sets
-   it synchronously in `<head>`, before first paint, so these rules apply from
-   frame one. `RevealObserver` flips it to `"ready"` in the same synchronous
+   reveal too, so they must start hidden in the server-rendered HTML;
+   otherwise they would render visible, be armed ~190ms into hydration, then
+   animate — a visible-hidden-visible flash. The boot script sets this
+   synchronously in `<head>`, so these rules apply from the first frame.
+   `RevealObserver` flips it to `"ready"` in the same synchronous
    pass it arms `[data-reveal-armed]` in, so the two hiding mechanisms never
    overlap. If the bundle never boots, a 2s `setTimeout` in the same inline
    script flips it to `"off"` on its own — see `layout.tsx`. */
@@ -734,12 +714,10 @@ article a:active {
    threshold it shrinks away again, same transition. Nothing animates on
    load.
 
-   Triggered by scroll, not linked to it. A `scroll()` timeline was built on
-   this element once and taken back out: a width tied to scroll offset is
-   half-finished through the whole middle of the gesture, which is a state
-   nobody designed. A threshold plus a transition means the stripe is only
-   ever hidden, shown, or crossing between the two at a duration this file
-   picks.
+   Triggered by scroll, not linked to it. A width tied to scroll offset is
+   half-finished through the whole middle of the gesture, a state nobody
+   designed; a threshold plus a transition means the stripe is only ever
+   hidden, shown, or crossing between the two.
 
    The trigger is `data-stripe="revealed"` on `<html>`, owned by `stripe.tsx`
    — the threshold and the one-shot listener live there.
@@ -750,7 +728,7 @@ article a:active {
    that script's own 2s failsafe if the bundle never boots. Hidden is scoped
    to "armed" and "ready", so:
 
-     no JS at all        never "armed"  → visible, static. The pre-2026 stripe.
+     no JS at all        never "armed"  → visible, static.
      bundle never boots  "off" after 2s → appears on its own.
      bundle boots        "ready"        → hidden within 100px of the top.
      visitor scrolls     data-stripe    → grows in, and shrinks away up top.
@@ -780,11 +758,9 @@ article a:active {
    nothing else: one transition on one out-of-flow box, not a per-frame
    scroll handler, which is what makes the layout cost a non-issue.
 
-   The vertical parallax that used to live here is gone for good: the
-   gradient is stretched over the full page height and one screen of
-   scrolling already traverses 36% of it, so the colour at eye level changes
-   dramatically with no scroll handler at all, and anything moving the stripe
-   up or down competed with a shift that was already happening.
+   No parallax: one screen of scrolling already moves 36% through the
+   full-height gradient, so anything moving the stripe competes with a shift
+   that is already happening.
    ========================================================================== */
 
 [data-stripe-reveal] {

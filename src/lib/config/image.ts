@@ -1,19 +1,20 @@
 /**
- * Centralized image optimization configuration
- * Used by Next.js config and components for consistent quality levels
+ * Image optimisation settings shared by `next.config.ts` and components.
+ * `IMAGE_QUALITY_ARRAY` is the allow-list Next checks `quality` against;
+ * 75 is Next's default for images that don't set one, so it has to stay.
  */
 
 export const IMAGE_QUALITIES = {
-  blur: 20, // Ambient/blur effect layers (intentionally low, heavily blurred)
-  low: 50, // Lazy-loaded, non-priority images
-  medium: 60, // Priority images in cascade
-  high: 75, // Hero images, critical content
-  max: 90, // Maximum quality for special cases
+  blur: 20,
+  low: 50,
+  medium: 60, // the portfolio carousel
+  high: 75, // Next's default
+  max: 90,
 } as const;
 
 export const IMAGE_QUALITY_ARRAY = Object.values(IMAGE_QUALITIES);
 
-// Image sizes optimized for cascade layout
+// Widths the optimiser may generate, sized to the portfolio carousel's cards.
 export const IMAGE_SIZES = [256, 270, 360, 384, 480, 540, 640, 960] as const;
 
 // Cache TTL
