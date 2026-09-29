@@ -196,6 +196,24 @@
      would emit no utility and be tree-shaken out — the same trap `--pill-inset`
      documents. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* /localhost/ambient-stripe: the glow swelling and settling. Ten seconds is
+     slower than a resting breath on purpose — at that pace it reads as the
+     light being alive rather than as something animating. Amplitude follows
+     `--breath-strength`, set on the element. */
+  --animate-ambient-breath: ambient-breath 10s ease-in-out infinite;
+
+  @keyframes ambient-breath {
+    0%,
+    100% {
+      opacity: calc(1 - 0.18 * var(--breath-strength, 1));
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleX(calc(1 + 0.22 * var(--breath-strength, 1)));
+    }
+  }
 }
 
 /* ==========================================================================
@@ -209,14 +227,19 @@
 :root {
   /* The left stripe. The gradient itself is static — only the stripe's width
      is scroll-linked, and a vertical gradient is unaffected by that. */
-  --gradient-stripe: linear-gradient(
-    180deg,
-    #044588 0%,
-    #347dc8 8.1731%,
-    #ededed 46.074%,
-    #f6bfb3 76.935%,
-    #ffe577 100%
-  );
+  --gradient-stripe: linear-gradient(180deg, var(--gradient-stripe-stops));
+  /* The stops on their own, so a gradient can run them another way — the
+     /localhost/ambient-stripe experiment runs them bottom to top. */
+  --gradient-stripe-stops:
+    #044588 0%, #347dc8 8.1731%, #ededed 46.074%, #f6bfb3 76.935%, #ffe577 100%;
+  /* /localhost/ambient-stripe: the stripe's colours as a dusk sky, top of
+     the page down. Blue overhead — the stripe's blues lifted a third of the
+     way to white — paling into haze, then pink, peach and a soft yellow at
+     the horizon. Only the stripe's own colours; the peach is its pink and
+     yellow mixed. Run it `in oklab` so the long fades stay clean. */
+  --gradient-ambient-stops:
+    color-mix(in oklab, #044588 65%, #fff) 0%, color-mix(in oklab, #347dc8 65%, #fff) 14%,
+    #ededed 50%, #f6bfb3 74%, color-mix(in oklab, #f6bfb3 50%, #ffe577) 88%, #ffe577 100%;
 
   /* The section-label pill. `--pill-inset` is the band it reserves on mobile:
      21.75 above and below a 22.5 pill makes 66, and the wrapper's 24 row gap
@@ -243,6 +266,13 @@
   --pill-border-width: 1.25px;
   --pill-padding-x: 0.546875rem; /* 8.75px */
   --pill-padding-y: 0.078125rem; /* 1.25px */
+  /* How far a pill's text drops, by casing — see `PillText`. The line box
+     centres lowercase on its x-height, which still reads high inside the
+     outline; capitals stand 0.193em taller again. Tuned by eye on
+     /localhost/pills. */
+  --pill-offset-lower: 0.1em;
+  --pill-offset-sentence: 0.12em;
+  --pill-offset-upper: 0.17em;
 
   /* Card dimensions stay as drawn; the spacing review opens the gutters. */
   --carousel-card-width: 303.75px;
@@ -363,6 +393,16 @@
 
 @utility cap-trim {
   text-box: trim-both cap alphabetic;
+}
+
+/* Put on the text inside a pill, not the pill. Lowercase measures dead
+   centre in a pill's line box but reads a touch high against the thin
+   outline, so it drops by `--pill-offset` (set by `PillText` from the label's
+   casing, lowercase by default). Relative positioning moves
+   the text without changing the pill's size. */
+@utility pill-nudge {
+  position: relative;
+  top: var(--pill-offset, var(--pill-offset-lower));
 }
 
 /* ==========================================================================
@@ -541,9 +581,13 @@ article strong {
 
 /* The site's one surface tone, reused. `pre > code` is excluded — the code
    block draws its own container and sugar-high colours the tokens inside it
-   through the `--sh-*` variables in `typography.css`. */
+   through the `--sh-*` variables in `typography.css`. The text sits directly
+   in the pill, so the optical offset moves padding from bottom to top
+   instead — the grey rises around the text, which reads as the text
+   dropping. */
 article :not(pre) > code {
-  padding: var(--pill-padding-y) var(--pill-padding-x);
+  padding: calc(var(--pill-padding-y) + var(--pill-offset-lower)) var(--pill-padding-x)
+    max(0px, calc(var(--pill-padding-y) - var(--pill-offset-lower)));
   border-radius: var(--radius-pill);
   background: var(--color-surface-footer);
   font-size: 0.9em;

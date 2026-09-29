@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { PillText } from "@/app/components/shell/pill-text";
 
 type SectionLabelProps = {
   id?: string;
@@ -22,7 +23,8 @@ type SectionLabelProps = {
  * with the wrapper's 24 row gap puts the first entry 90 below the section top.
  *
  * Its own box is 22.5: a 20px line plus the 1.25 padding, untrimmed — the
- * frame does not cap-trim this one.
+ * frame does not cap-trim this one. The text is always lowercase, so it takes
+ * `PillText`'s lowercase offset.
  *
  * The class list is static, so it skips `cn()` — there is nothing to merge.
  */
@@ -41,7 +43,7 @@ export function SectionLabel({ id, revealItem, children }: SectionLabelProps) {
       id={id}
       style={revealItem ? ({ "--index": 0 } as CSSProperties) : undefined}
     >
-      {children}
+      <PillText casing="lower">{children}</PillText>
     </h2>
   );
 }

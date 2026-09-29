@@ -17,8 +17,8 @@ interface Experiment {
 
 export const localhostContent = {
   hero: {
-    heading: "localhost",
-    description: "In development or kept here for later reffrance",
+    heading: "localhost:3000/localhost",
+    description: "",
   },
   /** Link from an experiment page back to the index. */
   backLabel: "← localhost",
@@ -32,10 +32,23 @@ export const localhostContent = {
       preview: "/localhost/previews/ambilight.webp",
     },
     {
+      href: "/localhost/ambient-stripe",
+      title: "Ambient stripe",
+      description:
+        "The stripe at 10px with a soft glow that stirs with scroll and the cursor.",
+      preview: "/localhost/previews/ambient-stripe.webp",
+    },
+    {
       href: "/localhost/particle-hover",
       title: "Particle hover",
       description: "Particles that gather where the cursor is.",
       preview: "/localhost/previews/particle-hover.webp",
+    },
+    {
+      href: "/localhost/pills",
+      title: "Pills",
+      description: "Three ways to centre a pill's text, against three casings.",
+      preview: "/localhost/previews/pills.webp",
     },
     {
       href: "/localhost/portfolio-preview",
