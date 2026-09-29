@@ -42,9 +42,11 @@ a {
 /* ==========================================================================
    SELECTION
    ========================================================================== */
+/* The pale yellow the stripe ends on. Text keeps its own colour, so a
+   selection reads like a highlighter pass. The v1 orange on #111 had no place
+   in this palette. */
 ::selection {
-  background-color: #111;
-  color: #ff4404;
+  background-color: var(--color-selection);
 }
 
 /* ==========================================================================

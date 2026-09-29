@@ -33,7 +33,7 @@
 
 @theme {
   /* ---- Colour ---------------------------------------------------------- */
-  /* Six values here and the stripe gradient in `:root`. That is the whole
+  /* Seven values here and the stripe gradient in `:root`. That is the whole
      palette. */
 
   --color-background: #fff;
@@ -42,6 +42,7 @@
   --color-border: #949494; /* 3.03:1 — borders need 3:1, text rules do not apply */
   --color-border-strong: #8c8c8c; /* 3.36:1 — the section-label pill outline */
   --color-surface-footer: #d8d8d8; /* foreground on it is 13.3:1 */
+  --color-selection: #ffe577; /* the stripe's last stop; foreground 14.9:1, muted 3.62:1 */
 
   /* ---- Font ------------------------------------------------------------ */
 
