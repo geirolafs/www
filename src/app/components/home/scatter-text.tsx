@@ -7,9 +7,9 @@ import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
 import { cn } from "@/lib/utils";
 
 /**
- * Ported from a previous personal site (card-amber-psi.vercel.app). Every
- * constant below is lifted verbatim from that site's minified bundle, not
- * re-derived, and the angle math is copied structurally too — see the
+ * Ported from my own earlier personal site (card-amber-psi.vercel.app), not
+ * third-party code. Every constant below is carried over verbatim from that
+ * site's build, not re-derived, and the angle math is copied structurally too — see the
  * per-line comments for why the two non-obvious choices (the cursor->char
  * angle direction and `sin(2 * angle)` for rotation) are not arbitrary.
  */

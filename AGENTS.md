@@ -6,9 +6,8 @@ points here, so add guidance to this file.
 Personal portfolio and notes. Next.js 16, React 19, Tailwind 4, Bun.
 
 This repo is public. Planning notes and decision logs go in `.private/`
-(gitignored), never in tracked files. Read `.private/REDESIGN.md` before
-re-proposing something that looks missing, if you have it — several absences
-are deliberate.
+(gitignored), never in tracked files. Several absences are deliberate — check
+there before re-proposing something that looks missing.
 
 ## Done means
 
