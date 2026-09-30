@@ -232,12 +232,6 @@ export const BLENDS: Record<
 /** The wash's opacity at full; it fades out with the glow's own mask. */
 export const WASH_OPACITY = 0.7;
 
-/**
- * The lab's page colour: an off-white with a warm green-grey cast, after a
- * photographed CRT page (buero zz berlin). The photo itself reads #adafa2,
- * too dim for a page, so this is its hue lifted most of the way to white.
- * The site's own background stays `#fff`; see `--color-background`.
- */
 export const DEFAULT_BACKGROUND = "#ebebe3";
 
 /** A hint, not a wash: at 15% the page only leans towards the stripe. */
