@@ -9,10 +9,10 @@ import { VisitorTime } from "./visitor-time";
  * Desktop is one row on columns 6–12 — location left, timezone and clock
  * pushed to the right edge. Mobile is also one row, but the right-hand pair
  * swaps: timezone first, then the clock, each keeping its own weight — muted
- * label, semibold time — 12 apart. The row spans the full 1–8 grid: location
- * starts on column 1 and the pair ends flush with column 8, so the header is
- * the one band on mobile that reaches past the 2–7 content column on both
- * sides. The frame pins it to the outer margins, not the content column.
+ * label, semibold time — 12 apart. The row spans columns 2–8: location
+ * starts on column 2, left-aligned with the content column below it, and the
+ * pair ends flush with column 8, so on the right the header reaches past the
+ * 2–7 content column into column 8, the page's empty right-hand column.
  *
  * `cap-trim` sits on the three text elements and not on the row that holds
  * them. `text-box` trims the first and last line boxes of a block container,
@@ -41,7 +41,7 @@ export function HeaderBar() {
       className="page-grid h-20 content-center py-md text-meta lg:h-[59px]"
       data-reveal="load"
     >
-      <div className="col-span-8 col-start-1 flex items-baseline justify-between gap-md lg:col-span-7 lg:col-start-6">
+      <div className="col-span-7 col-start-2 flex items-baseline justify-between gap-md lg:col-span-7 lg:col-start-6">
         <p className="cap-trim text-balance font-regular text-muted lg:order-1">
           {location}
         </p>
