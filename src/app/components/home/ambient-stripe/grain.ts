@@ -31,19 +31,38 @@ function mulberry32(seed: number) {
 }
 
 /**
- * A near-white noise tile as a blob URL, or null if there is no 2D context.
- * `levels` is the mean darkening in 8-bit levels; the spread is triangular
- * (two uniforms averaged), the usual shape for dither, from 0 to twice that.
- * The caller owns the URL and revokes it.
+ * Tiles already drawn, by `levels:dpr`, since a navigation remounts the
+ * stripe. Blob URLs, not data URLs: every glow layer repeats the URL in its
+ * inline style, and a data URL of noise is tens of KB. They're never revoked;
+ * there's one per grain setting, and the site uses one.
  */
-export async function createGrainTile(levels: number, dpr: number) {
+const tiles = new Map<string, Promise<string | null>>();
+
+/**
+ * A near-white noise tile as a PNG blob URL, or null if there is no 2D
+ * context. `levels` is the mean darkening in 8-bit levels; the spread is
+ * triangular (two uniforms averaged), the usual shape for dither, from 0 to
+ * twice that. The tile is seeded, so a cached one is the one that would be
+ * drawn again. Browser only: it needs a canvas.
+ */
+export function getGrainTile(levels: number, dpr: number) {
+  const key = `${levels}:${dpr}`;
+  let tile = tiles.get(key);
+  if (!tile) {
+    tile = drawGrainTile(levels, dpr);
+    tiles.set(key, tile);
+  }
+  return tile;
+}
+
+function drawGrainTile(levels: number, dpr: number): Promise<string | null> {
   const size = Math.round(GRAIN_TILE_PX * dpr);
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext("2d");
   if (!ctx) {
-    return null;
+    return Promise.resolve(null);
   }
   const random = mulberry32(0x9e_37_79_b9);
   const image = ctx.createImageData(size, size);
@@ -57,8 +76,7 @@ export async function createGrainTile(levels: number, dpr: number) {
     data[i + 3] = 255;
   }
   ctx.putImageData(image, 0, 0);
-  const blob = await new Promise<Blob | null>(resolve =>
-    canvas.toBlob(resolve, "image/png")
-  );
-  return blob ? URL.createObjectURL(blob) : null;
+  return new Promise(resolve => {
+    canvas.toBlob(blob => resolve(blob ? URL.createObjectURL(blob) : null), "image/png");
+  });
 }

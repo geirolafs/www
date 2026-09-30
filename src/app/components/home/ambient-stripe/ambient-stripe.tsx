@@ -27,7 +27,7 @@ import {
   WAKE_RELEASE_MS,
   WASH_OPACITY,
 } from "./config";
-import { createGrainTile, GRAIN_TILE_PX } from "./grain";
+import { GRAIN_TILE_PX, getGrainTile } from "./grain";
 
 /** Same threshold as the site stripe; see `stripe.tsx`. */
 const REVEAL_THRESHOLD_PX = 100;
@@ -41,6 +41,13 @@ const GLOW_STYLE: CSSProperties = {
   backgroundImage: GRADIENT,
   maskImage: GLOW_MASK,
   opacity: GLOW_OPACITY,
+};
+
+/** The edge core: a thin band multiplied over the glow at the page edge. */
+const CORE_STYLE: CSSProperties = {
+  width: CORE_WIDTH_PX,
+  maskImage: CORE_MASK,
+  mixBlendMode: "multiply",
 };
 
 /** The hotspot: an ellipse hugging the left edge, fading out to the right. */
@@ -98,11 +105,9 @@ const BLEED_STYLE: CSSProperties = {
  * and the bleed is a single colour top to bottom, so it has no fade to band.
  */
 const CORE_BLEED_STYLE: CSSProperties = {
-  width: CORE_WIDTH_PX,
+  ...CORE_STYLE,
   borderImage: BLEED_BORDER_IMAGE,
-  maskImage: CORE_MASK,
   maskClip: "no-clip",
-  mixBlendMode: "multiply",
 };
 
 /** Frame-rate-independent step of `from` towards `to` with time constant `tau`. */
@@ -178,8 +183,7 @@ export function AmbientStripe({
   blend,
 }: AmbientStripeProps) {
   const blending = BLENDS[blend];
-  const blendStyle: CSSProperties | undefined =
-    blending.mode === "normal" ? undefined : { mixBlendMode: blending.mode };
+  const blendStyle: CSSProperties = { mixBlendMode: blending.mode };
   const step = LANTERN_STEPS[lanternStep];
   const reduced = useLiveReducedMotion();
   const tuning = VARIANTS[variant];
@@ -195,47 +199,42 @@ export function AmbientStripe({
   const lanternRef = useRef<HTMLDivElement>(null);
   const lanternInnerRef = useRef<HTMLDivElement>(null);
 
-  // Drawn once per grain setting, at the device's pixel ratio, and handed
-  // over as a blob URL. A tile that lands after the setting has moved on is
-  // dropped.
+  // Drawn in the browser, since it needs a canvas, and so after hydration;
+  // a tile already drawn for this setting comes straight back from `grain.ts`.
   const [grainTile, setGrainTile] = useState<string | null>(null);
   useEffect(() => {
     if (grain <= 0) {
       setGrainTile(null);
       return;
     }
-    let cancelled = false;
-    createGrainTile(grain, window.devicePixelRatio || 1).then(next => {
-      if (cancelled) {
-        if (next) {
-          URL.revokeObjectURL(next);
-        }
-        return;
+    let current = true;
+    getGrainTile(grain, window.devicePixelRatio || 1).then(tile => {
+      if (current) {
+        setGrainTile(tile);
       }
-      setGrainTile(next);
     });
     return () => {
-      cancelled = true;
+      current = false;
     };
   }, [grain]);
-  // Each tile is revoked only once the next one has rendered in its place, so
-  // the layers never point at a revoked URL while the new tile is drawing.
-  useEffect(
-    () => () => {
-      if (grainTile) {
-        URL.revokeObjectURL(grainTile);
-      }
-    },
-    [grainTile]
-  );
   const grainStyle = grainBackground(grainTile);
 
   // The bar's reveal, as `Stripe` does it, minus the sessionStorage mirror.
-  // The glow does not wait for it: it is there from the first frame.
+  // The glow does not wait for it: it is there from the first frame. Only the
+  // bar reads `data-stripe`, so without the bar nothing listens.
   useEffect(() => {
+    if (!showBar) {
+      return;
+    }
     const root = document.documentElement;
+    let revealed: boolean | undefined;
     const sync = () => {
-      if (window.scrollY >= REVEAL_THRESHOLD_PX) {
+      const next = window.scrollY >= REVEAL_THRESHOLD_PX;
+      if (next === revealed) {
+        return;
+      }
+      revealed = next;
+      if (next) {
         root.dataset.stripe = "revealed";
       } else {
         delete root.dataset.stripe;
@@ -247,7 +246,7 @@ export function AmbientStripe({
       window.removeEventListener("scroll", sync);
       delete root.dataset.stripe;
     };
-  }, []);
+  }, [showBar]);
 
   /** Read by the frame loop, so tuning doesn't restart it (and drop its springs). */
   const tuningRef = useRef({ strength, step });
@@ -277,6 +276,10 @@ export function AmbientStripe({
     const lanternY: Spring = { value: 0, velocity: 0 };
     const lanternTip: Spring = { value: LANTERN_REST_TIP_PX, velocity: 0 };
     let innerHeight = 0;
+    // Set once the lantern has faded out and settled with no cursor: it is
+    // written hidden and nothing in it moves, so frames skip it until the
+    // cursor is back.
+    let lanternIdle = false;
 
     const tick = (t: number) => {
       const { strength, step } = tuningRef.current;
@@ -328,7 +331,13 @@ export function AmbientStripe({
         }
       }
 
-      if (lantern && layerRef.current && lanternRef.current && lanternInnerRef.current) {
+      if (
+        lantern &&
+        !lanternIdle &&
+        layerRef.current &&
+        lanternRef.current &&
+        lanternInnerRef.current
+      ) {
         const rect = layerRef.current.getBoundingClientRect();
         if (rect.height !== innerHeight) {
           innerHeight = rect.height;
@@ -386,6 +395,11 @@ export function AmbientStripe({
           Math.abs(lanternTip.velocity) > 1
         ) {
           settled = false;
+        } else if (pointerX === Number.POSITIVE_INFINITY) {
+          // Settled towards a target of 0: the opacity just written is a
+          // hair above it, so land it on the hidden state exactly.
+          lanternRef.current.style.opacity = "0";
+          lanternIdle = true;
         }
       }
 
@@ -411,6 +425,7 @@ export function AmbientStripe({
       }
       pointerX = event.clientX;
       pointerY = event.clientY;
+      lanternIdle = false;
       wakeUp();
     };
 
@@ -483,9 +498,7 @@ export function AmbientStripe({
             className="absolute inset-y-0 left-0"
             style={{
               ...grainStyle,
-              width: CORE_WIDTH_PX,
-              maskImage: CORE_MASK,
-              mixBlendMode: "multiply",
+              ...CORE_STYLE,
               opacity: core,
             }}
           />

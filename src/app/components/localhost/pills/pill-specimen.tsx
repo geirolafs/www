@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { PILL_CLASS } from "@/app/components/shell/pill";
 import { PillText } from "@/app/components/shell/pill-text";
 import type { PillStrategyId } from "@/lib/content/localhost-pills";
+import { cn } from "@/lib/utils";
 
 /** The two superseded strategies, kept for comparison. */
 const FIXED_OFFSET = {
@@ -40,7 +41,7 @@ export function PillSpecimen({
   return (
     // Built from `PILL_CLASS` rather than `Pill`, because `Pill` always wraps
     // its children in `PillText` and this lab compares text-offset strategies.
-    <span className={`inline-block border-border-strong text-foreground ${PILL_CLASS}`}>
+    <span className={cn("inline-block border-border-strong text-foreground", PILL_CLASS)}>
       <Text label={label} strategy={strategy} />
     </span>
   );

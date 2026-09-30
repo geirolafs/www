@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  ContactFooter,
-  HeaderBar,
-  RevealObserver,
-  SiteStripe,
-} from "@/app/components/home";
+import { ContactFooter, HeaderBar, RevealObserver } from "@/app/components/home";
+import { StripePage } from "@/app/components/shell/stripe-page";
 import { CustomMDX } from "@/components/blog/mdx";
 import { PostViewTracker } from "@/components/blog/post-view-tracker";
 import { NotesPosts } from "@/components/blog/posts";
@@ -86,8 +82,7 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
   const relatedPosts = allPosts.filter(p => p.slug !== slug);
 
   return (
-    <div className="relative isolate">
-      <SiteStripe />
+    <StripePage>
       <PostViewTracker
         slug={post.slug}
         title={post.metadata.title}
@@ -200,6 +195,6 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
 
         <ContactFooter />
       </div>
-    </div>
+    </StripePage>
   );
 }

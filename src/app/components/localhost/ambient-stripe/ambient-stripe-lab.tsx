@@ -11,16 +11,37 @@ import {
 } from "@/app/components/home/ambient-stripe/config";
 import { usePageTint } from "@/app/components/home/ambient-stripe/tint";
 import { TextLink } from "@/app/components/home/text-link";
-import { PillAction, PillButton } from "@/app/components/shell/pill";
+import { PillButton } from "@/app/components/shell/pill";
 import { localhostContent } from "@/lib/content/localhost";
 import {
-  type AmbientStripeBlend,
   type AmbientStripeVariant,
   ambientStripeContent,
-  type LanternStepId,
 } from "@/lib/content/localhost-ambient-stripe";
 
-const DEFAULT_VARIANT: AmbientStripeVariant = "Breath+wake+lantern";
+/** What the panel starts from, before a preset or a `?v=` link. */
+const DEFAULT_SETTINGS: AmbientStripeSettings = {
+  variant: "Breath+wake+lantern",
+  lanternStep: "magnet",
+  strength: 1,
+  showBar: false,
+  grain: 0,
+  core: 0,
+  blend: "normal",
+  background: DEFAULT_BACKGROUND,
+  tint: DEFAULT_TINT,
+};
+
+function sameSettings(a: AmbientStripeSettings, b: AmbientStripeSettings) {
+  return (Object.keys(a) as (keyof AmbientStripeSettings)[]).every(
+    key => a[key] === b[key]
+  );
+}
+
+function writeVariantToUrl(variant: AmbientStripeVariant) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("v", variant);
+  window.history.replaceState(null, "", url);
+}
 
 function isVariant(value: string | null): value is AmbientStripeVariant {
   return ambientStripeContent.variants.some(v => v.id === value);
@@ -70,15 +91,13 @@ function RangeRow({
  * page for a dev-only control.
  */
 export function AmbientStripeLab() {
-  const [variant, setVariant] = useState<AmbientStripeVariant>(DEFAULT_VARIANT);
-  const [strength, setStrength] = useState(1);
-  const [showBar, setShowBar] = useState(false);
-  const [lanternStep, setLanternStep] = useState<LanternStepId>("magnet");
-  const [grain, setGrain] = useState(0);
-  const [core, setCore] = useState(0);
-  const [blend, setBlend] = useState<AmbientStripeBlend>("normal");
-  const [background, setBackground] = useState(DEFAULT_BACKGROUND);
-  const [tint, setTint] = useState(DEFAULT_TINT);
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const { background, tint, ...stripe } = settings;
+  const { variant, lanternStep, strength, showBar, grain, core, blend } = stripe;
+  const update = <K extends keyof AmbientStripeSettings>(
+    key: K,
+    value: AmbientStripeSettings[K]
+  ) => setSettings(current => ({ ...current, [key]: value }));
 
   const panelId = useId();
   const [panelOpen, setPanelOpen] = useState(true);
@@ -107,27 +126,18 @@ export function AmbientStripeLab() {
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get("v");
     if (isVariant(fromUrl)) {
-      setVariant(fromUrl);
+      setSettings(current => ({ ...current, variant: fromUrl }));
     }
   }, []);
 
   const applyPreset = (preset: AmbientStripeSettings) => {
-    choose(preset.variant);
-    setLanternStep(preset.lanternStep);
-    setStrength(preset.strength);
-    setShowBar(preset.showBar);
-    setGrain(preset.grain);
-    setCore(preset.core);
-    setBlend(preset.blend);
-    setBackground(preset.background);
-    setTint(preset.tint);
+    setSettings(preset);
+    writeVariantToUrl(preset.variant);
   };
 
   const choose = (next: AmbientStripeVariant) => {
-    setVariant(next);
-    const url = new URL(window.location.href);
-    url.searchParams.set("v", next);
-    window.history.replaceState(null, "", url);
+    update("variant", next);
+    writeVariantToUrl(next);
   };
 
   const active = ambientStripeContent.variants.find(v => v.id === variant);
@@ -136,7 +146,7 @@ export function AmbientStripeLab() {
     <>
       {/* Unmounting the panel keeps every setting: they live up here. */}
       {!panelOpen && (
-        <PillAction
+        <PillButton
           aria-controls={panelId}
           aria-expanded={false}
           className="fixed right-md bottom-md z-50 bg-background"
@@ -144,17 +154,9 @@ export function AmbientStripeLab() {
           ref={showRef}
         >
           {ambientStripeContent.showLabel}
-        </PillAction>
+        </PillButton>
       )}
-      <AmbientStripe
-        blend={blend}
-        core={core}
-        grain={grain}
-        lanternStep={lanternStep}
-        showBar={showBar}
-        strength={strength}
-        variant={variant}
-      />
+      <AmbientStripe {...stripe} />
       {panelOpen && (
         <section
           aria-label={ambientStripeContent.panelLabel}
@@ -165,37 +167,27 @@ export function AmbientStripeLab() {
             <p className="text-muted">
               <TextLink href="/localhost">{localhostContent.backLabel}</TextLink>
             </p>
-            <PillAction
+            <PillButton
               aria-controls={panelId}
               aria-expanded
               onClick={() => togglePanel(false)}
               ref={hideRef}
             >
               {ambientStripeContent.hideLabel}
-            </PillAction>
+            </PillButton>
           </div>
           <p className="text-muted">{ambientStripeContent.presetsLabel}</p>
           <div className="mt-1.5 mb-md flex flex-wrap gap-1.5">
             {ambientStripeContent.presets.map(preset => {
-              const settings = PRESETS[preset.id];
-              if (!settings) {
+              const presetSettings = PRESETS[preset.id];
+              if (!presetSettings) {
                 return null;
               }
-              const isActive =
-                settings.variant === variant &&
-                settings.lanternStep === lanternStep &&
-                settings.strength === strength &&
-                settings.showBar === showBar &&
-                settings.grain === grain &&
-                settings.core === core &&
-                settings.blend === blend &&
-                settings.background === background &&
-                settings.tint === tint;
               return (
                 <PillButton
                   key={preset.id}
-                  onClick={() => applyPreset(settings)}
-                  pressed={isActive}
+                  onClick={() => applyPreset(presetSettings)}
+                  pressed={sameSettings(settings, presetSettings)}
                 >
                   {preset.label}
                 </PillButton>
@@ -221,7 +213,7 @@ export function AmbientStripeLab() {
                 {ambientStripeContent.lanternSteps.map(step => (
                   <PillButton
                     key={step.id}
-                    onClick={() => setLanternStep(step.id)}
+                    onClick={() => update("lanternStep", step.id)}
                     pressed={step.id === lanternStep}
                   >
                     {step.label}
@@ -236,7 +228,7 @@ export function AmbientStripeLab() {
               {ambientStripeContent.blends.map(b => (
                 <PillButton
                   key={b.id}
-                  onClick={() => setBlend(b.id)}
+                  onClick={() => update("blend", b.id)}
                   pressed={b.id === blend}
                 >
                   {b.label}
@@ -252,7 +244,7 @@ export function AmbientStripeLab() {
             label={ambientStripeContent.strengthLabel}
             max={2}
             min={0}
-            onChange={setStrength}
+            onChange={v => update("strength", v)}
             step={0.05}
             value={strength}
           />
@@ -261,7 +253,7 @@ export function AmbientStripeLab() {
             label={ambientStripeContent.grainLabel}
             max={6}
             min={0}
-            onChange={setGrain}
+            onChange={v => update("grain", v)}
             step={0.5}
             value={grain}
           />
@@ -270,7 +262,7 @@ export function AmbientStripeLab() {
             label={ambientStripeContent.coreLabel}
             max={1}
             min={0}
-            onChange={setCore}
+            onChange={v => update("core", v)}
             step={0.05}
             value={core}
           />
@@ -278,7 +270,7 @@ export function AmbientStripeLab() {
             <input
               checked={showBar}
               className="accent-foreground"
-              onChange={event => setShowBar(event.target.checked)}
+              onChange={event => update("showBar", event.target.checked)}
               type="checkbox"
             />
             <span className="text-muted">{ambientStripeContent.barLabel}</span>
@@ -287,7 +279,7 @@ export function AmbientStripeLab() {
             <span className="text-muted">{ambientStripeContent.backgroundLabel}</span>
             <input
               className="h-5 w-8 cursor-pointer rounded-pill border-[length:var(--pill-border-width)] border-border-strong bg-transparent p-0 [&::-moz-color-swatch]:border-0 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-pill [&::-webkit-color-swatch]:border-0"
-              onChange={event => setBackground(event.target.value)}
+              onChange={event => update("background", event.target.value)}
               type="color"
               value={background}
             />
@@ -298,7 +290,7 @@ export function AmbientStripeLab() {
             label={ambientStripeContent.tintLabel}
             max={0.5}
             min={0}
-            onChange={setTint}
+            onChange={v => update("tint", v)}
             step={0.01}
             value={tint}
           />

@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils";
  * padding gives the border width back — otherwise the pill renders 2.5px
  * larger in both axes than the frame.
  *
- * Border and text colour are left to the caller: `Pill` and `PillAction` set
- * the label's outline, `PillButton` switches between two. The class list is a
- * single static string so Tailwind can see every class.
+ * Border and text colour are left to the caller: `Pill` and an unpressed
+ * `PillButton` set the label's outline, a toggle switches between two. The
+ * class list is a single static string so Tailwind can see every class.
  */
 export const PILL_CLASS =
   "rounded-pill border-[length:var(--pill-border-width)] px-[calc(var(--pill-padding-x)-var(--pill-border-width))] py-[calc(var(--pill-padding-y)-var(--pill-border-width))] font-regular text-label";
@@ -57,57 +57,35 @@ export function Pill({
   );
 }
 
-type PillButtonProps = {
-  /** Whether the toggle is on. Sets `aria-pressed` and the outline. */
-  pressed: boolean;
-  onClick: () => void;
+type PillButtonProps = Omit<ComponentPropsWithRef<"button">, "children" | "type"> & {
+  /**
+   * Whether a toggle is on. Sets `aria-pressed` and the outline. Left out, the
+   * button is a one-off action — open, close, reset — with the label's outline.
+   */
+  pressed?: boolean;
   children: string;
-  /** Layout only — position, margin, transforms. The metrics are `PILL_CLASS`. */
-  className?: string;
 };
 
 /**
- * A toggle in the pill shape. Pressed, it takes the foreground as its outline;
- * otherwise a light outline and muted text. The outline changes as well as the
- * text, so the state never rests on colour alone.
+ * A button in the pill shape. As a toggle (`pressed` set), it takes the
+ * foreground as its outline when on; otherwise a light outline and muted text.
+ * The outline changes as well as the text, so the state never rests on colour
+ * alone. Without `pressed` it is an action with the label's outline. Other
+ * button attributes (`ref`, `onClick`, `aria-expanded`, `aria-controls`) go
+ * straight to the element.
  *
  * It takes a click handler, so it belongs under a client component.
  */
-export function PillButton({ pressed, onClick, children, className }: PillButtonProps) {
+export function PillButton({ pressed, className, children, ...props }: PillButtonProps) {
   return (
     <button
       aria-pressed={pressed}
       className={cn(
         PILL_CLASS,
         FOCUS_CLASS,
-        pressed ? "border-foreground text-foreground" : "border-border text-muted",
-        className
-      )}
-      onClick={onClick}
-      type="button"
-    >
-      <PillText>{children}</PillText>
-    </button>
-  );
-}
-
-type PillActionProps = Omit<ComponentPropsWithRef<"button">, "children" | "type"> & {
-  children: string;
-};
-
-/**
- * A one-off action in the pill shape — open, close, reset — with the label's
- * outline and no pressed state. Other button attributes (`ref`,
- * `aria-expanded`, `aria-controls`) go straight to the element. Like
- * `PillButton`, it belongs under a client component.
- */
-export function PillAction({ className, children, ...props }: PillActionProps) {
-  return (
-    <button
-      className={cn(
-        PILL_CLASS,
-        FOCUS_CLASS,
-        "border-border-strong text-foreground",
+        pressed === undefined && "border-border-strong text-foreground",
+        pressed === true && "border-foreground text-foreground",
+        pressed === false && "border-border text-muted",
         className
       )}
       type="button"

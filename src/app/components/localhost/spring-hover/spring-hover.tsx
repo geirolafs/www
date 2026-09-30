@@ -144,7 +144,6 @@ type SpringHoverProps = {
 export function SpringHover({ lines, label, className }: SpringHoverProps) {
   const reducedMotion = useLiveReducedMotion();
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-  const isFrozen = isMobile;
 
   const {
     isHovered,
@@ -178,10 +177,10 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
   );
 
   const handleLineLeave = useCallback(() => {
-    if (!isFrozen) {
+    if (!isMobile) {
       setHoveredLine(null);
     }
-  }, [isFrozen, setHoveredLine]);
+  }, [isMobile, setHoveredLine]);
 
   const activate = () => {
     if (shouldResetAnimation) {
@@ -196,7 +195,7 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
   // relaxes after INACTIVITY_TIMEOUT of stillness, not of hovering.
   // biome-ignore lint/correctness/useExhaustiveDependencies: restart the timer on every move
   useEffect(() => {
-    if (!isHovered || isFrozen) {
+    if (!isHovered || isMobile) {
       return;
     }
     const timer = setTimeout(() => {
@@ -204,14 +203,14 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
       setHoveredLine(null);
     }, INACTIVITY_TIMEOUT);
     return () => clearTimeout(timer);
-  }, [isHovered, isFrozen, mousePosition, setIsHovered, setHoveredLine]);
+  }, [isHovered, isMobile, mousePosition, setIsHovered, setHoveredLine]);
 
   return (
     <section aria-label={label} className={className}>
       <motion.div
         className="text-foreground"
         onHoverEnd={() => {
-          if (!(isTouchDevice || isFrozen)) {
+          if (!(isTouchDevice || isMobile)) {
             setIsHovered(false);
           }
         }}
@@ -226,7 +225,7 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
           }
         }}
         onTouchEnd={() => {
-          if (isTouchDevice && !isFrozen && shouldResetAnimation) {
+          if (isTouchDevice && !isMobile && shouldResetAnimation) {
             setIsHovered(false);
             setHoveredLine(null);
             setTouchPosition(null);

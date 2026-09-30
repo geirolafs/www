@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import {
-  ContactFooter,
-  HeaderBar,
-  RevealObserver,
-  SiteStripe,
-} from "@/app/components/home";
+import { ContactFooter, HeaderBar, RevealObserver } from "@/app/components/home";
+import { StripePage } from "@/app/components/shell/stripe-page";
 import { NotesPosts } from "@/components/blog/posts";
 import { SectionWrapper } from "@/components/home/section-wrapper";
 import { siteConfig } from "@/lib/config/site";
@@ -20,9 +16,8 @@ export const metadata: Metadata = {
 
 /**
  * The notes index on the homepage's shell: header bar, a hero pair on
- * columns 6–12, then the wrapper holding the list and the footer. The whole
- * page sits in a `relative isolate` wrapper so the stripe spans it, top to
- * bottom, under all the text.
+ * columns 6–12, then the wrapper holding the list and the footer. The stripe
+ * spans the whole page.
  *
  * The list band takes `gapVariant="none"` for the same reason the
  * Introduction does — it is the first band inside the below-hero wrapper, and
@@ -30,8 +25,7 @@ export const metadata: Metadata = {
  */
 export default function Page() {
   return (
-    <div className="relative isolate">
-      <SiteStripe />
+    <StripePage>
       <RevealObserver />
       <HeaderBar />
       <SectionWrapper gapVariant="hero">
@@ -48,6 +42,6 @@ export default function Page() {
         <NotesPosts gapVariant="none" />
         <ContactFooter />
       </div>
-    </div>
+    </StripePage>
   );
 }

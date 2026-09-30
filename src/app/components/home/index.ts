@@ -3,6 +3,7 @@ export { Availability } from "./availability";
 export { ContactFooter } from "./contact-footer";
 export { Awards, Experience, SelectedWork } from "./entry-section";
 export { HeaderBar } from "./header-bar";
+export { HomeSections } from "./home-sections";
 export { HowIWork } from "./how-i-work";
 export { Introduction } from "./introduction";
 export { MetalBall } from "./metal-ball";

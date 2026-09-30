@@ -14,17 +14,8 @@ import { usePageTint } from "./tint";
  * all the text.
  */
 export function SiteStripe() {
-  usePageTint(SITE_STRIPE.background, SITE_STRIPE.tint);
+  const { background, tint, ...stripe } = SITE_STRIPE;
+  usePageTint(background, tint);
 
-  return (
-    <AmbientStripe
-      blend={SITE_STRIPE.blend}
-      core={SITE_STRIPE.core}
-      grain={SITE_STRIPE.grain}
-      lanternStep={SITE_STRIPE.lanternStep}
-      showBar={SITE_STRIPE.showBar}
-      strength={SITE_STRIPE.strength}
-      variant={SITE_STRIPE.variant}
-    />
-  );
+  return <AmbientStripe {...stripe} />;
 }

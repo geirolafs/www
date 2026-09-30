@@ -36,7 +36,7 @@ function splitTopLevel(value: string) {
 }
 
 /** The ambient gradient's stops, each a CSS colour and a 0–1 position. */
-export function readAmbientStops(): Stop[] {
+function readAmbientStops(): Stop[] {
   const raw = getComputedStyle(document.documentElement).getPropertyValue(
     "--gradient-ambient-stops"
   );
@@ -75,7 +75,7 @@ function colourAt(stops: Stop[], t: number) {
  * `base` with `amount` (0–1) of the gradient's colour at `t` mixed in, or
  * `base` alone if there are no stops to read.
  */
-export function tintedBackground(stops: Stop[], base: string, t: number, amount: number) {
+function tintedBackground(stops: Stop[], base: string, t: number, amount: number) {
   const colour = colourAt(stops, t);
   if (!colour || amount <= 0) {
     return base;

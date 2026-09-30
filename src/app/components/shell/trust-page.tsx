@@ -1,12 +1,8 @@
-import {
-  ContactFooter,
-  HeaderBar,
-  RevealObserver,
-  SiteStripe,
-} from "@/app/components/home";
+import { ContactFooter, HeaderBar, RevealObserver } from "@/app/components/home";
 import { AvailabilityLine } from "@/app/components/home/availability-line";
 import { SectionWrapper } from "@/app/components/home/section-wrapper";
 import { TextLink } from "@/app/components/home/text-link";
+import { StripePage } from "@/app/components/shell/stripe-page";
 import type { TrustPageContent } from "@/lib/content/trust";
 
 /**
@@ -22,8 +18,7 @@ import type { TrustPageContent } from "@/lib/content/trust";
  */
 export function TrustPage({ content }: { content: TrustPageContent }) {
   return (
-    <div className="relative isolate">
-      <SiteStripe />
+    <StripePage>
       <RevealObserver />
       <HeaderBar />
       <SectionWrapper gapVariant="hero">
@@ -69,6 +64,6 @@ export function TrustPage({ content }: { content: TrustPageContent }) {
         </SectionWrapper>
         <ContactFooter />
       </div>
-    </div>
+    </StripePage>
   );
 }

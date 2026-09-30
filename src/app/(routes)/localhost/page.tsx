@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import {
-  ContactFooter,
-  HeaderBar,
-  RevealObserver,
-  SiteStripe,
-} from "@/app/components/home";
+import { ContactFooter, HeaderBar, RevealObserver } from "@/app/components/home";
 import { SectionWrapper } from "@/app/components/home/section-wrapper";
 import { ExperimentReel } from "@/app/components/localhost/experiment-reel";
+import { StripePage } from "@/app/components/shell/stripe-page";
 import { localhostContent } from "@/lib/content/localhost";
 
 export const metadata: Metadata = {
@@ -30,8 +26,7 @@ export default function Page() {
   const { hero } = localhostContent;
 
   return (
-    <div className="relative isolate">
-      <SiteStripe />
+    <StripePage>
       <RevealObserver />
       <HeaderBar />
       <SectionWrapper gapVariant="hero">
@@ -52,6 +47,6 @@ export default function Page() {
       <div className="relative">
         <ContactFooter />
       </div>
-    </div>
+    </StripePage>
   );
 }
