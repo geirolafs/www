@@ -5,11 +5,11 @@
  * glow, `SiteStripe` in `./ambient-stripe/site-stripe.tsx`. This is kept for
  * reference and to restore from.
  *
- * It no longer works as it stands: its `w-stripe` width came from the
- * `--spacing-stripe` token, which was removed from `globals.css` (and from
- * `THEME_SCALES` in `lib/utils/cn.ts`) when it was archived. Restore both to
- * bring it back. Its gradient, `--gradient-stripe`, and the reveal CSS and
- * boot script it drove are all still in place.
+ * It still works as it stands. Its width was the `--spacing-stripe` token,
+ * 8 → 12 across the viewport; the token was removed from `globals.css` when
+ * this was archived, so the same clamp is inlined in the class below. Its
+ * gradient, `--gradient-stripe`, and the reveal CSS and boot script it
+ * drove are all still in place.
  */
 
 import { useEffect } from "react";
@@ -101,7 +101,7 @@ export function Stripe() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 left-0 z-10 w-stripe bg-[image:var(--gradient-stripe)]"
+      className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[calc(clamp(1rem,0.8064rem_+_0.7707vw,1.5rem)/2)] bg-[image:var(--gradient-stripe)]"
       data-stripe-reveal
     />
   );
