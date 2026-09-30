@@ -1,9 +1,10 @@
 "use client";
 
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { ParticleReveal } from "@/app/components/localhost/particle-hover/particle-reveal";
 import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
+import { useMediaQuery } from "@/lib/hooks/use-media-query";
 
 type ParticleHoverSceneProps = {
   src: string;
@@ -14,18 +15,6 @@ type ParticleHoverSceneProps = {
 const PARALLAX_SPRING = { stiffness: 100, damping: 30, restDelta: 0.001 };
 /** v1 swapped the page's range for this one below its `md` breakpoint. */
 const MOBILE_QUERY = "(max-width: 767px)";
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const media = window.matchMedia(MOBILE_QUERY);
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-  return isMobile;
-}
 
 /**
  * v1's /dev/particle-hover page body: `Parallax range={["0%", "-20%"]}
@@ -43,7 +32,7 @@ function useIsMobile() {
 export function ParticleHoverScene({ src, label }: ParticleHoverSceneProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useLiveReducedMotion();
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery(MOBILE_QUERY);
 
   const { scrollYProgress } = useScroll({
     target: ref,

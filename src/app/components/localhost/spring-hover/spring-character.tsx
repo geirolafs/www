@@ -1,8 +1,7 @@
 "use client";
 
 import { motion, useSpring } from "motion/react";
-import type { RefObject } from "react";
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import type { Effect, Position } from "./use-hover-animation";
 
@@ -24,7 +23,6 @@ type SpringCharacterProps = {
   hoveredLine: number | null;
   isHovered: boolean;
   calculateFixedEffect: (element: Position) => Effect;
-  charRefs: RefObject<Map<string, HTMLSpanElement | null>>;
   mousePosition: Position;
   isPrefix?: boolean;
 };
@@ -47,32 +45,18 @@ export function SpringCharacter({
   hoveredLine,
   isHovered,
   calculateFixedEffect,
-  charRefs,
   mousePosition,
   isPrefix = false,
 }: SpringCharacterProps) {
-  const refKey = isPrefix
-    ? `prefix-${lineIndex}-${charIndex}`
-    : `char-${lineIndex}-${charIndex}`;
-
   const elementRef = useRef<HTMLSpanElement>(null);
   const boundsRef = useRef<Position>({ x: mousePosition.x, y: mousePosition.y });
-
-  useLayoutEffect(() => {
-    if (elementRef.current) {
-      charRefs.current?.set(refKey, elementRef.current);
-    }
-    return () => {
-      charRefs.current?.delete(refKey);
-    };
-  }, [refKey, charRefs]);
 
   const x = useSpring(0, SPRING);
   const y = useSpring(0, SPRING);
   const rotate = useSpring(0, SPRING);
 
   const getFreshBounds = useCallback(() => {
-    const element = charRefs.current?.get(refKey);
+    const element = elementRef.current;
     if (!element) {
       return boundsRef.current;
     }
@@ -81,7 +65,7 @@ export function SpringCharacter({
       boundsRef.current = { x: rect.x, y: rect.y };
     }
     return boundsRef.current;
-  }, [refKey, charRefs]);
+  }, []);
 
   useEffect(() => {
     if (isHovered) {

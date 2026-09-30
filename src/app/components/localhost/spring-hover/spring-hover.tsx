@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import type { RefObject, TouchEvent } from "react";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { TouchEvent } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import type { SpringHoverLine } from "@/lib/content/localhost-spring-hover";
 import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
+import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { SpringCharacter } from "./spring-character";
 import type { Effect, Position } from "./use-hover-animation";
 import { useHoverAnimation } from "./use-hover-animation";
@@ -20,7 +21,6 @@ type SpringLineProps = {
   hoveredLine: number | null;
   isHovered: boolean;
   calculateFixedEffect: (element: Position) => Effect;
-  charRefs: RefObject<Map<string, HTMLSpanElement | null>>;
   mousePosition: Position;
   onLineHover: (lineIndex: number) => void;
   onLineLeave: () => void;
@@ -38,7 +38,6 @@ const SpringLine = memo(
     hoveredLine,
     isHovered,
     calculateFixedEffect,
-    charRefs,
     mousePosition,
     onLineHover,
     onLineLeave,
@@ -68,7 +67,6 @@ const SpringLine = memo(
       hoveredLine,
       isHovered,
       calculateFixedEffect,
-      charRefs,
       mousePosition,
     };
 
@@ -145,7 +143,7 @@ type SpringHoverProps = {
  */
 export function SpringHover({ lines, label, className }: SpringHoverProps) {
   const reducedMotion = useLiveReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
   const isFrozen = isMobile;
 
   const {
@@ -155,39 +153,24 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
     setHoveredLine,
     handleInteraction,
     calculateFixedEffect,
-    charRefs,
     mousePosition,
     isTouchDevice,
     shouldResetAnimation,
     setShouldResetAnimation,
     setTouchPosition,
-  } = useHoverAnimation({ isFrozen });
+  } = useHoverAnimation();
 
-  const lastWidthRef = useRef(0);
+  // Crossing the breakpoint drops the hover. Adjusted during render, not in
+  // an effect, so the old hover never paints against the new mode.
+  const [prevMobile, setPrevMobile] = useState(isMobile);
+  if (prevMobile !== isMobile) {
+    setPrevMobile(isMobile);
+    setIsHovered(false);
+    setHoveredLine(null);
+  }
 
-  const checkMobile = useCallback(() => {
-    const width = window.innerWidth;
-    // Skip small changes: mobile browser chrome showing and hiding.
-    if (Math.abs(width - lastWidthRef.current) < 50 && lastWidthRef.current !== 0) {
-      return;
-    }
-    lastWidthRef.current = width;
-    const nowMobile = width < MOBILE_BREAKPOINT;
-    setIsMobile(prev => {
-      if (prev !== nowMobile) {
-        setIsHovered(false);
-        setHoveredLine(null);
-        return nowMobile;
-      }
-      return prev;
-    });
-  }, [setIsHovered, setHoveredLine]);
-
-  useEffect(() => {
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, [checkMobile]);
+  // Reduced motion never enters the hover state; derived, not synced by effect.
+  const hovered = isHovered && !reducedMotion;
 
   const handleLineHover = useCallback(
     (lineIndex: number) => setHoveredLine(lineIndex),
@@ -209,6 +192,9 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
     }
   };
 
+  // `mousePosition` is a dep only so each move restarts the timer: a hover
+  // relaxes after INACTIVITY_TIMEOUT of stillness, not of hovering.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: restart the timer on every move
   useEffect(() => {
     if (!isHovered || isFrozen) {
       return;
@@ -218,13 +204,7 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
       setHoveredLine(null);
     }, INACTIVITY_TIMEOUT);
     return () => clearTimeout(timer);
-  }, [isHovered, isFrozen, setIsHovered, setHoveredLine]);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setIsHovered(false);
-    }
-  }, [reducedMotion, setIsHovered]);
+  }, [isHovered, isFrozen, mousePosition, setIsHovered, setHoveredLine]);
 
   return (
     <section aria-label={label} className={className}>
@@ -269,9 +249,8 @@ export function SpringHover({ lines, label, className }: SpringHoverProps) {
         {lines.map((line, lineIndex) => (
           <SpringLine
             calculateFixedEffect={calculateFixedEffect}
-            charRefs={charRefs}
             hoveredLine={hoveredLine}
-            isHovered={isHovered}
+            isHovered={hovered}
             isTouchDevice={isTouchDevice}
             key={`${line.prefix}-${line.content}`}
             line={line}

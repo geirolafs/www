@@ -1,7 +1,7 @@
 "use client";
 
 import type { MouseEvent, TouchEvent } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export type Position = { x: number; y: number };
 
@@ -20,15 +20,13 @@ export type Effect = { x: number; y: number; rotate: number };
  * a large viewport change drops the hover so glyphs don't spring from stale
  * positions.
  */
-export function useHoverAnimation({ isFrozen = false }: { isFrozen?: boolean } = {}) {
+export function useHoverAnimation() {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredLine, setHoveredLine] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState<Position>({ x: 0, y: 0 });
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [shouldResetAnimation, setShouldResetAnimation] = useState(false);
   const [touchPosition, setTouchPosition] = useState<Position | null>(null);
-  const charRefs = useRef<Map<string, HTMLSpanElement | null>>(new Map());
-  const frozenMousePosition = useRef<Position>({ x: 0, y: 0 });
 
   useEffect(() => {
     setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
@@ -47,20 +45,9 @@ export function useHoverAnimation({ isFrozen = false }: { isFrozen?: boolean } =
     setMousePosition({ x: event.clientX, y: event.clientY });
   }, []);
 
-  useEffect(() => {
-    if (isFrozen) {
-      frozenMousePosition.current = mousePosition;
-    }
-  }, [isFrozen, mousePosition]);
-
   const calculateFixedEffect = useCallback(
     (element: Position): Effect => {
-      let current = mousePosition;
-      if (isTouchDevice && touchPosition) {
-        current = touchPosition;
-      } else if (isFrozen) {
-        current = frozenMousePosition.current;
-      }
+      const current = isTouchDevice && touchPosition ? touchPosition : mousePosition;
 
       const dx = element.x - current.x;
       const dy = element.y - current.y;
@@ -79,7 +66,7 @@ export function useHoverAnimation({ isFrozen = false }: { isFrozen?: boolean } =
         rotate: Math.sin(angle * 2) * twist * strength,
       };
     },
-    [isTouchDevice, touchPosition, isFrozen, mousePosition]
+    [isTouchDevice, touchPosition, mousePosition]
   );
 
   useEffect(() => {
@@ -122,10 +109,9 @@ export function useHoverAnimation({ isFrozen = false }: { isFrozen?: boolean } =
     setIsHovered,
     hoveredLine,
     setHoveredLine,
-    mousePosition: isFrozen ? frozenMousePosition.current : mousePosition,
+    mousePosition,
     handleInteraction,
     calculateFixedEffect,
-    charRefs,
     isTouchDevice,
     shouldResetAnimation,
     setShouldResetAnimation,

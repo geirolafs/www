@@ -34,7 +34,15 @@ export function useElementScrollState(
       const isAtStart = element.scrollLeft <= 1;
       const isAtEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 1;
 
-      setState({ isScrollable, isAtStart, isAtEnd });
+      // Returning `prev` lets React skip the re-render on scroll events that
+      // don't change an edge.
+      setState(prev =>
+        prev.isScrollable === isScrollable &&
+        prev.isAtStart === isAtStart &&
+        prev.isAtEnd === isAtEnd
+          ? prev
+          : { isScrollable, isAtStart, isAtEnd }
+      );
     };
 
     checkScroll();
