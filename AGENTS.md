@@ -36,6 +36,9 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
   for a word, a line or a lone sentence. Set the token; never rely on
   `font-weight: normal`. Nothing below 400 — muted text is colour, not weight.
 - **Type styles come from Figma.** If a value isn't there, ask.
+- **`/localhost/*` experiments stand alone.** No site header, footer or back
+  link; titles have no site suffix (`localhost/layout.tsx`). The `/localhost`
+  index itself keeps the site look.
 - **Server components by default.** `"use client"` only when it needs the
   browser.
 - **`import type`** for type-only imports.

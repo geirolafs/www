@@ -10,9 +10,7 @@ import {
   VARIANTS,
 } from "@/app/components/home/ambient-stripe/config";
 import { usePageTint } from "@/app/components/home/ambient-stripe/tint";
-import { TextLink } from "@/app/components/home/text-link";
 import { PillButton } from "@/app/components/shell/pill";
-import { localhostContent } from "@/lib/content/localhost";
 import {
   type AmbientStripeVariant,
   ambientStripeContent,
@@ -163,10 +161,7 @@ export function AmbientStripeLab() {
           className="fixed right-md bottom-md z-50 max-h-[calc(100dvh-2*var(--spacing-md))] w-72 max-w-[calc(100vw-3rem)] overflow-y-auto overscroll-contain bg-background p-md font-regular text-foreground text-label"
           id={panelId}
         >
-          <div className="mb-md flex items-baseline justify-between gap-md">
-            <p className="text-muted">
-              <TextLink href="/localhost">{localhostContent.backLabel}</TextLink>
-            </p>
+          <div className="mb-md flex items-baseline justify-end gap-md">
             <PillButton
               aria-controls={panelId}
               aria-expanded

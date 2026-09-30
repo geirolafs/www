@@ -1,8 +1,4 @@
 import type { ReactNode } from "react";
-import { ContactFooter, HeaderBar } from "@/app/components/home";
-import { SectionWrapper } from "@/app/components/home/section-wrapper";
-import { TextLink } from "@/app/components/home/text-link";
-import { localhostContent } from "@/lib/content/localhost";
 import { cn } from "@/lib/utils";
 
 type ExperimentPageProps = {
@@ -12,31 +8,26 @@ type ExperimentPageProps = {
 };
 
 /**
- * The site-style shell for pages under /localhost/*: the notes index's header
- * bar and hero pair, a way back to the index, the experiment on the page grid,
- * then the footer. `children` is placed as-is inside `page-grid` and positions
- * itself — some demos want the full width, some a single column.
+ * The neutral shell for pages under /localhost/*: a plain title and
+ * description, then the experiment. No site header, footer or way back — each
+ * experiment stands alone. `children` is placed as-is inside `page-grid` and
+ * positions itself — some demos want the full width, some a single column.
  */
 export function ExperimentPage({ title, description, children }: ExperimentPageProps) {
   return (
-    <>
-      <HeaderBar />
-      <SectionWrapper gapVariant="hero">
-        <div className="lg:col-span-7 lg:col-start-6">
-          <p className="mb-md font-regular text-label text-muted">
-            <TextLink href="/localhost">{localhostContent.backLabel}</TextLink>
-          </p>
-          <h1 className="lg:cap-trim text-balance font-regular text-display text-foreground">
+    <div className="min-h-dvh bg-background py-xl text-foreground">
+      <header className="page-grid">
+        <div className="lg:col-span-7 lg:col-start-2">
+          <h1 className="text-balance font-regular text-display text-foreground">
             {title}
           </h1>
-          <p className="lg:cap-trim text-pretty font-book text-display text-muted lg:mt-md">
+          <p className="mt-xs text-pretty font-book text-body text-muted">
             {description}
           </p>
         </div>
-      </SectionWrapper>
-      <SectionWrapper>{children}</SectionWrapper>
-      <ContactFooter />
-    </>
+      </header>
+      <div className="page-grid mt-xl">{children}</div>
+    </div>
   );
 }
 
@@ -88,11 +79,6 @@ export function CustomExperimentPage({
         className
       )}
     >
-      <p className="mb-16 font-regular text-label text-muted tracking-normal">
-        <TextLink href="/localhost">{localhostContent.backLabel}</TextLink>
-        <span aria-hidden="true"> / </span>
-        <span>{title}</span>
-      </p>
       <h1 className="sr-only">{title}</h1>
       {children}
     </div>
