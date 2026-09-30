@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { PillText } from "@/app/components/shell/pill-text";
+import { Pill } from "@/app/components/shell/pill";
 
 type SectionLabelProps = {
   id?: string;
@@ -24,26 +24,23 @@ type SectionLabelProps = {
  *
  * Its own box is 22.5: a 20px line plus the 1.25 padding, untrimmed — the
  * frame does not cap-trim this one. The text is always lowercase, so it takes
- * `PillText`'s lowercase offset.
- *
- * The class list is static, so it skips `cn()` — there is nothing to merge.
+ * `PillText`'s lowercase offset. The border and padding metrics are `Pill`'s
+ * (see `PILL_CLASS`); only the layout is set here.
  */
 export function SectionLabel({ id, revealItem, children }: SectionLabelProps) {
   return (
-    <h2
+    <Pill
+      as="h2"
+      casing="lower"
       // `self-start` is load-bearing: as a grid item this would otherwise
       // stretch to the full height of the section row and render as a tall
       // outlined box rather than a pill. `w-fit` only constrains the width.
-      // Figma strokes this pill inside the frame, so its 110.5 × 22.5 already
-      // includes the 1.25 border. A CSS border is always outside the content
-      // box, so the padding gives that width back — otherwise the pill renders
-      // 2.5px larger in both axes than the frame.
-      className="my-[var(--pill-inset)] -ml-2xs w-fit self-start rounded-pill border-[length:var(--pill-border-width)] border-border-strong px-[calc(var(--pill-padding-x)-var(--pill-border-width))] py-[calc(var(--pill-padding-y)-var(--pill-border-width))] font-regular text-foreground text-label lowercase lg:col-span-2 lg:col-start-2 lg:my-0 lg:ml-0"
+      className="my-[var(--pill-inset)] -ml-2xs w-fit self-start lowercase lg:col-span-2 lg:col-start-2 lg:my-0 lg:ml-0"
       data-reveal-item={revealItem ? "" : undefined}
       id={id}
       style={revealItem ? ({ "--index": 0 } as CSSProperties) : undefined}
     >
-      <PillText casing="lower">{children}</PillText>
-    </h2>
+      {children}
+    </Pill>
   );
 }

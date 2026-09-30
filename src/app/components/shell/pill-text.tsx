@@ -6,7 +6,7 @@ export type PillCasing = "lower" | "sentence" | "upper";
  * Which offset a label needs: no capitals or figures is lowercase; capitals
  * with lowercase is sentence case; capitals or figures alone is upper.
  */
-export function pillCasing(label: string): PillCasing {
+function pillCasing(label: string): PillCasing {
   if (!/[A-Z0-9]/.test(label)) {
     return "lower";
   }

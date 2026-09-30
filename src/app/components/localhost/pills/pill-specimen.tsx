@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { PILL_CLASS } from "@/app/components/shell/pill";
 import { PillText } from "@/app/components/shell/pill-text";
 import type { PillStrategyId } from "@/lib/content/localhost-pills";
 
@@ -37,7 +38,9 @@ export function PillSpecimen({
   strategy: PillStrategyId;
 }) {
   return (
-    <span className="inline-block rounded-pill border-[length:var(--pill-border-width)] border-border-strong px-[calc(var(--pill-padding-x)-var(--pill-border-width))] py-[calc(var(--pill-padding-y)-var(--pill-border-width))] font-regular text-foreground text-label">
+    // Built from `PILL_CLASS` rather than `Pill`, because `Pill` always wraps
+    // its children in `PillText` and this lab compares text-offset strategies.
+    <span className={`inline-block border-border-strong text-foreground ${PILL_CLASS}`}>
       <Text label={label} strategy={strategy} />
     </span>
   );
