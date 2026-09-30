@@ -6,17 +6,18 @@ import { cn } from "@/lib/utils";
 export function ContactFooter() {
   const visibleLinks = contactFooterContent.links.filter(link => !link.hidden);
   const linkGroups = [
+    { id: "contact", columns: "sm:col-span-3 lg:col-span-3 lg:col-start-3" },
+    { id: "social", columns: "sm:col-span-2 lg:col-span-2 lg:col-start-6" },
+    // The easter egg: over the colophon at both frames, last on mobile.
     {
-      id: "contact",
-      links: visibleLinks.filter(link => !link.external),
-      columns: "lg:col-span-3 lg:col-start-3",
+      id: "localhost",
+      columns:
+        "whitespace-nowrap sm:col-span-1 sm:col-start-6 lg:col-span-3 lg:col-start-8",
     },
-    {
-      id: "social",
-      links: visibleLinks.filter(link => link.external),
-      columns: "lg:col-span-2 lg:col-start-6",
-    },
-  ];
+  ].map(group => ({
+    ...group,
+    links: visibleLinks.filter(link => link.group === group.id),
+  }));
 
   return (
     <footer
@@ -29,7 +30,7 @@ export function ContactFooter() {
         </div>
 
         {linkGroups.map(group => (
-          <ul className={cn("col-span-full sm:col-span-3", group.columns)} key={group.id}>
+          <ul className={cn("col-span-full", group.columns)} key={group.id}>
             {group.links.map(link => (
               <li data-reveal-item key={link.href}>
                 <ContactLink

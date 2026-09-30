@@ -315,6 +315,12 @@ export interface ContactLink {
   external?: boolean;
   weight: "regular" | "medium";
   /**
+   * Which footer group it sits in. `localhost` is the easter egg: its own
+   * group, over the colophon on desktop and last before the copyright on
+   * mobile.
+   */
+  group: "contact" | "social" | "localhost";
+  /**
    * Withheld from the footer while the route behind it is not ready. The entry
    * stays in this list for later publication. Visible links flow together;
    * flip to `false` (or delete the flag) to publish.
@@ -338,35 +344,40 @@ export const contactFooterContent: ContactFooterContent = {
       label: siteConfig.email,
       href: `mailto:${siteConfig.email}`,
       weight: "regular",
+      group: "contact",
     },
     {
       label: "download cv",
       href: siteConfig.cv.path,
       weight: "regular",
+      group: "contact",
     },
     {
       label: "/ notes",
       href: "/notes",
       weight: "regular",
+      group: "contact",
       hidden: true,
     },
     {
       label: "/ localhost",
       href: "/localhost",
       weight: "regular",
-      hidden: true,
+      group: "localhost",
     },
     {
       label: "linkedin",
       href: siteConfig.social.linkedin,
       external: true,
       weight: "regular",
+      group: "social",
     },
     {
       label: "github",
       href: siteConfig.social.github,
       external: true,
       weight: "regular",
+      group: "social",
     },
   ],
 };
