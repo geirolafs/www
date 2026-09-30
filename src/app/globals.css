@@ -826,7 +826,7 @@ article a:active {
      already reaches `[data-reveal-item]` descendants — no compound selector
      needed, and one less selector for `noDescendingSpecificity` to flag
      against the higher-specificity armed/revealed rules above. Motion itself
-     is skipped in JS (`useReducedMotion()`), so this only has to zero the
+     is skipped in JS (`reveal-observer.tsx`), so this only has to zero the
      hidden state's translate offset for the brief window between mount and
      reveal — there is no transition left here to shorten. */
   [data-reveal] {
@@ -874,7 +874,8 @@ article a:active {
     .reel-media {
       animation:
         reel-frame-in linear both,
-        reel-frame-out linear both;
+        /* Not `both`: a backwards fill would hold `inset(0 0)` over the entry. */
+        reel-frame-out linear forwards;
       animation-timeline: --reel, --reel;
       animation-range:
         entry 0% entry 100%,

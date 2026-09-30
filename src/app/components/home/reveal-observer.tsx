@@ -2,7 +2,6 @@
 
 import { animate } from "motion";
 import { useEffect } from "react";
-import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
 
 // 70ms between rows.
 const STAGGER_STEP_SECONDS = 0.07;
@@ -21,8 +20,6 @@ const IDLE_REVEAL_MS = 5000;
  * immediately; animation rejection must also leave content visible.
  */
 export function RevealObserver() {
-  const prefersReducedMotion = useLiveReducedMotion();
-
   useEffect(() => {
     const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
 
@@ -38,8 +35,7 @@ export function RevealObserver() {
     // `[data-reveal-armed]`) never both apply and never both fail to apply.
     document.documentElement.dataset.revealBoot = "ready";
 
-    // Animations in flight, so an unmount (or a re-run of this effect when
-    // `prefersReducedMotion` resolves) does not leave Motion writing to
+    // Animations in flight, so an unmount does not leave Motion writing to
     // nodes this observer has stopped tracking.
     const running = new Map<HTMLElement, { complete: () => void }[]>();
 
@@ -63,7 +59,8 @@ export function RevealObserver() {
     };
 
     const reveal = (target: HTMLElement) => {
-      if (prefersReducedMotion) {
+      // Read at reveal time, so a mid-session change applies without a re-run.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         settle(target);
         return;
       }
@@ -206,9 +203,9 @@ export function RevealObserver() {
     }
 
     for (const target of targets) {
-      // Never re-arm something already revealed. This effect re-runs when
-      // `prefersReducedMotion` settles, and re-hiding a section the visitor
-      // has already watched appear is worse than never animating it.
+      // Never re-arm something already revealed (e.g. a Strict Mode re-run):
+      // re-hiding a section the visitor has already watched appear is worse
+      // than never animating it.
       if (target.dataset.revealed !== undefined) {
         continue;
       }
@@ -234,7 +231,7 @@ export function RevealObserver() {
         settle(target);
       }
     };
-  }, [prefersReducedMotion]);
+  }, []);
 
   return null;
 }

@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import type { CSSProperties, FocusEvent, MouseEvent } from "react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { localhostContent } from "@/lib/content/localhost";
-import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
 import { cn } from "@/lib/utils";
 
 const { experiments } = localhostContent;
@@ -48,16 +47,11 @@ function titleOpacity(index: number, active: number) {
  * second click opens it.
  */
 export function ExperimentReel() {
-  const reducedMotion = useLiveReducedMotion();
-  const [scrolled, setScrolled] = useState(0);
-  const [offset, setOffset] = useState(0);
+  const [active, setActive] = useState(0);
   const sentinelsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const rowsRef = useRef<(HTMLLIElement | null)[]>([]);
   /** The step a click is scrolling to, while that scroll is under way. */
   const targetRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-
-  const active = scrolled;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -74,7 +68,7 @@ export function ExperimentReel() {
             }
             continue;
           }
-          setScrolled(step);
+          setActive(step);
         }
       },
       { rootMargin: "-50% 0px -50% 0px" }
@@ -100,10 +94,11 @@ export function ExperimentReel() {
     const section = sectionRef.current;
     const onPointerMove = (event: PointerEvent) => {
       if (event.movementX !== 0 || event.movementY !== 0) {
-        section?.setAttribute("data-hover", "");
+        // `toggleAttribute` with a force is a no-op when already in that state.
+        section?.toggleAttribute("data-hover", true);
       }
     };
-    const onScroll = () => section?.removeAttribute("data-hover");
+    const onScroll = () => section?.toggleAttribute("data-hover", false);
     window.addEventListener("pointermove", onPointerMove, options);
     window.addEventListener("scroll", onScroll, options);
 
@@ -118,34 +113,23 @@ export function ExperimentReel() {
     };
   }, []);
 
-  // Roll the list by the height of the rows above the active one.
-  useLayoutEffect(() => {
-    const measure = () => {
-      let total = 0;
-      for (const [index, row] of rowsRef.current.entries()) {
-        if (row && index < scrolled) {
-          total += row.offsetHeight;
-        }
-      }
-      setOffset(total);
-    };
-    measure();
-    window.addEventListener("resize", measure, { passive: true });
-    return () => window.removeEventListener("resize", measure);
-  }, [scrolled]);
-
   /** Activates `index` immediately, then scrolls the track to match. */
   const scrollToStep = (index: number) => {
     const sentinel = sentinelsRef.current[index];
     if (!sentinel) {
       return;
     }
-    targetRef.current = index;
-    setScrolled(index);
+    const rect = sentinel.getBoundingClientRect();
+    const middle = window.innerHeight / 2;
+    // Lock only if the line has to cross other steps. If it is already inside
+    // this one, nothing would release the lock: a no-op scroll fires no
+    // `scrollend`, and the observer sees no new intersection.
+    targetRef.current = rect.top <= middle && rect.bottom > middle ? null : index;
+    setActive(index);
     // Land the middle-of-viewport line one pixel inside this step.
-    const top =
-      sentinel.getBoundingClientRect().top + window.scrollY - window.innerHeight / 2 + 1;
-    window.scrollTo({ top, behavior: reducedMotion ? "auto" : "smooth" });
+    const top = rect.top + window.scrollY - middle + 1;
+    // Smooth or instant per `scroll-behavior` in reset.css, which honours reduced motion.
+    window.scrollTo({ top });
   };
 
   const onFocus = (event: FocusEvent<HTMLAnchorElement>, index: number) => {
@@ -155,12 +139,8 @@ export function ExperimentReel() {
   };
 
   const onClick = (event: MouseEvent<HTMLAnchorElement>, index: number) => {
-    const modified =
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey;
+    // `click` only fires for the primary button; others go to `auxclick`.
+    const modified = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
     if (index === active || modified) {
       return;
     }
@@ -177,7 +157,8 @@ export function ExperimentReel() {
       className="reel group/reel relative h-[calc(100lvh+var(--count)*var(--step))] [--reel-inset:var(--spacing-sm)] lg:[--reel-inset:var(--grid-margin)]"
       style={{ "--count": experiments.length, "--step": "15rem" } as CSSProperties}
     >
-      {/* One sentinel per step, offset half a screen so step 0 is active on pin. */}
+      {/* One sentinel per step, offset half a screen so step 0 is active on pin.
+          The last runs to the section's end, so the exit range stays on it. */}
       {experiments.map((experiment, index) => (
         <div
           aria-hidden="true"
@@ -187,7 +168,10 @@ export function ExperimentReel() {
           ref={el => {
             sentinelsRef.current[index] = el;
           }}
-          style={{ top: `calc(50lvh + ${index} * var(--step))` }}
+          style={{
+            top: `calc(50lvh + ${index} * var(--step))`,
+            ...(index === experiments.length - 1 && { bottom: 0, height: "auto" }),
+          }}
         />
       ))}
 
@@ -210,7 +194,6 @@ export function ExperimentReel() {
               )}
               fill
               key={experiment.href}
-              priority={index === 0}
               sizes="100vw"
               src={experiment.preview}
             />
@@ -222,7 +205,9 @@ export function ExperimentReel() {
         <div className="page-grid absolute inset-x-0 top-[20lvh] text-background">
           <ul
             className="col-span-full grid grid-cols-subgrid transition-transform duration-300 motion-reduce:transition-none"
-            style={{ transform: `translateY(-${offset}px)` }}
+            // Rows are equal height (one nowrap line, fixed leading), so a
+            // share of the list's own height rolls exactly one row per step.
+            style={{ transform: `translateY(-${(active / experiments.length) * 100}%)` }}
           >
             {experiments.map((experiment, index) => (
               <li
@@ -233,14 +218,11 @@ export function ExperimentReel() {
                   index === active && "text-highlight",
                   "group",
                   index !== active &&
-                    "group-data-hover/reel:pointer-fine:hover:opacity-40group-data-hover/reel:pointer-fine:hover:duration-[var(--duration-feedback)]",
+                    "group-data-hover/reel:pointer-fine:hover:opacity-40 group-data-hover/reel:pointer-fine:hover:duration-[var(--duration-feedback)]",
                   // Not `focus-within`: mouse focus would pin a clicked title.
                   "has-focus-visible:opacity-100"
                 )}
                 key={experiment.href}
-                ref={el => {
-                  rowsRef.current[index] = el;
-                }}
               >
                 <p
                   className={cn(

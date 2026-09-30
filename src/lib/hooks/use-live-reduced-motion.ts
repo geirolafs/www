@@ -1,6 +1,5 @@
 "use client";
 
-import { useReducedMotion } from "motion/react";
 import { useSyncExternalStore } from "react";
 
 const QUERY = "(prefers-reduced-motion: reduce)";
@@ -15,8 +14,12 @@ function getSnapshot() {
   return window.matchMedia(QUERY).matches;
 }
 
-/** Motion 12.43's hook reads the preference once; subscribe for live changes. */
+/** The server can't know the preference; hydrate as `false`, then correct. */
+function getServerSnapshot() {
+  return false;
+}
+
+/** Motion's `useReducedMotion` reads the preference once; subscribe for live changes. */
 export function useLiveReducedMotion() {
-  const initial = Boolean(useReducedMotion());
-  return useSyncExternalStore(subscribe, getSnapshot, () => initial);
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

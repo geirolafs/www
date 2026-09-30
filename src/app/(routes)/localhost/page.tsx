@@ -33,9 +33,11 @@ export default function Page() {
           <h1 className="lg:cap-trim text-balance font-regular text-display text-foreground">
             {hero.heading}
           </h1>
-          <p className="lg:cap-trim text-pretty font-book text-display text-muted lg:mt-md">
-            {hero.description}
-          </p>
+          {hero.description ? (
+            <p className="lg:cap-trim text-pretty font-book text-display text-muted lg:mt-md">
+              {hero.description}
+            </p>
+          ) : null}
         </div>
       </SectionWrapper>
       <div className="mt-section">
