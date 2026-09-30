@@ -60,3 +60,8 @@ public/temp/
 .agents/
 .claude/skills/
 skills-lock.json
+
+# Fontshare fonts (ITF Free Font License): self-hosted on the site, but the
+# license forbids sharing the files through a public repository. They come
+# from the private fonts repo at build time (scripts/fetch-licensed-fonts.ts).
+src/app/styles/local-fonts/licensed/

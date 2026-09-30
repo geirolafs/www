@@ -45,6 +45,13 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
 
 ## Never
 
+- Commit a font file from `src/app/styles/local-fonts/licensed/`. Bespoke
+  Serif is under the ITF Free Font License: self-hosting is allowed, but
+  sharing the file through a public repository is not. (Geist, OFL, is not a
+  committed file either: `next/font/google` fetches it at build.) It comes
+  from the private fonts repo at build time (`bun run fonts`, needs
+  `FONTS_TOKEN_SKIPTIR` in CI). Don't subset or convert it either — the
+  license forbids it.
 - Add a dependency without asking.
 - Re-introduce `three`, `@react-three/*` or `@paper-design/shaders-react`.
 - Use `<head>` in a component — use the Metadata API.

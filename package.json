@@ -3,9 +3,10 @@
   "private": true,
   "packageManager": "bun@1.2.21",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "bun run fonts && next dev",
+    "build": "bun run fonts && next build",
     "start": "next start",
+    "fonts": "bun run scripts/fetch-licensed-fonts.ts",
     "lint": "biome check src/ scripts/ *.ts",
     "lint:fix": "biome check --write src/ scripts/ *.ts",
     "format": "bun run format:biome",
