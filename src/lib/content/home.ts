@@ -60,7 +60,7 @@ interface HeroContent {
 
 export const heroContent: HeroContent = {
   name: "Geir Ólafsson",
-  role: "Design engineer and creative director",
+  role: "Designer",
 };
 
 // ---- Introduction -----------------------------------------------------------
