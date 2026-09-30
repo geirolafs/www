@@ -36,6 +36,11 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
   for a word, a line or a lone sentence. Set the token; never rely on
   `font-weight: normal`. Nothing below 400 — muted text is colour, not weight.
 - **Type styles come from Figma.** If a value isn't there, ask.
+- **Exception: `/localhost/hyphenation`.** A standalone page set in Geist
+  (text, UI) and Bespoke Serif (titles, lede, editor text), not Same Univers,
+  with its own `--text-hy-*` scale and `font-hy-text` / `font-hy-title`
+  families. The two rules above don't apply there: it uses Geist's weight
+  range (100–900) on purpose.
 - **`/localhost/*` experiments stand alone.** No site header, footer or back
   link; titles have no site suffix (`localhost/layout.tsx`). The `/localhost`
   index itself keeps the site look.

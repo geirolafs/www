@@ -20,8 +20,6 @@ export const localhostContent = {
     heading: "localhost:3000/localhost",
     description: "",
   },
-  /** Link from an experiment page back to the index. */
-  backLabel: "← localhost",
   /** Accessible name for the reel of experiments on the index. */
   listLabel: "Experiments",
   experiments: [
@@ -43,6 +41,13 @@ export const localhostContent = {
       title: "Glass sculpture",
       description: "A WebGPU glass form on a turntable, lit by the cursor.",
       preview: "/localhost/previews/glass-sculpture.webp",
+    },
+    {
+      href: "/localhost/hyphenation",
+      title: "Hyphenation",
+      description:
+        "Soft hyphens and Icelandic typesetting, from the 2020 Árni Magnússon patterns.",
+      preview: "/localhost/previews/hyphenation.webp",
     },
     {
       href: "/localhost/particle-hover",

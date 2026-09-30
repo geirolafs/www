@@ -17,7 +17,25 @@ import { extendTailwindMerge } from "tailwind-merge";
  * @see https://github.com/dcastil/tailwind-merge/blob/main/docs/configuration.md
  */
 export const THEME_SCALES = {
-  text: ["display", "body", "prose", "meta", "link", "label"],
+  // `hy-*` are only /localhost/hyphenation.
+  text: [
+    "display",
+    "body",
+    "prose",
+    "meta",
+    "link",
+    "label",
+    "hy-hero",
+    "hy-title",
+    "hy-lede",
+    "hy-stat",
+    "hy-label",
+    "hy-body",
+    "hy-nav",
+    "hy-control",
+    "hy-editor",
+    "hy-mark",
+  ],
   // `medium` and `semibold` are Tailwind defaults, so listing them changes
   // nothing — but it keeps the invariant "everything in @theme appears here"
   // simple enough to assert.
