@@ -15,6 +15,7 @@
     "generate:ball": "bun run scripts/render-metal-ball.ts",
     "generate:blur": "bun run scripts/generate-portfolio-blur.ts",
     "generate:posters": "bun run scripts/generate-portfolio-posters.ts",
+    "generate:skiptingar": "bun run src/packages/skiptingar/scripts/build-data.ts",
     "test": "bun test",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
