@@ -46,6 +46,24 @@ const LANTERN_STYLE: CSSProperties = {
 
 const FILL_STYLE: CSSProperties = { backgroundImage: GRADIENT };
 
+/** How far the glow carries past the page's top and bottom edges. */
+const BLEED = "50lvh";
+
+/**
+ * The glow's end colours, carried past the page's top and bottom so an
+ * overscroll shows the glow rather than a bare edge. Border-image outsets are
+ * ink overflow: they paint outside the box without adding scroll height, as a
+ * taller box would. No `fill`, so the box itself stays empty and only the
+ * outsets paint; a 1px slice stretches the gradient's first and last rows
+ * into them. `no-clip` lets the mask reach past the border box to fade them.
+ */
+const BLEED_STYLE: CSSProperties = {
+  ...GLOW_STYLE,
+  backgroundImage: undefined,
+  borderImage: `${GRADIENT} 1 / ${BLEED} 0 / ${BLEED} 0`,
+  maskClip: "no-clip",
+};
+
 /** Frame-rate-independent step of `from` towards `to` with time constant `tau`. */
 function approach(from: number, to: number, dt: number, tau: number) {
   return to + (from - to) * Math.exp(-dt / tau);
@@ -116,6 +134,7 @@ export function AmbientStripe({
 
   const layerRef = useRef<HTMLDivElement>(null);
   const spreadRef = useRef<HTMLDivElement>(null);
+  const bleedRef = useRef<HTMLDivElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
   const lanternRef = useRef<HTMLDivElement>(null);
   const lanternInnerRef = useRef<HTMLDivElement>(null);
@@ -187,7 +206,12 @@ export function AmbientStripe({
             : WAKE_RELEASE_MS / 2
         );
 
-        spreadRef.current.style.transform = `translate3d(0, ${trail.toFixed(2)}px, 0) scaleX(${(1 + energy * wake.spread * strength).toFixed(4)})`;
+        const spread = `scaleX(${(1 + energy * wake.spread * strength).toFixed(4)})`;
+        spreadRef.current.style.transform = `translate3d(0, ${trail.toFixed(2)}px, 0) ${spread}`;
+        // Same widening, no trail: the bleed is one colour top to bottom.
+        if (bleedRef.current) {
+          bleedRef.current.style.transform = spread;
+        }
         haloRef.current.style.transform = `translate3d(0, ${(trail * 1.6).toFixed(2)}px, 0) scaleX(2.2)`;
         haloRef.current.style.opacity = Math.min(
           1,
@@ -358,6 +382,27 @@ export function AmbientStripe({
             />
           </div>
         )}
+      </div>
+      {/* Outside the clipped layer above, which would cut the outsets off.
+          Same breath, so the bleed pulses with the glow it continues. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 left-0 -z-10"
+      >
+        <div
+          className={cn(
+            "absolute inset-y-0 left-0 origin-left",
+            breath > 0 && "animate-ambient-breath"
+          )}
+          style={{ "--breath-strength": breath * strength } as CSSProperties}
+        >
+          <div
+            className="absolute inset-y-0 left-0 origin-left"
+            key={variant}
+            ref={bleedRef}
+            style={BLEED_STYLE}
+          />
+        </div>
       </div>
       {showBar && (
         <div
