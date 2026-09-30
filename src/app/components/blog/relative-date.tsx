@@ -55,11 +55,13 @@ export function RelativeDate({ date, className }: Props) {
     setRelativeDate(formatRelativeDate(date));
   }, [date]);
 
-  // Format absolute date for SSR
+  // Date-only strings parse as UTC midnight; format in UTC too, or a browser
+  // west of UTC would hydrate the day before the server's HTML.
   const absoluteDate = new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 
   return (
