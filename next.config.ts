@@ -29,6 +29,16 @@ const nextConfig: NextConfig = {
   // errors, no effects, static HTML. Wildcards cover the DHCP range.
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "*.local"],
 
+  // `.wgsl` imports compile to vgpu shader sources (the glass-sculpture lab).
+  turbopack: {
+    rules: {
+      "*.wgsl": {
+        loaders: ["@vgpu/wgsl/loader-webpack"],
+        as: "*.js",
+      },
+    },
+  },
+
   // Required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
 

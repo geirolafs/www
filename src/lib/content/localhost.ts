@@ -39,6 +39,12 @@ export const localhostContent = {
       preview: "/localhost/previews/ambient-stripe.webp",
     },
     {
+      href: "/localhost/glass-sculpture",
+      title: "Glass sculpture",
+      description: "A WebGPU glass form on a turntable, lit by the cursor.",
+      preview: "/localhost/previews/glass-sculpture.webp",
+    },
+    {
       href: "/localhost/particle-hover",
       title: "Particle hover",
       description: "Particles that gather where the cursor is.",
