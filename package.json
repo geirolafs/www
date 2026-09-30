@@ -41,6 +41,7 @@
     "@types/react-dom": "^19.3.0",
     "baseline-browser-mapping": "^2.11.26",
     "prettier": "^3.9.9",
+    "react-grab": "^0.2.0",
     "sharp": "^0.35.5",
     "typescript": "^7.0.2",
     "ultracite": "^7.12.1"
