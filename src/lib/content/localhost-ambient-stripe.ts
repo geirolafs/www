@@ -1,6 +1,7 @@
 /**
- * Copy for /localhost/ambient-stripe: the variant picker's labels, and a line
- * on what each variant is doing so the difference is nameable while testing.
+ * Copy for /localhost/ambient-stripe: the settings panel's labels — presets,
+ * variants, lantern steps, blends and the sliders — and a line on what each
+ * variant and blend is doing, so the difference is nameable while testing.
  */
 
 export type AmbientStripeVariant =
@@ -13,6 +14,9 @@ export type AmbientStripeVariant =
 /** The lantern's tuning steps, compared on the page; see `LANTERN_STEPS`. */
 export type LanternStepId = "magnet" | "snappier" | "stronger";
 
+/** How the glow meets the images it overlaps; see `BLENDS` in config. */
+export type AmbientStripeBlend = "normal" | "multiply" | "wash";
+
 type VariantCopy = {
   id: AmbientStripeVariant;
   label: string;
@@ -21,12 +25,38 @@ type VariantCopy = {
 
 export const ambientStripeContent = {
   /** Accessible name for the floating picker. */
-  panelLabel: "Ambient stripe variants",
+  panelLabel: "Ambient stripe settings",
+  hideLabel: "Hide panel",
+  showLabel: "Show panel",
   strengthLabel: "Strength",
   barLabel: "10px bar",
+  backgroundLabel: "Background",
+  tintLabel: "Stripe tint",
+  grainLabel: "Grain",
+  coreLabel: "Edge core",
   presetsLabel: "Presets",
   presets: [{ id: "1", label: "Preset 1" }],
   lanternStepLabel: "Lantern step",
+  blendLabel: "Blend",
+  blends: [
+    {
+      id: "normal",
+      label: "Normal",
+      description: "Painted over the images: a haze.",
+    },
+    {
+      id: "multiply",
+      label: "Multiply",
+      description:
+        "A coloured gel over the images; the same glow on white, where multiply changes nothing.",
+    },
+    {
+      id: "wash",
+      label: "Multiply + wash",
+      description:
+        "The gel, then the images take the sky's colour at their own brightness: a dusk duotone that fades with the glow.",
+    },
+  ] satisfies { id: AmbientStripeBlend; label: string; description: string }[],
   lanternSteps: [
     { id: "magnet", label: "1 Magnet" },
     { id: "snappier", label: "2 Snappier" },

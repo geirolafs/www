@@ -29,12 +29,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * The home page, verbatim, with `Stripe` swapped for the ambient one — the
- * glow only means anything against the real page's gutter, text and images.
- * The glow runs the full page, top to bottom, so it sits in a wrapper around
- * everything rather than in the home page's below-the-hero one. That wrapper
- * is `isolate` so the glow's `-z-10` stays in front of the page background;
- * see `ambient-stripe.tsx`.
+ * The home page, verbatim, with `SiteStripe` swapped for the lab — the glow
+ * only means anything against the real page's gutter, text and images. The
+ * glow runs the full page, top to bottom, so it sits in a wrapper around
+ * everything, as it does on the site. That wrapper
+ * is `isolate` so the glow's `-z-10` stays in front of the page background,
+ * under all the text. The carousel alone drops to `-z-20`, under the glow, so
+ * the glow is the one thing laid over the images; see `ambient-stripe.tsx`.
  */
 export default function Page() {
   return (
@@ -44,11 +45,18 @@ export default function Page() {
       <HeaderBar />
       <MetalBall />
       <NameRole />
-      <div className="relative mt-section">
+      {/* The carousel below sits at `-z-20`, and a negative layer loses hit
+          tests to the in-flow boxes between it and the isolated wrapper, this
+          one included. So this box takes no pointer events of its own and
+          hands them back to its sections, and the carousel stays
+          scrollable. */}
+      <div className="pointer-events-none relative mt-section [&>*]:pointer-events-auto">
         <Introduction />
         <Availability />
         <SelectedWork />
-        <PortfolioCarousel />
+        <div className="relative -z-20">
+          <PortfolioCarousel />
+        </div>
         <HowIWork />
         <Experience />
         <Awards />

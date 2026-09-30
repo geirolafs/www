@@ -25,10 +25,10 @@ export const THEME_SCALES = {
   leading: ["prose"],
   spacing: [
     "site",
-    "stripe",
     "row",
     "footerrow",
     "footerpad",
+    "footergap",
     "section",
     "hero",
     "ball",

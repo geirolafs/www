@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ContactFooter, HeaderBar, RevealObserver, Stripe } from "@/app/components/home";
+import {
+  ContactFooter,
+  HeaderBar,
+  RevealObserver,
+  SiteStripe,
+} from "@/app/components/home";
 import { CustomMDX } from "@/components/blog/mdx";
 import { PostViewTracker } from "@/components/blog/post-view-tracker";
 import { NotesPosts } from "@/components/blog/posts";
@@ -81,7 +86,8 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
   const relatedPosts = allPosts.filter(p => p.slug !== slug);
 
   return (
-    <>
+    <div className="relative isolate">
+      <SiteStripe />
       <PostViewTracker
         slug={post.slug}
         title={post.metadata.title}
@@ -160,8 +166,6 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
       </SectionWrapper>
 
       <div className="relative mt-section">
-        <Stripe />
-
         {/* The meta takes the entry row's year column (4–5) and the prose
             takes the introduction's measure (6–11). 34em against
             `--text-prose` is 680px and that column is 684 at 1440, so the
@@ -196,6 +200,6 @@ export default async function ({ params }: { params: Promise<{ slug: string }> }
 
         <ContactFooter />
       </div>
-    </>
+    </div>
   );
 }

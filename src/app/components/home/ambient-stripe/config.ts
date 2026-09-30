@@ -1,4 +1,5 @@
 import type {
+  AmbientStripeBlend,
   AmbientStripeVariant,
   LanternStepId,
 } from "@/lib/content/localhost-ambient-stripe";
@@ -36,8 +37,8 @@ function erf(x: number) {
 }
 
 /** Share of a blurred half-plane's light at `d` px inside its edge. */
-function blurredEdge(d: number) {
-  return 0.5 * (1 + erf(d / (SIGMA_PX * Math.SQRT2)));
+function blurredEdge(d: number, sigma: number) {
+  return 0.5 * (1 + erf(d / (sigma * Math.SQRT2)));
 }
 
 /**
@@ -48,10 +49,10 @@ function blurredEdge(d: number) {
 const EDGE_STOPS = 48;
 
 /** Mask stops for a blurred edge across `0 → length` px, with the edge at `edge`. */
-function edgeStops(length: number, edge: number, direction: 1 | -1) {
+function edgeStops(length: number, edge: number, sigma: number, direction: 1 | -1) {
   return Array.from({ length: EDGE_STOPS }, (_, i) => {
     const x = (i / (EDGE_STOPS - 1)) * length;
-    const a = blurredEdge(direction * (edge - x));
+    const a = blurredEdge(direction * (edge - x), sigma);
     return `rgb(0 0 0 / ${a.toFixed(3)}) ${x.toFixed(1)}px`;
   }).join(", ");
 }
@@ -64,7 +65,21 @@ function edgeStops(length: number, edge: number, direction: 1 | -1) {
 export const GRADIENT = "linear-gradient(180deg in oklab, var(--gradient-ambient-stops))";
 
 /** The glow's horizontal falloff: bright at the page edge, gone by 150px. */
-export const GLOW_MASK = `linear-gradient(to right, ${edgeStops(GLOW_WIDTH_PX, EDGE_PX, 1)})`;
+export const GLOW_MASK = `linear-gradient(to right, ${edgeStops(GLOW_WIDTH_PX, EDGE_PX, SIGMA_PX, 1)})`;
+
+/**
+ * The edge core, after the two falloffs in the vgpu triangle-led example: a
+ * thin band hugging the page edge inside the wide glow, so the edge reads as
+ * where the light comes from, without the 10px bar. The same blurred edge as
+ * the glow, much tighter. It is multiplied over the glow, so it deepens the
+ * glow's own colour at each height rather than painting a new one: pale
+ * blue on pale blue goes bluer.
+ */
+const CORE_EDGE_PX = 4;
+const CORE_SIGMA_PX = 5;
+/** Past this the core's CDF is under 1%. */
+export const CORE_WIDTH_PX = 24;
+export const CORE_MASK = `linear-gradient(to right, ${edgeStops(CORE_WIDTH_PX, CORE_EDGE_PX, CORE_SIGMA_PX, 1)})`;
 
 /**
  * Per variant, which of the three motions are on and how much. The
@@ -189,23 +204,90 @@ export function lanternMask(falloff: number) {
   return `radial-gradient(85% 44% at 0% 50%, ${stops.join(", ")}, transparent)`;
 }
 
+/**
+ * How the glow meets what it overlaps, now that it sits over the page.
+ *
+ * On a white page most blend modes lose the glow: screen, overlay,
+ * soft-light and color all leave white as white. Multiply is the one that
+ * keeps it exactly: the glow times white is the glow, so the page looks as it
+ * did, and over an image it becomes a coloured gel, detail kept. `color`
+ * takes the glow's hue and saturation and the backdrop's brightness, so over
+ * the pale glow on white it changes next to nothing, and over an image it
+ * recolours it at its own brightness: a duotone in the sky's colours. The
+ * wash is that, laid over the gel.
+ *
+ * The blend is set on the outermost layers, the ones at `-z-10`: a blend mode
+ * only sees the backdrop inside its own stacking context, and the breath and
+ * wake wrappers each make one.
+ */
+export const BLENDS: Record<
+  AmbientStripeBlend,
+  { mode: "normal" | "multiply"; wash: boolean }
+> = {
+  normal: { mode: "normal", wash: false },
+  multiply: { mode: "multiply", wash: false },
+  wash: { mode: "multiply", wash: true },
+};
+
+/** The wash's opacity at full; it fades out with the glow's own mask. */
+export const WASH_OPACITY = 0.7;
+
+/**
+ * The lab's page colour: an off-white with a warm green-grey cast, after a
+ * photographed CRT page (buero zz berlin). The photo itself reads #adafa2,
+ * too dim for a page, so this is its hue lifted most of the way to white.
+ * The site's own background stays `#fff`; see `--color-background`.
+ */
+export const DEFAULT_BACKGROUND = "#ebebe3";
+
+/** A hint, not a wash: at 15% the page only leans towards the stripe. */
+export const DEFAULT_TINT = 0.15;
+
+/**
+ * Steps across the page's height for the tint. The page colour only changes
+ * when the viewport's middle crosses into a new step, so a scroll repaints the
+ * background a few hundred times over the whole page, not every frame; at the
+ * tint's strength one step moves a channel by well under one level.
+ */
+export const TINT_STEPS = 400;
+
 /** Every setting the page's panel holds, as a preset can capture it. */
 export type AmbientStripeSettings = {
   variant: AmbientStripeVariant;
   lanternStep: LanternStepId;
   strength: number;
   showBar: boolean;
+  /** Grain in 8-bit levels; see `grain.ts`. */
+  grain: number;
+  /** Edge core opacity; 0 is off. See `CORE_MASK`. */
+  core: number;
+  blend: AmbientStripeBlend;
+  /** Page colour, as a hex for the colour input. */
+  background: string;
+  /** How much of the stripe's colour in view tints the page, 0–1; see `tint.ts`. */
+  tint: number;
 };
 
 /**
- * Settings picked by eye on the page and kept. Ids match the labels in
- * `ambientStripeContent.presets`.
+ * The site's stripe: what `SiteStripe` renders on every page. It is preset 1,
+ * picked by eye on /localhost/ambient-stripe. Change it there, then here.
+ */
+export const SITE_STRIPE: AmbientStripeSettings = {
+  variant: "Breath+wake+lantern",
+  lanternStep: "stronger",
+  strength: 0.45,
+  showBar: false,
+  grain: 3,
+  core: 0.65,
+  blend: "normal",
+  background: "#ffffff",
+  tint: 0.06,
+};
+
+/**
+ * Settings picked by eye on the page and kept. Keys match the ids in
+ * `ambientStripeContent.presets`. Preset 1 is the site's stripe.
  */
 export const PRESETS: Record<string, AmbientStripeSettings> = {
-  "1": {
-    variant: "Breath+wake+lantern",
-    lanternStep: "stronger",
-    strength: 0.45,
-    showBar: false,
-  },
+  "1": SITE_STRIPE,
 };

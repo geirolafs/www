@@ -1,13 +1,17 @@
 "use client";
 
-import { type CSSProperties, useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import type {
+  AmbientStripeBlend,
   AmbientStripeVariant,
   LanternStepId,
 } from "@/lib/content/localhost-ambient-stripe";
 import { useLiveReducedMotion } from "@/lib/hooks/use-live-reduced-motion";
 import { cn } from "@/lib/utils";
 import {
+  BLENDS,
+  CORE_MASK,
+  CORE_WIDTH_PX,
   GLOW_MASK,
   GLOW_OPACITY,
   GLOW_WIDTH_PX,
@@ -21,7 +25,9 @@ import {
   WAKE_ATTACK_MS,
   WAKE_FULL_SPEED,
   WAKE_RELEASE_MS,
+  WASH_OPACITY,
 } from "./config";
+import { createGrainTile, GRAIN_TILE_PX } from "./grain";
 
 /** Same threshold as the site stripe; see `stripe.tsx`. */
 const REVEAL_THRESHOLD_PX = 100;
@@ -46,6 +52,21 @@ const LANTERN_STYLE: CSSProperties = {
 
 const FILL_STYLE: CSSProperties = { backgroundImage: GRADIENT };
 
+/**
+ * A layer's gradient with the grain tile multiplied into it, so the grain
+ * stays inside the layer and fades with its mask; see `grain.ts`.
+ */
+function grainBackground(tile: string | null): CSSProperties {
+  if (!tile) {
+    return { backgroundImage: GRADIENT };
+  }
+  return {
+    backgroundImage: `url(${tile}), ${GRADIENT}`,
+    backgroundBlendMode: "multiply, normal",
+    backgroundSize: `${GRAIN_TILE_PX}px ${GRAIN_TILE_PX}px, 100% 100%`,
+  };
+}
+
 /** How far the glow carries past the page's top and bottom edges. */
 const BLEED = "50lvh";
 
@@ -56,12 +77,32 @@ const BLEED = "50lvh";
  * taller box would. No `fill`, so the box itself stays empty and only the
  * outsets paint; a 1px slice stretches the gradient's first and last rows
  * into them. `no-clip` lets the mask reach past the border box to fade them.
+ *
+ * Known and kept: a 1px line where the bleed meets the page glow, while the
+ * breath or wake is running. The two are separate composited layers, each
+ * edge is sampled on its own, and they don't meet cleanly; with "still" the
+ * line is gone. Merging them into one element would fix it, but the page glow
+ * would have to leave the clipped layer and give up the wake's trail.
  */
+const BLEED_BORDER_IMAGE = `${GRADIENT} 1 / ${BLEED} 0 / ${BLEED} 0`;
 const BLEED_STYLE: CSSProperties = {
   ...GLOW_STYLE,
   backgroundImage: undefined,
-  borderImage: `${GRADIENT} 1 / ${BLEED} 0 / ${BLEED} 0`,
+  borderImage: BLEED_BORDER_IMAGE,
   maskClip: "no-clip",
+};
+
+/**
+ * The edge core carried into the bleed the same way, so an overscroll shows
+ * no seam where the core stops. No grain here: a border image is one layer,
+ * and the bleed is a single colour top to bottom, so it has no fade to band.
+ */
+const CORE_BLEED_STYLE: CSSProperties = {
+  width: CORE_WIDTH_PX,
+  borderImage: BLEED_BORDER_IMAGE,
+  maskImage: CORE_MASK,
+  maskClip: "no-clip",
+  mixBlendMode: "multiply",
 };
 
 /** Frame-rate-independent step of `from` towards `to` with time constant `tau`. */
@@ -92,15 +133,23 @@ type AmbientStripeProps = {
   showBar: boolean;
   /** Which of the lantern's tuning steps to run; see `LANTERN_STEPS`. */
   lanternStep: LanternStepId;
+  /** Grain's mean darkening in 8-bit levels, against banding; 0 is off. */
+  grain: number;
+  /** Opacity of the thin core at the page edge; 0 is off. See `CORE_MASK`. */
+  core: number;
+  /** How the glow meets the images it overlaps; see `BLENDS`. */
+  blend: AmbientStripeBlend;
 };
 
 /**
  * A candidate replacement for `Stripe`: a glow in the stripe's gradient, with
  * the 10px bar over it optionally. Spans whatever `relative` wrapper it is
  * placed in — the whole page, on the experiment — which must also be
- * `isolate` — the glow sits at `-z-10` so it lights the
- * page *behind* the text in the gutter rather than tinting it, and without
- * the isolation it would drop behind the page background.
+ * `isolate`: the glow sits at `-z-10`, under all the page's text, and without
+ * the isolation it would drop behind the page background. The one thing it
+ * paints over is the carousel, which the page drops to `-z-20` beneath it;
+ * the cards are positioned, so at `auto` they would stack over the glow. It
+ * takes no pointer events, and the bar sits over everything at `z-30`.
  *
  * Motion is layered so each part owns one transform:
  *
@@ -124,7 +173,13 @@ export function AmbientStripe({
   strength,
   showBar,
   lanternStep,
+  grain,
+  core,
+  blend,
 }: AmbientStripeProps) {
+  const blending = BLENDS[blend];
+  const blendStyle: CSSProperties | undefined =
+    blending.mode === "normal" ? undefined : { mixBlendMode: blending.mode };
   const step = LANTERN_STEPS[lanternStep];
   const reduced = useLiveReducedMotion();
   const tuning = VARIANTS[variant];
@@ -136,8 +191,44 @@ export function AmbientStripe({
   const spreadRef = useRef<HTMLDivElement>(null);
   const bleedRef = useRef<HTMLDivElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
+  const haloBleedRef = useRef<HTMLDivElement>(null);
   const lanternRef = useRef<HTMLDivElement>(null);
   const lanternInnerRef = useRef<HTMLDivElement>(null);
+
+  // Drawn once per grain setting, at the device's pixel ratio, and handed
+  // over as a blob URL. A tile that lands after the setting has moved on is
+  // dropped.
+  const [grainTile, setGrainTile] = useState<string | null>(null);
+  useEffect(() => {
+    if (grain <= 0) {
+      setGrainTile(null);
+      return;
+    }
+    let cancelled = false;
+    createGrainTile(grain, window.devicePixelRatio || 1).then(next => {
+      if (cancelled) {
+        if (next) {
+          URL.revokeObjectURL(next);
+        }
+        return;
+      }
+      setGrainTile(next);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [grain]);
+  // Each tile is revoked only once the next one has rendered in its place, so
+  // the layers never point at a revoked URL while the new tile is drawing.
+  useEffect(
+    () => () => {
+      if (grainTile) {
+        URL.revokeObjectURL(grainTile);
+      }
+    },
+    [grainTile]
+  );
+  const grainStyle = grainBackground(grainTile);
 
   // The bar's reveal, as `Stripe` does it, minus the sessionStorage mirror.
   // The glow does not wait for it: it is there from the first frame.
@@ -158,6 +249,17 @@ export function AmbientStripe({
     };
   }, []);
 
+  /** Read by the frame loop, so tuning doesn't restart it (and drop its springs). */
+  const tuningRef = useRef({ strength, step });
+  /** The running loop's wake-up, so a tuning change can restart a sleeping loop. */
+  const wakeUpRef = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    tuningRef.current = { strength, step };
+    // A settled loop is asleep; wake it so the new tuning shows without a
+    // scroll or pointer move.
+    wakeUpRef.current?.();
+  }, [strength, step]);
+
   useEffect(() => {
     if (!(wake || lantern)) {
       return;
@@ -177,6 +279,7 @@ export function AmbientStripe({
     let innerHeight = 0;
 
     const tick = (t: number) => {
+      const { strength, step } = tuningRef.current;
       const dt = lastT ? Math.min(t - lastT, 64) : 16;
       lastT = t;
       let settled = true;
@@ -213,10 +316,12 @@ export function AmbientStripe({
           bleedRef.current.style.transform = spread;
         }
         haloRef.current.style.transform = `translate3d(0, ${(trail * 1.6).toFixed(2)}px, 0) scaleX(2.2)`;
-        haloRef.current.style.opacity = Math.min(
-          1,
-          energy * wake.lift * strength
-        ).toFixed(4);
+        const haloOpacity = Math.min(1, energy * wake.lift * strength).toFixed(4);
+        haloRef.current.style.opacity = haloOpacity;
+        // A fling to the top ends in the overscroll, with the halo still up.
+        if (haloBleedRef.current) {
+          haloBleedRef.current.style.opacity = haloOpacity;
+        }
 
         if (target > EPSILON || energy > EPSILON || Math.abs(trail) > 0.05) {
           settled = false;
@@ -322,15 +427,17 @@ export function AmbientStripe({
       window.addEventListener("pointermove", onPointerMove, { passive: true });
       document.addEventListener("pointerout", onPointerOut);
     }
+    wakeUpRef.current = wakeUp;
     wakeUp();
 
     return () => {
+      wakeUpRef.current = null;
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", wakeUp);
       window.removeEventListener("pointermove", onPointerMove);
       document.removeEventListener("pointerout", onPointerOut);
     };
-  }, [wake, lantern, strength, step]);
+  }, [wake, lantern]);
 
   return (
     <>
@@ -342,6 +449,7 @@ export function AmbientStripe({
         aria-hidden="true"
         className="pointer-events-none absolute inset-y-0 left-0 -z-10 overflow-y-clip"
         ref={layerRef}
+        style={blendStyle}
       >
         <div
           className={cn(
@@ -355,16 +463,33 @@ export function AmbientStripe({
             key={variant}
             ref={spreadRef}
           >
-            <div className="absolute inset-y-0 left-0" style={GLOW_STYLE} />
+            <div
+              className="absolute inset-y-0 left-0"
+              style={{ ...GLOW_STYLE, ...grainStyle }}
+            />
           </div>
           {wake && (
             <div
               className="absolute inset-y-0 left-0 origin-left"
               ref={haloRef}
-              style={{ ...GLOW_STYLE, opacity: 0 }}
+              style={{ ...GLOW_STYLE, ...grainStyle, opacity: 0 }}
             />
           )}
         </div>
+        {/* Outside the breath and the wake: the glow swells and spreads, but
+            the edge it comes from holds still. */}
+        {core > 0 && (
+          <div
+            className="absolute inset-y-0 left-0"
+            style={{
+              ...grainStyle,
+              width: CORE_WIDTH_PX,
+              maskImage: CORE_MASK,
+              mixBlendMode: "multiply",
+              opacity: core,
+            }}
+          />
+        )}
         {lantern && (
           <div
             className="absolute top-0 left-0 origin-left"
@@ -378,6 +503,9 @@ export function AmbientStripe({
             <div
               className="absolute top-0 left-0 w-full origin-top-left"
               ref={lanternInnerRef}
+              // No grain: the lantern is scaled and moved on fractional
+              // offsets every frame, which would stretch the dither and make
+              // it shimmer.
               style={FILL_STYLE}
             />
           </div>
@@ -388,6 +516,7 @@ export function AmbientStripe({
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-y-0 left-0 -z-10"
+        style={blendStyle}
       >
         <div
           className={cn(
@@ -402,12 +531,37 @@ export function AmbientStripe({
             ref={bleedRef}
             style={BLEED_STYLE}
           />
+          {/* The halo's spread is fixed, and its trail moves nothing in a
+              single colour, so only its opacity follows it here. */}
+          {wake && (
+            <div
+              className="absolute inset-y-0 left-0 origin-left"
+              ref={haloBleedRef}
+              style={{ ...BLEED_STYLE, opacity: 0, transform: "scaleX(2.2)" }}
+            />
+          )}
         </div>
+        {core > 0 && (
+          <div
+            className="absolute inset-y-0 left-0"
+            style={{ ...CORE_BLEED_STYLE, opacity: core }}
+          />
+        )}
       </div>
+      {/* Over the page layers above, in DOM order. Static: the colour it
+          takes is the gradient's at each height, which the motion never
+          changes. */}
+      {blending.wash && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 -z-10"
+          style={{ ...GLOW_STYLE, mixBlendMode: "color", opacity: WASH_OPACITY }}
+        />
+      )}
       {showBar && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[10px]"
+          className="pointer-events-none absolute inset-y-0 left-0 z-30 w-[10px]"
           style={FILL_STYLE}
           data-stripe-reveal
         />

@@ -1,4 +1,9 @@
-import { ContactFooter, HeaderBar, RevealObserver, Stripe } from "@/app/components/home";
+import {
+  ContactFooter,
+  HeaderBar,
+  RevealObserver,
+  SiteStripe,
+} from "@/app/components/home";
 import { AvailabilityLine } from "@/app/components/home/availability-line";
 import { SectionWrapper } from "@/app/components/home/section-wrapper";
 import { TextLink } from "@/app/components/home/text-link";
@@ -6,8 +11,9 @@ import type { TrustPageContent } from "@/lib/content/trust";
 
 /**
  * Shared shell for /about, /contact and /privacy: the notes index's hero pair
- * on columns 6–12, then the stripe wrapper holding the prose on the
- * introduction's measure (columns 6–11) and the footer. One component because
+ * on columns 6–12, then the wrapper holding the prose on the
+ * introduction's measure (columns 6–11) and the footer. The stripe spans the
+ * whole page. One component because
  * the three pages differ only in copy — see `content/trust.ts`.
  *
  * Body copy is `text-prose` / `font-book` — multi-line paragraphs, so Book is
@@ -16,7 +22,8 @@ import type { TrustPageContent } from "@/lib/content/trust";
  */
 export function TrustPage({ content }: { content: TrustPageContent }) {
   return (
-    <>
+    <div className="relative isolate">
+      <SiteStripe />
       <RevealObserver />
       <HeaderBar />
       <SectionWrapper gapVariant="hero">
@@ -30,7 +37,6 @@ export function TrustPage({ content }: { content: TrustPageContent }) {
         </div>
       </SectionWrapper>
       <div className="relative mt-section">
-        <Stripe />
         <SectionWrapper gapVariant="none">
           <div className="flex flex-col gap-md lg:col-span-6 lg:col-start-6">
             {content.paragraphs.map(paragraph => (
@@ -63,6 +69,6 @@ export function TrustPage({ content }: { content: TrustPageContent }) {
         </SectionWrapper>
         <ContactFooter />
       </div>
-    </>
+    </div>
   );
 }

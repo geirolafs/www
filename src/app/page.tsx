@@ -11,16 +11,21 @@ import {
   PortfolioCarousel,
   RevealObserver,
   SelectedWork,
-  Stripe,
+  SiteStripe,
 } from "@/app/components/home";
 
 /**
  * Header reveals on load; content sections wait for scroll or the idle fallback.
- * The hero stays visible. The stripe owns its separate scroll threshold.
+ * The hero stays visible. The stripe runs the full page, top to bottom, so it
+ * sits in a `relative isolate` wrapper around everything: its `-z-10` glow
+ * stays in front of the page background, under all the text. The carousel
+ * alone drops to `-z-20`, under the glow, so the glow is the one thing laid
+ * over the images; see `ambient-stripe.tsx`.
  */
 export default function Page() {
   return (
-    <>
+    <div className="relative isolate">
+      <SiteStripe />
       <RevealObserver />
       <HeaderBar />
       {/* Not a reveal target either: it is a static render until the visitor
@@ -29,19 +34,23 @@ export default function Page() {
       <MetalBall />
       <NameRole />
       {/* The rhythm below the hero belongs to this wrapper, not to the
-          Introduction: the stripe spans the wrapper, and the frame starts it
-          at the top of the introduction — not 172px above it. */}
-      <div className="relative mt-section">
-        <Stripe />
+          Introduction. The carousel below sits at `-z-20`, and a negative
+          layer loses hit tests to the in-flow boxes between it and the
+          isolated wrapper, this one included. So this box takes no pointer
+          events of its own and hands them back to its sections, and the
+          carousel stays scrollable. */}
+      <div className="pointer-events-none relative mt-section [&>*]:pointer-events-auto">
         <Introduction />
         <Availability />
         <SelectedWork />
-        <PortfolioCarousel />
+        <div className="relative -z-20">
+          <PortfolioCarousel />
+        </div>
         <HowIWork />
         <Experience />
         <Awards />
         <ContactFooter />
       </div>
-    </>
+    </div>
   );
 }

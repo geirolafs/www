@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ContactFooter, HeaderBar, RevealObserver, Stripe } from "@/app/components/home";
+import {
+  ContactFooter,
+  HeaderBar,
+  RevealObserver,
+  SiteStripe,
+} from "@/app/components/home";
 import { NotesPosts } from "@/components/blog/posts";
 import { SectionWrapper } from "@/components/home/section-wrapper";
 import { TextLink } from "@/components/home/text-link";
@@ -60,7 +65,8 @@ export default async function ({ params }: { params: Promise<{ tag: string }> })
   const { countSuffix } = notesContent.tag;
 
   return (
-    <>
+    <div className="relative isolate">
+      <SiteStripe />
       <RevealObserver />
       <HeaderBar />
       <SectionWrapper gapVariant="hero">
@@ -83,7 +89,6 @@ export default async function ({ params }: { params: Promise<{ tag: string }> })
         </div>
       </SectionWrapper>
       <div className="relative mt-section">
-        <Stripe />
         <NotesPosts
           gapVariant="none"
           heading={notesContent.tag.label}
@@ -92,6 +97,6 @@ export default async function ({ params }: { params: Promise<{ tag: string }> })
         />
         <ContactFooter />
       </div>
-    </>
+    </div>
   );
 }

@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { ContactFooter, HeaderBar, RevealObserver, Stripe } from "@/app/components/home";
+import {
+  ContactFooter,
+  HeaderBar,
+  RevealObserver,
+  SiteStripe,
+} from "@/app/components/home";
 import { NotesPosts } from "@/components/blog/posts";
 import { SectionWrapper } from "@/components/home/section-wrapper";
 import { siteConfig } from "@/lib/config/site";
@@ -15,16 +20,18 @@ export const metadata: Metadata = {
 
 /**
  * The notes index on the homepage's shell: header bar, a hero pair on
- * columns 6–12, then the stripe wrapper holding the list and the footer.
+ * columns 6–12, then the wrapper holding the list and the footer. The whole
+ * page sits in a `relative isolate` wrapper so the stripe spans it, top to
+ * bottom, under all the text.
  *
  * The list band takes `gapVariant="none"` for the same reason the
- * Introduction does — it is the first band inside the stripe wrapper, and
- * that wrapper carries the rhythm, so the stripe starts level with the
- * pill rather than 172 above it.
+ * Introduction does — it is the first band inside the below-hero wrapper, and
+ * that wrapper carries the rhythm.
  */
 export default function Page() {
   return (
-    <>
+    <div className="relative isolate">
+      <SiteStripe />
       <RevealObserver />
       <HeaderBar />
       <SectionWrapper gapVariant="hero">
@@ -38,10 +45,9 @@ export default function Page() {
         </div>
       </SectionWrapper>
       <div className="relative mt-section">
-        <Stripe />
         <NotesPosts gapVariant="none" />
         <ContactFooter />
       </div>
-    </>
+    </div>
   );
 }

@@ -1,5 +1,17 @@
 "use client";
 
+/*
+ * ARCHIVED — not rendered anywhere. The site's stripe is now the ambient
+ * glow, `SiteStripe` in `./ambient-stripe/site-stripe.tsx`. This is kept for
+ * reference and to restore from.
+ *
+ * It no longer works as it stands: its `w-stripe` width came from the
+ * `--spacing-stripe` token, which was removed from `globals.css` (and from
+ * `THEME_SCALES` in `lib/utils/cn.ts`) when it was archived. Restore both to
+ * bring it back. Its gradient, `--gradient-stripe`, and the reveal CSS and
+ * boot script it drove are all still in place.
+ */
+
 import { useEffect } from "react";
 
 /**

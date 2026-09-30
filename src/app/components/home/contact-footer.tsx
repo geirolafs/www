@@ -20,7 +20,7 @@ export function ContactFooter() {
 
   return (
     <footer
-      className="page-grid mt-section gap-y-group pb-footerpad font-regular text-foreground text-link lg:gap-y-footerrow"
+      className="page-grid mt-footergap gap-y-group pb-footerpad font-regular text-foreground text-link lg:gap-y-footerrow"
       data-reveal="items"
     >
       <div className="grid grid-cols-subgrid content-start gap-y-xl lg:col-span-10 lg:col-start-2">

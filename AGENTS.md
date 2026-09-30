@@ -54,13 +54,19 @@ The site is meant to be nearly still. That's a decision, not an unfinished
 state.
 
 - Animate `transform` and `opacity` only. The hero moves, it doesn't fade — its
-  first paragraph is the LCP element.
+  first paragraph is the LCP element. The one exception is the page tint, which
+  moves `--color-background` with the scroll (`usePageTint` in
+  `components/home/ambient-stripe/tint.ts`).
 - Respect reduced motion with `useLiveReducedMotion()` for anything JS-driven,
   `motion-reduce:` for pure CSS.
-- The stripe is scroll-_triggered_, never scroll-_linked_. Scroll-linked
-  versions have been built and removed three times.
-- The hero ball is the only thing that reacts to the cursor. After changing
-  its shaders, run `bun run generate:ball`.
+- The stripe is the ambient glow (`SiteStripe`, tuned as preset 1 on
+  /localhost/ambient-stripe; change it there and in `SITE_STRIPE`). It
+  breathes, stirs with scroll _speed_ (never position), and warms towards the
+  cursor near the left edge. The page tint is the one scroll-_linked_ effect,
+  deliberately: the background leans a few percent towards the stripe's colour
+  in view. Nothing else is scroll-linked.
+- The hero ball and the stripe's lantern are the only things that react to the
+  cursor. After changing the ball's shaders, run `bun run generate:ball`.
 - `--ease-out` shadows Tailwind's built-in on purpose. Don't "fix" it.
 
 ## Conventions

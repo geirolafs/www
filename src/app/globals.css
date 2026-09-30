@@ -145,13 +145,11 @@
   --grid-margin: var(--spacing-site);
   --grid-gutter: 1.5rem; /* 24 */
 
-  /* The left stripe. 8 → 12, full height, flush left. It is hidden (width 0) until the visitor has
-     scrolled 100px, then grows to this; see "Stripe reveal" below. */
-  --spacing-stripe: calc(clamp(1rem, 0.8064rem + 0.7707vw, 1.5rem) / 2);
-
   /* Footer: separate contact from the colophon with space between rows. */
   --spacing-footerrow: calc(var(--spacing-md) * 6); /* 144 */
   --spacing-footerpad: calc(var(--spacing-md) * 4); /* 96 */
+  /* Above the footer: twice a section gap, since it is where the page ends. */
+  --spacing-footergap: calc(var(--spacing-section) * 2);
 
   /* The hero ball. The frame is 234.18 square and the ball fills it; the
      shadow that bleeds down the page is the full render's 1299 × 1008.
@@ -225,21 +223,33 @@
    ========================================================================== */
 
 :root {
-  /* The left stripe. The gradient itself is static — only the stripe's width
-     is scroll-linked, and a vertical gradient is unaffected by that. */
+  /* The stripe's five colours, named once. Both gradients below are built
+     from these, so a colour changes in one place. */
+  --stripe-navy: #044588;
+  --stripe-blue: #347dc8;
+  --stripe-haze: #ededed;
+  --stripe-pink: #f6bfb3;
+  --stripe-yellow: #ffe577;
+  /* The archived 10px stripe (`home/stripe.tsx`). The gradient itself is
+     static — only the stripe's width changed, and a vertical gradient is
+     unaffected by that. */
   --gradient-stripe: linear-gradient(180deg, var(--gradient-stripe-stops));
-  /* The stops on their own, so a gradient can run them another way — the
-     /localhost/ambient-stripe experiment runs them bottom to top. */
   --gradient-stripe-stops:
-    #044588 0%, #347dc8 8.1731%, #ededed 46.074%, #f6bfb3 76.935%, #ffe577 100%;
-  /* /localhost/ambient-stripe: the stripe's colours as a dusk sky, top of
-     the page down. Blue overhead — the stripe's blues lifted a third of the
-     way to white — paling into haze, then pink, peach and a soft yellow at
-     the horizon. Only the stripe's own colours; the peach is its pink and
-     yellow mixed. Run it `in oklab` so the long fades stay clean. */
+    var(--stripe-navy) 0%, var(--stripe-blue) 8.1731%, var(--stripe-haze) 46.074%,
+    var(--stripe-pink) 76.935%, var(--stripe-yellow) 100%;
+  /* The site's stripe, the ambient glow: the stripe's colours as a dusk sky,
+     top of the page down. Blue overhead — the stripe's blues lifted a third
+     of the way to white — paling into haze, then pink, peach and a soft
+     yellow at the horizon. Only the stripe's own colours; the peach is its
+     pink and yellow mixed. Run it `in oklab` so the long fades stay clean.
+     `usePageTint` reads this list back, so keep every stop's position
+     explicit. */
   --gradient-ambient-stops:
-    color-mix(in oklab, #044588 65%, #fff) 0%, color-mix(in oklab, #347dc8 65%, #fff) 14%,
-    #ededed 50%, #f6bfb3 74%, color-mix(in oklab, #f6bfb3 50%, #ffe577) 88%, #ffe577 100%;
+    color-mix(in oklab, var(--stripe-navy) 65%, #fff) 0%,
+    color-mix(in oklab, var(--stripe-blue) 65%, #fff) 14%, var(--stripe-haze) 50%,
+    var(--stripe-pink) 74%,
+    color-mix(in oklab, var(--stripe-pink) 50%, var(--stripe-yellow)) 88%,
+    var(--stripe-yellow) 100%;
 
   /* The section-label pill. `--pill-inset` is the band it reserves on mobile:
      21.75 above and below a 22.5 pill makes 66, and the wrapper's 24 row gap
@@ -270,9 +280,9 @@
      centres lowercase on its x-height, which still reads high inside the
      outline; capitals stand 0.193em taller again. Tuned by eye on
      /localhost/pills. */
-  --pill-offset-lower: 0.1em;
-  --pill-offset-sentence: 0.12em;
-  --pill-offset-upper: 0.17em;
+  --pill-offset-lower: 0em;
+  --pill-offset-sentence: 0.1em;
+  --pill-offset-upper: 0.1em;
 
   /* Card dimensions stay as drawn; the spacing review opens the gutters. */
   --carousel-card-width: 303.75px;
@@ -315,9 +325,9 @@
      passed as `animate()` options in `reveal-observer.tsx`, because nothing
      else reads it. */
 
-  /* The stripe growing from nothing to `--spacing-stripe` once the visitor
-     has scrolled past the threshold in `stripe.tsx`, and shrinking back on
-     the way up. One value for both directions, so it leaves and returns at
+  /* The stripe's bar growing from nothing to its width once the visitor
+     has scrolled past the threshold in `ambient-stripe.tsx`, and shrinking
+     back on the way up. One value for both directions, so it leaves and returns at
      the same speed. This is the one number in the whole stripe that is
      taste, not geometry — tune here. */
   --duration-stripe-reveal: 900ms;
@@ -754,19 +764,22 @@ article a:active {
 /* ==========================================================================
    Stripe reveal
 
-   The stripe is hidden — `width: 0` — until the visitor has scrolled
-   `REVEAL_THRESHOLD_PX` (100px, in `stripe.tsx`), then grows to
-   `--spacing-stripe` over `--duration-stripe-reveal`; back above the
-   threshold it shrinks away again, same transition. Nothing animates on
-   load.
+   The stripe's bar is hidden — `width: 0` — until the visitor has scrolled
+   `REVEAL_THRESHOLD_PX` (100px, in `ambient-stripe.tsx`), then grows to its
+   10px over `--duration-stripe-reveal`; back above the threshold it shrinks
+   away again, same transition. Nothing animates on load. The bar is off in
+   the site's stripe (`SITE_STRIPE.showBar`), so on the site this only runs
+   when it is switched on — in the lab, or in a future tuning.
 
    Triggered by scroll, not linked to it. A width tied to scroll offset is
    half-finished through the whole middle of the gesture, a state nobody
    designed; a threshold plus a transition means the stripe is only ever
    hidden, shown, or crossing between the two.
 
-   The trigger is `data-stripe="revealed"` on `<html>`, owned by `stripe.tsx`
-   — the threshold and the one-shot listener live there.
+   The trigger is `data-stripe="revealed"` on `<html>`, owned by
+   `AmbientStripe` (`home/ambient-stripe/ambient-stripe.tsx`) — the threshold
+   and the scroll listener live there. The archived `stripe.tsx` owned it
+   before, the same way.
 
    Hidden only while the bundle is alive or still might be — gated on
    `data-reveal-boot`, which is set to "armed" pre-paint by the inline script
@@ -785,9 +798,12 @@ article a:active {
    would be missing on the first frame and grow in 900ms later on a page that
    was already scrolled. The boot script cannot avoid it by checking
    `scrollY`, because it runs during head parse, before the browser has
-   restored anything. So `stripe.tsx` mirrors the revealed state into
-   `sessionStorage` and the boot script sets the attribute from there, ahead
-   of first paint, on a reload or back/forward. No transition runs on a value
+   restored anything. So the archived `stripe.tsx` mirrored the revealed
+   state into `sessionStorage` and the boot script sets the attribute from
+   there, ahead of first paint, on a reload or back/forward. `AmbientStripe`
+   does not write that mirror yet, so for its bar this row does not hold:
+   the boot script's read finds nothing and the bar grows in after
+   hydration. No transition runs on a value
    that was already correct at the first style resolution.
 
    Borrowing `data-reveal-boot` rather than minting a second boot marker is
@@ -797,9 +813,8 @@ article a:active {
    the gate, the only route to a hidden stripe is a live bundle whose visitor
    has not scrolled 100px yet, which is the design.
 
-   `width` rather than `scaleX`, deliberately. The landed value has to be
-   `--spacing-stripe` exactly — the stripe's own width — and a
-   scale would make it a ratio. The element is absolutely positioned,
+   `width` rather than `scaleX`, deliberately. The landed value has to be the
+   bar's width exactly, and a scale would make it a ratio. The element is absolutely positioned,
    `pointer-events: none` and childless, so a width change lays out itself and
    nothing else: one transition on one out-of-flow box, not a per-frame
    scroll handler, which is what makes the layout cost a non-issue.

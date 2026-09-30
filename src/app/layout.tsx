@@ -116,11 +116,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             failed to run.
 
             Second job: on a reload or back/forward to a scrolled position,
-            show the stripe from the first frame. `stripe.tsx` only sets
-            `data-stripe="revealed"` after hydration, and this script can't
-            read `scrollY` (it runs before the browser restores the
-            position), so `stripe.tsx` mirrors the state into
-            `sessionStorage` and this reads it back. Ordinary navigations
+            show the stripe's bar from the first frame. `data-stripe` is only
+            set after hydration (by `AmbientStripe` now, by the archived
+            `stripe.tsx` before it), and this script can't read `scrollY` (it
+            runs before the browser restores the position), so the state is
+            mirrored into `sessionStorage` and this reads it back. Only the
+            archived `stripe.tsx` wrote that mirror; `AmbientStripe` doesn't
+            yet, so for now this read finds nothing and changes nothing. Ordinary navigations
             start at the top and ignore it. Wrapped in `try` and placed last,
             so a storage error falls back to the hidden stripe without
             costing the reveal marker above. */}
