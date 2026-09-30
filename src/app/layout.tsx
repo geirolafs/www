@@ -4,8 +4,8 @@ import "./globals.css";
 // the dynamic notes shells. /react matches Analytics; data groups by path.
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import type { Metadata, Viewport } from "next";
-import dynamic from "next/dynamic";
 import Script from "next/script";
+import { GridOverlayToggle } from "@/components/shell/grid-overlay-toggle";
 import { siteConfig } from "@/lib/config/site";
 import { jsonLd } from "@/lib/utils";
 import { SameUnivers } from "./styles/fonts";
@@ -64,27 +64,6 @@ export const metadata: Metadata = {
     },
   },
 };
-
-/**
- * The shift+G layout grid, development only.
- *
- * The gate has to be on the *import*, not on the element. A plain
- * `{process.env.NODE_ENV === "development" && <GridOverlay />}` reads like it
- * would tree-shake and does not: importing a `"use client"` module from a
- * Server Component registers a client reference, and that reference puts the
- * chunk in the client manifest whether or not the element is ever rendered.
- * Measured — it shipped a 13k chunk referenced from every built page.
- *
- * Behind a conditional `dynamic()` the whole expression constant-folds to
- * `() => null` once `NODE_ENV` is inlined at build time, so the `import()`
- * disappears with the dead branch and no chunk is emitted. If you touch this,
- * grep `.next/static` after a production build rather than assuming.
- * (Tailwind still emits the overlay's two colour utilities, ~150 bytes.)
- */
-const GridOverlay =
-  process.env.NODE_ENV === "development"
-    ? dynamic(() => import("@/components/dev/grid-overlay").then(m => m.GridOverlay))
-    : () => null;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -187,9 +166,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex flex-auto flex-col">{children}</main>
         <Analytics />
         <SpeedInsights />
-        {/* shift+G, as in Figma. In production this is the `() => null` stub
-            defined above, not a dropped element — see the note there. */}
-        <GridOverlay />
+        {/* shift+G, as in Figma. The columns load on the first press. */}
+        <GridOverlayToggle />
       </body>
     </html>
   );
