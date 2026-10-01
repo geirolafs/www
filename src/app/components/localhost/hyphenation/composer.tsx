@@ -56,7 +56,7 @@ export function Composer() {
       <label className="sr-only" htmlFor={id}>
         {liveEditor.textLabel}
       </label>
-      <div className="flex flex-col border border-hy-track bg-background focus-within:border-foreground">
+      <div className="flex flex-col border border-hy-track bg-background shadow-hy-control focus-within:border-foreground hover:border-border">
         <div
           className="overflow-hidden transition-[height] duration-200 ease-out motion-reduce:transition-none"
           // The field's measured height, a live value, not a design token.
@@ -109,8 +109,8 @@ export function Composer() {
             className={cn(
               "grid size-8 shrink-0 place-items-center",
               pending
-                ? "cursor-pointer bg-foreground text-background"
-                : "bg-hy-surface text-muted",
+                ? "cursor-pointer bg-foreground text-background shadow-hy-control hover:bg-foreground/85"
+                : "cursor-not-allowed bg-hy-surface text-muted/60",
               FOCUS_CLASS
             )}
             disabled={!pending}

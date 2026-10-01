@@ -40,7 +40,7 @@ export function InstallCommand({
             <legend className="sr-only">{content.managerLabel}</legend>
             {managers.map(item => (
               <label
-                className="flex h-7 cursor-pointer items-center px-2xs font-hy-mono font-medium text-(--sh-sign) text-hy-caption hover:text-(--sh-keyword) has-checked:bg-background has-checked:text-(--sh-keyword) has-focus-visible:outline-2 has-focus-visible:outline-foreground has-focus-visible:outline-offset-2"
+                className="flex h-7 cursor-pointer items-center px-2xs font-hy-mono font-medium text-(--sh-sign) text-hy-caption hover:text-(--sh-keyword) has-checked:bg-background has-checked:text-(--sh-keyword) has-checked:shadow-hy-control has-focus-visible:outline-2 has-focus-visible:outline-foreground has-focus-visible:outline-offset-2"
                 key={item.id}
               >
                 <input

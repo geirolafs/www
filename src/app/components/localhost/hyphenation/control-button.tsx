@@ -16,7 +16,7 @@ export function ControlButton({ className, children, ...props }: ControlButtonPr
     <button
       className={cn(
         CONTROL_CLASS,
-        "border-hy-track bg-hy-surface text-foreground hover:border-border",
+        "cursor-pointer border-hy-track bg-background text-foreground shadow-hy-control hover:bg-hy-surface",
         className
       )}
       type="button"

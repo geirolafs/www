@@ -76,6 +76,9 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
             />
             <Switch
               checked={settings.pretty}
+              // Settle rag picks every break itself, so `text-wrap` has
+              // nothing left to do while it is on.
+              inactive={settings.rag}
               label={content.textWrap.label}
               onChange={value => setSetting("pretty", value)}
               tip={content.textWrap.tip}

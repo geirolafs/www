@@ -148,9 +148,10 @@ function Panel({
     // The popover box is transparent and padded, so the pointer can cross
     // from the trigger to the tip without leaving it. The visible panel is the
     // inner span. `inset-auto m-0` undo the browser's centring of a popover.
-    // 16rem keeps a tip readable and inside a 375px screen.
+    // 16rem keeps a tip readable and inside a 375px screen. It fades in
+    // (`@starting-style`), and closes at once.
     <span
-      className="inset-auto m-0 overflow-visible border-0 bg-transparent px-0 py-2xs text-inherit [justify-self:anchor-center] [position-area:block-end_span-all] [position-try-fallbacks:flip-block]"
+      className="inset-auto m-0 overflow-visible border-0 bg-transparent px-0 py-2xs text-inherit transition-opacity duration-150 ease-out [justify-self:anchor-center] [position-area:block-end_span-all] [position-try-fallbacks:flip-block] starting:open:opacity-0 motion-reduce:transition-none"
       id={id}
       popover="manual"
       ref={panelRef}

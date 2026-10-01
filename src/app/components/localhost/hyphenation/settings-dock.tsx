@@ -83,12 +83,14 @@ export function SettingsDock() {
 
   const mode = liveEditor.mode.options.find(option => option.value === settings.mode);
   const rules = liveEditor.rules.options.find(option => option.value === settings.rules);
+  // Label, on, and whether it does anything: Settle rag picks every break
+  // itself, so `text-wrap` has no effect while it is on.
   const switches = [
-    [liveEditor.typeset.label, settings.typeset],
-    [liveEditor.showBreaks.label, settings.showBreaks],
-    [liveEditor.rag.label, settings.rag],
-    [liveEditor.overhang.label, settings.overhang],
-    [liveEditor.textWrap.label, settings.pretty],
+    [liveEditor.typeset.label, settings.typeset, true],
+    [liveEditor.showBreaks.label, settings.showBreaks, true],
+    [liveEditor.rag.label, settings.rag, true],
+    [liveEditor.overhang.label, settings.overhang, true],
+    [liveEditor.textWrap.label, settings.pretty, !settings.rag],
   ] as const;
 
   return (
@@ -140,9 +142,14 @@ export function SettingsDock() {
             <span>{mode?.label}</span>
             <span className="opacity-50">·</span>
             <span>{rules?.label}</span>
-            {switches.map(([label, on]) => (
+            {/* Off is struck through; on but without effect is only muted. */}
+            {switches.map(([label, on, active]) => (
               <span
-                className={cn("max-md:hidden", !on && "line-through opacity-50")}
+                className={cn(
+                  "max-md:hidden",
+                  !on && "line-through",
+                  !(on && active) && "opacity-50"
+                )}
                 key={label}
               >
                 {label}

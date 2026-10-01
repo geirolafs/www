@@ -60,8 +60,8 @@ export const FOCUS_CLASS =
   "focus-visible:outline-2 focus-visible:outline-foreground focus-visible:outline-offset-2";
 
 /**
- * A control with a rounded outline, for buttons and for links that look like
+ * A control with a square outline, for buttons and for links that look like
  * them: 32px tall at least, 66px wide at least, text centred. The colours are
  * added by the caller (see `ControlButton`).
  */
-export const CONTROL_CLASS = `inline-flex min-h-8 min-w-16.5 items-center justify-center rounded-pill border px-2.5 text-center font-medium text-hy-control ${FOCUS_CLASS}`;
+export const CONTROL_CLASS = `inline-flex min-h-8 min-w-16.5 items-center justify-center border px-2.5 text-center font-medium text-hy-control ${FOCUS_CLASS}`;

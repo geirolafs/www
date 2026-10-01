@@ -139,19 +139,22 @@ export function ControlGroup({ label, hideLabel, tip, children }: ControlGroupPr
 }
 
 /**
- * A native radio, redrawn: a 16px ring, filled with a dot when checked. The
- * dot is the input's own `::before`. The ring is `border`, not the lighter
- * grey of the design, because it has to be 3:1 against the page.
+ * A native radio, redrawn square: a 16px box with a hairline lift, filled
+ * with an 8px square when checked. The square is the input's own `::before`.
+ * The edge is `border`, not the lighter grey of the fields, because it has to
+ * be 3:1 against the page.
  */
-const RADIO_INPUT = `grid size-4 shrink-0 cursor-pointer appearance-none place-content-center rounded-full border border-border bg-background before:size-2 before:scale-0 before:rounded-full before:bg-background checked:border-foreground checked:bg-foreground checked:before:scale-100 ${FOCUS_CLASS}`;
+const RADIO_INPUT = `grid size-4 shrink-0 cursor-pointer appearance-none place-content-center border border-border bg-background shadow-hy-control before:size-2 before:scale-0 before:bg-foreground checked:border-foreground checked:before:scale-100 ${FOCUS_CLASS}`;
 
 /**
- * A native switch: a checkbox with `role="switch"`, drawn as a 32px track and
- * a 14px knob. The browser gives it the checked state, Space to toggle and the
- * announcement. Only the knob's `transform` moves. The off track keeps a
- * `border` ring, because the light fill alone is not 3:1 against the page.
+ * A native switch: a checkbox with `role="switch"`, drawn square as a 32px
+ * track and a 12px knob 2px in from its edge. Off, it is a white track with a
+ * grey knob; on, a dark track with a white knob. The browser gives it the
+ * checked state, Space to toggle and the announcement. Only the knob's
+ * `transform` moves. The off track keeps a `border` edge, so it is 3:1
+ * against the page.
  */
-const SWITCH_INPUT = `relative h-[1.15rem] w-8 shrink-0 cursor-pointer appearance-none rounded-full border border-border bg-hy-track before:absolute before:inset-y-0 before:left-px before:my-auto before:size-3.5 before:rounded-full before:bg-background before:transition-transform before:duration-150 before:ease-out motion-reduce:before:transition-none checked:border-foreground checked:bg-foreground checked:before:translate-x-3.5 ${FOCUS_CLASS}`;
+const SWITCH_INPUT = `relative h-[1.15rem] w-8 shrink-0 cursor-pointer appearance-none border border-border bg-background shadow-hy-control before:absolute before:inset-y-0 before:left-0.5 before:my-auto before:size-3 before:bg-border before:transition-transform before:duration-150 before:ease-out motion-reduce:before:transition-none checked:border-foreground checked:bg-foreground checked:before:translate-x-3.5 checked:before:bg-background ${FOCUS_CLASS}`;
 
 const ROW_LABEL_CLASS =
   "flex cursor-pointer items-center gap-xs font-medium text-foreground text-hy-control";
@@ -204,22 +207,49 @@ type SwitchProps = {
   /** What the setting does, shown in the panel's hint line. */
   tip?: string;
   checked: boolean;
+  /**
+   * The setting has no effect right now. The switch keeps its value and its
+   * focus, so its tip can say why, but it reads as off-limits and ignores
+   * clicks and Space.
+   */
+  inactive?: boolean;
   onChange: (checked: boolean) => void;
 };
 
-/** One on/off setting. */
-export function Switch({ label, tip, checked, onChange }: SwitchProps) {
+/**
+ * One on/off setting. An inactive switch is `aria-disabled`, not `disabled`:
+ * a disabled input drops out of the tab order, and then a keyboard user could
+ * never reach the tip that says why it does nothing.
+ */
+export function Switch({ label, tip, checked, inactive, onChange }: SwitchProps) {
   const { describedBy, description, handlers } = useHint(tip);
 
   return (
     <div className="flex" {...handlers}>
       {description}
-      <label className={cn(ROW_LABEL_CLASS, "py-2xs")}>
+      <label
+        className={cn(
+          ROW_LABEL_CLASS,
+          "py-2xs",
+          inactive && "cursor-not-allowed text-muted"
+        )}
+      >
         <input
           aria-describedby={describedBy}
+          aria-disabled={inactive || undefined}
           checked={checked}
-          className={SWITCH_INPUT}
-          onChange={event => onChange(event.target.checked)}
+          className={cn(SWITCH_INPUT, inactive && "cursor-not-allowed opacity-40")}
+          onChange={event => {
+            if (!inactive) {
+              onChange(event.target.checked);
+            }
+          }}
+          // A checkbox flips itself before React sees the change; stop it.
+          onClick={event => {
+            if (inactive) {
+              event.preventDefault();
+            }
+          }}
           // biome-ignore lint/a11y/useAriaPropsForRole: a native checkbox already exposes its checked state; `aria-checked` would only repeat it.
           role="switch"
           type="checkbox"
