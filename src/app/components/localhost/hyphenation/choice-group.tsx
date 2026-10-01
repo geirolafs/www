@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode, PointerEvent as ReactPointerEvent } from "react";
-import { createContext, useCallback, useContext, useId, useState } from "react";
+import { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import {
   FOCUS_CLASS,
   GROUP_LABEL_CLASS,
@@ -12,7 +12,8 @@ type Option<T extends string> = { readonly value: T; readonly label: string };
 
 type HintSource = "hover" | "focus" | "tap";
 
-type HintContextValue = (source: HintSource, tip: string | null) => void;
+/** `key` tells nested controls apart: a group and the option inside it. */
+type HintContextValue = (source: HintSource, tip: string | null, key?: string) => void;
 
 const HintContext = createContext<HintContextValue | null>(null);
 
@@ -28,13 +29,46 @@ export function useHints() {
     focus: null,
     tap: null,
   });
-  const report = useCallback<HintContextValue>((source, tip) => {
+  // Every control under the pointer, outermost first: entering an option
+  // inside a group puts it on top, leaving it shows the group's tip again.
+  const hovered = useRef<{ key: string; tip: string }[]>([]);
+
+  const set = useCallback((source: HintSource, tip: string | null) => {
     setHints(current =>
       current[source] === tip ? current : { ...current, [source]: tip }
     );
   }, []);
+  const report = useCallback<HintContextValue>(
+    (source, tip, key = "") => {
+      if (source !== "hover") {
+        set(source, tip);
+        return;
+      }
+      const stack = hovered.current.filter(entry => entry.key !== key);
+      if (tip !== null) {
+        stack.push({ key, tip });
+      }
+      hovered.current = stack;
+      // In the gap between two settings the last tip stays, so the line does
+      // not flash back to its invitation; it clears when the pointer leaves
+      // the whole panel (`areaProps`).
+      const top = stack.at(-1)?.tip;
+      if (top !== undefined) {
+        set("hover", top);
+      }
+    },
+    [set]
+  );
+  const areaProps = {
+    onPointerLeave: (event: ReactPointerEvent) => {
+      if (event.pointerType === "mouse") {
+        hovered.current = [];
+        set("hover", null);
+      }
+    },
+  };
   const tip = hints.hover ?? hints.focus ?? hints.tap;
-  return { tip, HintProvider: HintContext.Provider, report };
+  return { tip, HintProvider: HintContext.Provider, report, areaProps };
 }
 
 /**
@@ -54,12 +88,12 @@ function useHint(tip: string | undefined) {
   const handlers = {
     onPointerEnter: (event: ReactPointerEvent) => {
       if (event.pointerType === "mouse") {
-        report("hover", tip);
+        report("hover", tip, id);
       }
     },
     onPointerLeave: (event: ReactPointerEvent) => {
       if (event.pointerType === "mouse") {
-        report("hover", null);
+        report("hover", null, id);
       }
     },
     onPointerDown: (event: ReactPointerEvent) => {
@@ -84,22 +118,41 @@ function useHint(tip: string | undefined) {
  * The line that shows the tip of the setting in use, or a quiet invitation
  * when none is. It is decoration for sighted readers: each control already
  * carries its tip with `aria-describedby`.
+ *
+ * It keeps the height of its longest text: every text in `reserve` sits in
+ * the same grid cell, hidden, so a long tip never pushes the controls around
+ * (in the dock, which grows upwards, that moved a setting out from under the
+ * pointer and the tip flashed).
  */
 export function HintLine({
   tip,
   placeholder,
+  reserve = [],
   className,
 }: {
   tip: string | null;
   placeholder: string;
+  /** Every tip the line can show, to reserve the height of the longest. */
+  reserve?: readonly string[];
   className?: string;
 }) {
+  const shown = tip ?? placeholder;
   return (
     <p
       aria-hidden="true"
-      className={cn("text-pretty font-book text-hy-note text-muted", className)}
+      className={cn("grid text-pretty font-book text-hy-note text-muted", className)}
     >
-      {tip ?? placeholder}
+      {[placeholder, ...reserve].map(text => (
+        <span
+          className={cn("col-start-1 row-start-1", text !== shown && "invisible")}
+          key={text}
+        >
+          {text}
+        </span>
+      ))}
+      {[placeholder, ...reserve].includes(shown) ? null : (
+        <span className="col-start-1 row-start-1">{shown}</span>
+      )}
     </p>
   );
 }

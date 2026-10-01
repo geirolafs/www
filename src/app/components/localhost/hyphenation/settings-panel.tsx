@@ -24,11 +24,11 @@ const { liveEditor: content } = localhostHyphenationClientContent;
  */
 export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
   const { settings, setSetting } = usePlayground();
-  const { tip, HintProvider, report } = useHints();
+  const { tip, HintProvider, report, areaProps } = useHints();
 
   return (
     <HintProvider value={report}>
-      <div className="flex flex-col gap-xl">
+      <div className="flex flex-col gap-xl" {...areaProps}>
         <div
           className={cn(
             "flex flex-wrap items-start gap-x-xl gap-y-md",
@@ -85,7 +85,20 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
             />
           </ControlGroup>
         </div>
-        <HintLine className="max-w-80" placeholder={content.hint} tip={tip} />
+        <HintLine
+          className="max-w-80"
+          placeholder={content.hint}
+          reserve={[
+            content.mode.tip,
+            content.rules.tip,
+            content.typeset.tip,
+            content.showBreaks.tip,
+            content.rag.tip,
+            content.overhang.tip,
+            content.textWrap.tip,
+          ]}
+          tip={tip}
+        />
       </div>
     </HintProvider>
   );
