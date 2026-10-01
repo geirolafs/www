@@ -1,4 +1,5 @@
 import {
+  HeroFigure,
   HeroFigureSide,
   HighlightStyles,
   type Known,
@@ -47,7 +48,8 @@ function processed(text: string, mode: "body" | "heading"): string {
  * specimen: the same title and paragraph in the same narrow column, as the
  * browser sets it alone and with skiptingar. Each side marks what this
  * layout shows, faults with a red wave and fixes with a yellow band, and
- * names each in its margin at the line it happens on (`HeroFigureSide`). The
+ * names each in its margin at the line it happens on (`HeroFigureSide`); `HeroFigure`
+ * lets the two sides agree on which short words count as a fault. The
  * package's side is processed on the server and settled in the browser
  * (`SettledText`), the title balanced. No slider: the column is narrow enough
  * that the difference shows at any screen width.
@@ -59,33 +61,35 @@ export function HeroDemo() {
       className="col-span-full grid gap-x-project gap-y-xl pt-hyhead xl:grid-cols-2"
     >
       <HighlightStyles />
-      <HeroFigureSide
-        kind="without"
-        label={demo.without.label}
-        notes={demo.without.notes}
-      >
-        <p className={cn(TITLE_CLASS, "hyphens-auto text-balance text-hy-lede")}>
-          {demo.title}
-        </p>
-        <p className={cn(EDITOR_CLASS, "hyphens-auto text-pretty")}>{demo.text}</p>
-      </HeroFigureSide>
-      <HeroFigureSide
-        kind="with"
-        known={known}
-        label={demo.with.label}
-        notes={demo.with.notes}
-      >
-        <SettledText
-          className={cn(TITLE_CLASS, "hyphens-manual text-hy-lede")}
-          options={{ balance: true, overhang: 0.5 }}
-          text={title}
-        />
-        <SettledText
-          className={cn(EDITOR_CLASS, "hyphens-manual")}
-          options={{ overhang: 0.5 }}
-          text={text}
-        />
-      </HeroFigureSide>
+      <HeroFigure>
+        <HeroFigureSide
+          kind="without"
+          label={demo.without.label}
+          notes={demo.without.notes}
+        >
+          <p className={cn(TITLE_CLASS, "hyphens-auto text-balance text-hy-lede")}>
+            {demo.title}
+          </p>
+          <p className={cn(EDITOR_CLASS, "hyphens-auto text-pretty")}>{demo.text}</p>
+        </HeroFigureSide>
+        <HeroFigureSide
+          kind="with"
+          known={known}
+          label={demo.with.label}
+          notes={demo.with.notes}
+        >
+          <SettledText
+            className={cn(TITLE_CLASS, "hyphens-manual text-hy-lede")}
+            options={{ balance: true, overhang: 0.5 }}
+            text={title}
+          />
+          <SettledText
+            className={cn(EDITOR_CLASS, "hyphens-manual")}
+            options={{ overhang: 0.5 }}
+            text={text}
+          />
+        </HeroFigureSide>
+      </HeroFigure>
     </section>
   );
 }

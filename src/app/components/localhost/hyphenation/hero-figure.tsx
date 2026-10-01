@@ -1,6 +1,14 @@
 "use client";
 
-import { type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  type RefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { LABEL_CLASS } from "@/app/components/localhost/hyphenation/styles";
 import { cn } from "@/lib/utils";
 import { NO_BREAK_SPACE, SOFT_HYPHEN } from "@/packages/skiptingar/src/client";
@@ -24,7 +32,13 @@ export type Known = {
   glued: readonly string[];
 };
 
-type Finder = (blocks: readonly Block[], column: DOMRect, known: Known) => Found[];
+/**
+ * What a side's finder is told: what the server knows, and the one-letter
+ * words the With side leaves at a line's end (`shortEnds`).
+ */
+type Context = Known & { shortEnds: ReadonlySet<string> };
+
+type Finder = (blocks: readonly Block[], column: DOMRect, context: Context) => Found[];
 
 /**
  * The block's text with its soft hyphens left out, so a word reads whole, and
@@ -90,33 +104,58 @@ function found(id: string, ranges: Range[], anchor?: DOMRect): Found[] {
   return first ? [{ id, ranges, anchor: first }] : [];
 }
 
-/** The browser's own faults, each only where this layout shows it. */
-const findProblems: Finder = (blocks, column) => {
+/**
+ * Each one-letter word that ends a line, as its block and its place among the
+ * block's one-letter words. Both sides have the same one-letter words in the
+ * same order, so a key names the same word on either side.
+ */
+function shortWordEnds(blocks: readonly Block[]): Map<string, Range> {
+  const ends = new Map<string, Range>();
+  blocks.forEach((block, blockIndex) => {
+    const list = words(block);
+    let nth = 0;
+    list.forEach((word, index) => {
+      if (!isLetter(word)) {
+        return;
+      }
+      const range = block.range(word.start, word.end);
+      const next = list[index + 1];
+      if (next && breaksBetween(range, block.range(next.start, next.start + 1))) {
+        ends.set(`${blockIndex}:${nth}`, range);
+      }
+      nth += 1;
+    });
+  });
+  return ends;
+}
+
+/**
+ * The browser's own faults, each only where this layout shows it. A one-letter
+ * word at a line's end counts only where the With side moved it: settling
+ * leaves one there when moving it would make the rest of the edge worse, and
+ * the figure should not call that a fault on one side and not the other.
+ */
+const findProblems: Finder = (blocks, column, { shortEnds }) => {
   const overflow: Range[] = [];
   let overflowAt: DOMRect | undefined;
   const shortWord: Range[] = [];
   const quotes: Range[] = [];
   for (const block of blocks) {
-    const list = words(block);
-    list.forEach((word, index) => {
+    for (const word of words(block)) {
       const range = block.range(word.start, word.end);
       const past = rects(range).find(rect => rect.right > column.right + 1);
       if (past) {
         overflow.push(range);
         overflowAt ??= past;
       }
-      // A one-letter word, and the next word starts the next line.
-      const next = list[index + 1];
-      if (
-        isLetter(word) &&
-        next &&
-        breaksBetween(range, block.range(next.start, next.start + 1))
-      ) {
-        shortWord.push(range);
-      }
-    });
+    }
     for (const quote of matches(block, /"/g)) {
       quotes.push(block.range(quote.start, quote.end));
+    }
+  }
+  for (const [key, range] of shortWordEnds(blocks)) {
+    if (!shortEnds.has(key)) {
+      shortWord.push(range);
     }
   }
   return [
@@ -184,6 +223,21 @@ const findFixes: Finder = (blocks, _column, { joints, glued }) => {
   ];
 };
 
+/** The one-letter words the With side leaves at a line's end, shared between the sides. */
+const ShortEnds = createContext<{
+  keys: string;
+  publish: (keys: string) => void;
+}>({ keys: "", publish: () => undefined });
+
+/**
+ * The two sides of the hero figure, sharing what the With side leaves at its
+ * line ends (see `findProblems`).
+ */
+export function HeroFigure({ children }: { children: ReactNode }) {
+  const [keys, publish] = useState("");
+  return <ShortEnds value={{ keys, publish }}>{children}</ShortEnds>;
+}
+
 const SIDES = {
   without: { find: findProblems, highlight: "hy-problem" },
   with: { find: findFixes, highlight: "hy-fix" },
@@ -205,6 +259,7 @@ function useNotes(
   known: Known
 ): Placed[] {
   const [notes, setNotes] = useState<Placed[]>([]);
+  const { keys, publish } = useContext(ShortEnds);
 
   useEffect(() => {
     const column = columnRef.current;
@@ -219,7 +274,13 @@ function useNotes(
       frame = requestAnimationFrame(() => {
         const box = column.getBoundingClientRect();
         const blocks = [...column.children].map(indexBlock);
-        const all = find(blocks, box, known).filter(note => labels[note.id]);
+        if (kind === "with") {
+          publish([...shortWordEnds(blocks).keys()].join(" "));
+        }
+        const shortEnds = new Set(keys.split(" "));
+        const all = find(blocks, box, { ...known, shortEnds }).filter(
+          note => labels[note.id]
+        );
         if (typeof Highlight !== "undefined" && CSS.highlights) {
           CSS.highlights.set(
             highlight,
@@ -259,7 +320,7 @@ function useNotes(
       mutation.disconnect();
       CSS.highlights?.delete(highlight);
     };
-  }, [columnRef, kind, labels, known]);
+  }, [columnRef, kind, labels, known, keys, publish]);
 
   return notes;
 }
