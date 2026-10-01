@@ -384,6 +384,13 @@ export default function Page() {
               own: false,
               note: "Ragged or justified; its line breaks are copied with the text.",
             },
+            {
+              id: "typeset-p",
+              label: "typeset-p",
+              kB: 29.6,
+              own: false,
+              note: "A Web Component: ragged or justified, with English hyphenation and smart quotes. It redraws the paragraph as its own lines.",
+            },
           ],
         },
         {
