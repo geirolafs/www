@@ -19,7 +19,7 @@ type TextLinkProps = {
 /**
  * Both the resting underline and its hover/press response, because the
  * response is *only* ever on the underline. The glyphs never change colour:
- * `--color-muted` clears WCAG AA by 0.04 (4.54:1), so dimming muted body copy
+ * `--color-muted` clears WCAG AA by 0.12 (4.62:1), so dimming muted body copy
  * on hover would push it under. An underline is decoration and answers to the
  * 3:1 non-text threshold instead, which muted clears comfortably.
  *
@@ -32,8 +32,8 @@ type TextLinkProps = {
  * press. The press has to be its own colour rather than a snap back to
  * foreground, or touch gets nothing at all — Tailwind compiles `hover:` to
  * `@media (hover: hover)`, so on a phone the hover step never runs and a tap
- * would move from foreground to foreground. `--color-border` is `#949494` at
- * 3.03:1, the token this palette already picked for exactly the 3:1 threshold
+ * would move from foreground to foreground. `--color-border` is `#919191` at
+ * 3.07:1, the token this palette already picked for exactly the 3:1 threshold
  * an underline answers to.
  *
  * Press is instant (`duration-0`) and release eases back over the feedback

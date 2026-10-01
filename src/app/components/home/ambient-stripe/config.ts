@@ -274,7 +274,7 @@ export const SITE_STRIPE: AmbientStripeSettings = {
   grain: 3,
   core: 0.65,
   blend: "normal",
-  background: "#ffffff",
+  background: "#fffcf3",
   tint: 0.06,
 };
 

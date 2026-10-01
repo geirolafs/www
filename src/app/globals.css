@@ -7,9 +7,10 @@
 
    Two values deviate from the frames. Both are deliberate:
 
-   1. `--color-muted` is #767676, not the frame's #8c8c8c. #8c8c8c measures
-      3.36:1 on white and fails WCAG AA on the 20px work descriptions, which
-      are body copy. #767676 is the lightest grey that clears 4.5:1.
+   1. `--color-muted` is #737373, not the frame's #8c8c8c. #8c8c8c measures
+      3.28:1 on the background and fails WCAG AA on the 20px work
+      descriptions, which are body copy. #737373 is the lightest grey that
+      clears 4.5:1 on #fffcf3.
    2. Weights follow the Book/Regular rule in AGENTS.md. The frames apply it
       the other way round; the rule wins. Book for paragraphs, Regular for a
       word, a line, or a lone sentence.
@@ -37,26 +38,26 @@
      palette. The two `hy-` values below belong to /localhost/hyphenation
      only. */
 
-  --color-background: #fff;
-  --color-foreground: #121212; /* 18.9:1 on white */
-  --color-muted: #767676; /* 4.54:1 on white — see note 1 above */
-  --color-border: #949494; /* 3.03:1 — borders need 3:1, text rules do not apply */
-  --color-border-strong: #8c8c8c; /* 3.36:1 — the section-label pill outline */
-  --color-surface-footer: #d8d8d8; /* foreground on it is 13.3:1 */
-  --color-selection: #ffe577; /* the stripe's last stop; foreground 14.9:1, muted 3.62:1 */
+  --color-background: #fffcf3; /* a warm white */
+  --color-foreground: #2c2523; /* 14.7:1 on the background */
+  --color-muted: #737373; /* 4.62:1 on the background — see note 1 above */
+  --color-border: #919191; /* 3.07:1 — borders need 3:1, text rules do not apply */
+  --color-border-strong: #8c8c8c; /* 3.28:1 — the section-label pill outline */
+  --color-surface-footer: #d8d8d8; /* foreground on it is 10.6:1 */
+  --color-selection: #ffe577; /* the stripe's last stop; foreground 12:1, muted 3.78:1 */
   --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
   --color-hy-track: #e5e5e5; /* /localhost/hyphenation: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
   --color-hy-surface: #f5f5f5; /* /localhost/hyphenation: code blocks, a button's hover fill, a highlighted option */
   /* /localhost/hyphenation: the two highlights. Signal is for what must be
-     seen: a break, the current section. It is 3.25:1 on the background, so
+     seen: a break, the current section. It is 3.18:1 on the background, so
      it marks and draws but is never small text. Accent is the quieter one, a
-     fill behind dark text (foreground on it is 8:1); on the background it is
-     1.8:1, so never text or a line. */
-  --color-hy-signal: #ff4949;
+     fill behind dark text (foreground on it is 14:1); on the background it is
+     1.05:1, so never text, a line or a mark on its own. */
+  --color-hy-signal: #fe4f4f;
   /* The same red dark enough for text, such as a pattern digit: 5.02:1 on
-     the background. `hy-signal` (3.25:1) is for marks and lines, which need 3:1. */
+     the background. `hy-signal` (3.18:1) is for marks and lines, which need 3:1. */
   --color-hy-signal-ink: #d42424;
-  --color-hy-accent: #ffb200;
+  --color-hy-accent: #ffff23;
 
   /* /localhost/hyphenation: the one raised thing on the page, the settings
      dock that floats over the specimens. */
