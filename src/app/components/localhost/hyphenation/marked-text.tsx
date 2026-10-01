@@ -27,23 +27,43 @@ function pieces(text: string): Piece[] {
  * Text with its invisible characters made visible: each soft hyphen as a red
  * dot (`hy-signal`: a break must be seen), and each no-break space and
  * non-breaking hyphen as itself on an amber fill (`hy-accent`: glue, quieter
- * than a break). The fill is the mark; no symbol is needed. The marks are hidden from
- * assistive tech; the real character stays in the text for them. A soft
- * hyphen keeps a `<wbr />` after its mark, so the line can still break there;
- * the mark stands in for the hyphen the browser would draw.
+ * than a break). The fill is the mark; no symbol is needed.
+ *
+ * `exact` keeps the layout exactly as without marks, for settled text whose
+ * line breaks were planned without them: the soft hyphen stays in the text,
+ * and its dot is positioned out of the flow at the break and takes no width.
+ * Otherwise the dot takes the soft hyphen's place with room of its own, so a
+ * specimen reads clearly, and a `<wbr />` after it keeps the break. Either
+ * way the dot is hidden from assistive tech and from selection, so copying
+ * gives the plain word.
  *
  * It has no state or effects, so a server page and a client component can both
  * render it.
  */
-export function MarkedText({ text }: { text: string }) {
+export function MarkedText({ text, exact = false }: { text: string; exact?: boolean }) {
   return pieces(text).map(piece => {
-    if (piece.text === SOFT_HYPHEN) {
+    if (piece.text === SOFT_HYPHEN && !exact) {
       return (
         <span key={piece.id}>
-          <span aria-hidden="true" className="font-bold text-hy-signal">
+          <span aria-hidden="true" className="select-none font-bold text-hy-signal">
             {marks.softHyphen}
           </span>
           <wbr />
+        </span>
+      );
+    }
+    if (piece.text === SOFT_HYPHEN) {
+      return (
+        <span key={piece.id}>
+          <span className="relative">
+            <span
+              aria-hidden="true"
+              className="absolute left-0 -translate-x-1/2 select-none font-bold text-hy-signal"
+            >
+              {marks.softHyphen}
+            </span>
+          </span>
+          {SOFT_HYPHEN}
         </span>
       );
     }

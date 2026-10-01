@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { MarkedText } from "@/app/components/localhost/hyphenation/marked-text";
 import { cn } from "@/lib/utils";
-import type { Hang } from "@/packages/skiptingar/src/rag";
+import { type Hang, hangCharacter } from "@/packages/skiptingar/src/rag";
 
 /**
  * Settled text, drawn: the plain runs, with their marks when `marks` is on,
@@ -19,20 +19,18 @@ export function SettledContent({
   hangs: readonly Hang[];
   marks: boolean;
 }) {
-  const run = (part: string) => (marks ? <MarkedText text={part} /> : part);
+  // Exact marks: the plan was made for the text without them.
+  const run = (part: string) => (marks ? <MarkedText exact text={part} /> : part);
   if (hangs.length === 0) {
     return run(text);
   }
   const pieces: { id: number; text: string; hang?: number }[] = [];
   let from = 0;
   for (const hang of hangs) {
+    const character = hangCharacter(text, hang.index);
     pieces.push({ id: from, text: text.slice(from, hang.index) });
-    pieces.push({
-      id: hang.index,
-      text: text.slice(hang.index, hang.index + 1),
-      hang: hang.width,
-    });
-    from = hang.index + 1;
+    pieces.push({ id: hang.index, text: character, hang: hang.width });
+    from = hang.index + character.length;
   }
   pieces.push({ id: from, text: text.slice(from) });
 
