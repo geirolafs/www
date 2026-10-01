@@ -47,14 +47,35 @@ export const localhostHyphenationContent = {
     name: "Skiptingar",
     title: "Skipt-ing-ar",
     lede: "Skiptingar hyphenates Icelandic text and evens ragged edges. It helps titles break at the right joint, and numbers, dates and names stay together.",
-    /** One title and paragraph, as the browser sets it alone and with the package. */
+    /**
+     * One title and paragraph, as the browser sets it alone and with the
+     * package, drawn as a figure: each side's notes sit in its margin, on the
+     * line they point at. A note shows only when the layout bears it out.
+     */
     demo: {
       label: "The same text in the same narrow column",
       without: {
         label: "The browser alone",
-        caption: "hyphens: auto, text-wrap: pretty",
+        notes: {
+          overflow: "Runs past the edge",
+          shortWord: "One letter left at the end",
+          quotes: "Straight quotes",
+        },
       },
-      with: { label: "With Skiptingar", caption: "soft hyphens, typeset, rag settled" },
+      with: {
+        label: "With Skiptingar",
+        notes: {
+          joint: "Breaks at the joint",
+          shortWord: "Carried to the next line",
+          glue: "Kept on one line",
+          quotes: "Icelandic quotes",
+        },
+      },
+      /**
+       * The start of each compound up to a joint, for the joint note: a word
+       * broken right after one of these broke where its parts meet.
+       */
+      joints: ["Hrafna", "Hrafnafjarðar", "sveitar", "sveitarstjórnar"],
       title: "Kjörsókn í Hrafnafjarðarbyggð aldrei meiri í sveitarstjórnarkosningum",
       text: 'Kjörsókn í sveitarstjórnarkosningunum 16. maí 2026 var sú mesta sem mælst hefur í Hrafnafjarðarbyggð, 91,4%. "Þetta er söguleg niðurstaða," sagði dr. Guðrún Sigurðardóttir, formaður yfirkjörstjórnar, kl. 14.30 daginn eftir.',
     },
@@ -266,6 +287,118 @@ export default function Page() {
           ],
         },
       ],
+    },
+    cost: {
+      id: "cost",
+      title: "What it costs a browser",
+      intro:
+        "What a page downloads for each job, with Skiptingar and with the common alternatives. Most of Skiptingar runs on the server and sends nothing; the browser parts are small, apart from hyphenating there.",
+      unit: "kB",
+      groups: [
+        {
+          id: "hyphenate",
+          label: "Hyphenate Icelandic",
+          items: [
+            {
+              id: "sk-server",
+              label: "Skiptingar on the server",
+              kB: 0,
+              own: true,
+              note: "The soft hyphens are in the HTML.",
+            },
+            {
+              id: "hyphen",
+              label: "hyphen/is",
+              kB: 12.9,
+              own: false,
+              note: "The old TeX patterns, in the browser.",
+            },
+            {
+              id: "hyphenopoly",
+              label: "Hyphenopoly",
+              kB: 14.8,
+              own: false,
+              note: "The old TeX patterns as WebAssembly, loaded where the browser cannot hyphenate.",
+            },
+            {
+              id: "sk-client",
+              label: "Skiptingar in the browser",
+              kB: 58.5,
+              own: true,
+              note: "The 2020 data, loaded on first use. Hyphenate on the server when you can.",
+            },
+          ],
+        },
+        {
+          id: "rag",
+          label: "Settle the rag or balance titles",
+          items: [
+            {
+              id: "css",
+              label: "CSS text-wrap",
+              kB: 0,
+              own: false,
+              note: "pretty and balance: free, but each browser does its own, none can be tuned, and Firefox has no pretty.",
+            },
+            {
+              id: "rwb",
+              label: "react-wrap-balancer",
+              kB: 1.4,
+              own: false,
+              note: "Titles only.",
+            },
+            {
+              id: "balance-text",
+              label: "balance-text",
+              kB: 2.3,
+              own: false,
+              note: "Titles only; adds line breaks to the markup.",
+            },
+            {
+              id: "sk-rag",
+              label: "Skiptingar Settle rag",
+              kB: 4.3,
+              own: true,
+              note: "The whole paragraph, ragged, set by the browser’s own wrapping.",
+            },
+            {
+              id: "texlb",
+              label: "tex-linebreak",
+              kB: 5.9,
+              own: false,
+              note: "Justified text only; draws its own lines.",
+            },
+            {
+              id: "texlb2",
+              label: "tex-linebreak2",
+              kB: 26.5,
+              own: false,
+              note: "Ragged or justified; its line breaks are copied with the text.",
+            },
+          ],
+        },
+        {
+          id: "typeset",
+          label: "Typesetting rules",
+          items: [
+            {
+              id: "sk-typeset",
+              label: "Skiptingar on the server",
+              kB: 0,
+              own: true,
+              note: "Icelandic numbers, dates, abbreviations and quotes, in the HTML.",
+            },
+            {
+              id: "typeset-js",
+              label: "Typeset.js",
+              kB: 29.7,
+              own: false,
+              note: "English rules, in the browser.",
+            },
+          ],
+        },
+      ],
+      note: "Measured on 1 October 2026: each package bundled with a minimal use, minified, React left out, brotli. knuth-plass-wrap (justified, with HarfBuzz) is 478 kB plus the font, far off this scale.",
     },
     roadmap: {
       id: "roadmap",

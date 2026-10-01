@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CodeBlock, InlineCode } from "@/app/components/localhost/hyphenation/code";
+import { CostChart } from "@/app/components/localhost/hyphenation/cost-chart";
 import { InstallCommand } from "@/app/components/localhost/hyphenation/install-command";
 import { RichText } from "@/app/components/localhost/hyphenation/rich-text";
 import {
@@ -47,7 +48,7 @@ function Part({
  * this is how it will work.
  */
 export function Install() {
-  const { quickStart, entries, roadmap } = install;
+  const { quickStart, entries, cost, roadmap } = install;
 
   return (
     <>
@@ -82,6 +83,10 @@ export function Install() {
           ))}
         </ul>
         <p className={cn(NOTE_CLASS, "max-w-measure")}>{install.requirements}</p>
+      </Part>
+
+      <Part id={cost.id} intro={cost.intro} title={cost.title}>
+        <CostChart />
       </Part>
 
       <Part id={roadmap.id} intro={roadmap.intro} title={roadmap.title}>
