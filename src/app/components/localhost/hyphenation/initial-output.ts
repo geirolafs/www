@@ -1,5 +1,6 @@
 import {
   DEFAULT_SETTINGS,
+  jointsFor,
   PAGE_TYPESET,
   type Settings,
 } from "@/app/components/localhost/hyphenation/settings";
@@ -14,7 +15,11 @@ export function initialOutput(text: string, fixed: Partial<Settings> = {}): stri
   const settings = { ...DEFAULT_SETTINGS, ...fixed };
   const [output = text] = processSegments([text], {
     typeset: settings.typeset ? PAGE_TYPESET : false,
-    hyphenate: { mode: settings.mode, rules: settings.rules },
+    hyphenate: {
+      mode: settings.mode,
+      rules: settings.rules,
+      joints: jointsFor(settings),
+    },
   });
   return output;
 }

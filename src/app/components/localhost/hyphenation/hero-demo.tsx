@@ -18,7 +18,8 @@ const COLUMN = "w-[17.5rem] max-w-full border border-border border-dashed p-sm";
 function processed(text: string, mode: "body" | "heading"): string {
   const [output = text] = processSegments([text], {
     typeset: PAGE_TYPESET,
-    hyphenate: { mode },
+    // Settled and balanced, so the joints are a preference (see `jointsFor`).
+    hyphenate: { mode, joints: "prefer" },
   });
   return output;
 }

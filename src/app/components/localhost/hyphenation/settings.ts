@@ -45,6 +45,15 @@ export const DEFAULT_SETTINGS: Settings = {
 export const PAGE_TYPESET = { dashes: true } as const;
 
 /**
+ * How heading mode treats compound joints: only them when the browser sets
+ * the text alone, and as a preference when Settle rag balances it and can
+ * weigh the other breaks.
+ */
+export function jointsFor(settings: Pick<Settings, "rag">): "only" | "prefer" {
+  return settings.rag ? "prefer" : "only";
+}
+
+/**
  * How far a line may overhang the edge, in em at 16px text: about one
  * letter. Bigger type gets a smaller share of its size.
  */

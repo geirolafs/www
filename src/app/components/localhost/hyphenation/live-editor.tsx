@@ -7,6 +7,7 @@ import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { usePlayground } from "@/app/components/localhost/hyphenation/playground";
 import {
   DEFAULT_SETTINGS,
+  jointsFor,
   PAGE_TYPESET,
   ragOptions,
   type Settings,
@@ -100,7 +101,8 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
     text === content.initialText &&
     settings.mode === DEFAULT_SETTINGS.mode &&
     settings.rules === DEFAULT_SETTINGS.rules &&
-    settings.typeset === DEFAULT_SETTINGS.typeset;
+    settings.typeset === DEFAULT_SETTINGS.typeset &&
+    settings.rag === DEFAULT_SETTINGS.rag;
 
   const outputs = useMemo(() => {
     if (!core) {
@@ -112,6 +114,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
         hyphenate: {
           mode: block.kind === "title" ? "heading" : settings.mode,
           rules: settings.rules,
+          joints: jointsFor(settings),
         },
       });
       return output;

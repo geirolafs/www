@@ -6,6 +6,7 @@ import { firstParagraph } from "@/app/components/localhost/hyphenation/blocks";
 import { usePlayground } from "@/app/components/localhost/hyphenation/playground";
 import {
   DEFAULT_SETTINGS,
+  jointsFor,
   PAGE_TYPESET,
   ragOptions,
   type Settings,
@@ -40,7 +41,9 @@ type LiveTextProps = {
 
 /** The settings that change the output string; the rest only change how it is shown. */
 function sameOutputSettings(a: Settings, b: Settings): boolean {
-  return a.mode === b.mode && a.rules === b.rules && a.typeset === b.typeset;
+  return (
+    a.mode === b.mode && a.rules === b.rules && a.typeset === b.typeset && a.rag === b.rag
+  );
 }
 
 /**
@@ -58,6 +61,7 @@ function useLiveOutput({ text, initial, fixed }: LiveTextProps) {
   const processed = useHyphenate(source, {
     mode: settings.mode,
     rules: settings.rules,
+    joints: jointsFor(settings),
     typeset: settings.typeset ? PAGE_TYPESET : false,
   });
 
