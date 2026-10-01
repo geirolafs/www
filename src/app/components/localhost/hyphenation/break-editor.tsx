@@ -10,15 +10,16 @@ import {
 import { Tip } from "@/app/components/localhost/hyphenation/tip";
 import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 import { cn } from "@/lib/utils";
-import { useSkiptingar } from "@/packages/skiptingar/src/client";
+import { useAnalyzeWord } from "@/packages/skiptingar/src/client";
 
 const { breakEditor: content } = localhostHyphenationClientContent;
 
-type Core = NonNullable<ReturnType<typeof useSkiptingar>>;
 type Gap = keyof typeof content.states;
 type CopyState = keyof typeof content.copy;
 
 const LETTER = /^\p{L}$/u;
+/** The engine's answer uses the official rules, so every legal break shows. */
+const RITREGLUR = { rules: "ritreglur" } as const;
 const COPY_RESET_MS = 1500;
 
 /** What a click on a gap turns it into: none, then break, then joint, then none. */
@@ -35,10 +36,10 @@ function lettersOf(value: string): string[] {
  * is a joint where the word's exception line has `=` (or the engine finds a
  * name ending), else a break where the ritreglur rules allow one, else none.
  */
-function engineGaps(core: Core, letters: string[]): Gap[] {
-  const { breaks, joints } = core.analyzeWord(letters.join(""), {
-    rules: "ritreglur",
-  });
+function engineGaps(
+  letters: string[],
+  { breaks, joints }: { breaks: number[]; joints: number[] }
+): Gap[] {
   return letters.slice(0, -1).map((_, index) => {
     if (joints.includes(index + 1)) {
       return "joint";
@@ -66,7 +67,6 @@ function exceptionLine(letters: string[], gaps: Gap[]): string {
 export function BreakEditor() {
   const wordId = useId();
   const [word, setWord] = useState<string>(content.initialWord);
-  const core = useSkiptingar();
   const [edit, setEdit] = useState<{ word: string; gaps: Gap[] } | null>(null);
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -84,12 +84,13 @@ export function BreakEditor() {
 
   const letters = lettersOf(word);
   const key = letters.join("");
+  const analysis = useAnalyzeWord(key, RITREGLUR);
   const gapCount = Math.max(0, letters.length - 1);
   let gaps: Gap[];
   if (edit && edit.word === key) {
     gaps = edit.gaps;
-  } else if (core) {
-    gaps = engineGaps(core, letters);
+  } else if (analysis) {
+    gaps = engineGaps(letters, analysis);
   } else {
     gaps = Array.from({ length: gapCount }, () => "none");
   }

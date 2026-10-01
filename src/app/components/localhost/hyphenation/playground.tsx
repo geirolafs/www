@@ -7,8 +7,14 @@ import {
   type Settings,
 } from "@/app/components/localhost/hyphenation/settings";
 import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
+import { configureSkiptingar } from "@/packages/skiptingar/src/client";
 
 const { liveEditor: content } = localhostHyphenationClientContent;
+
+// The page's text is hyphenated by the server (`api/route.ts`), so the
+// browser never downloads the 47 kB of patterns. If the endpoint fails, the
+// hooks load the patterns instead.
+configureSkiptingar({ endpoint: "/localhost/hyphenation/api" });
 
 type Playground = {
   settings: Settings;

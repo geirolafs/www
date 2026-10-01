@@ -22,8 +22,8 @@ import { cn } from "@/lib/utils";
 import {
   NO_BREAK_SPACE,
   SOFT_HYPHEN,
+  useHyphenateAll,
   useSettledRag,
-  useSkiptingar,
 } from "@/packages/skiptingar/src/client";
 
 const { liveEditor: content, tips } = localhostHyphenationClientContent;
@@ -94,7 +94,6 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
   // The committed text, not the draft: the result waits for the arrow, so
   // typing never re-sets the whole result on every keystroke.
   const { settings, text } = usePlayground();
-  const core = useSkiptingar();
   const blocks = useMemo(() => parseBlocks(text), [text]);
 
   const atInitial =
@@ -104,22 +103,22 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
     settings.typeset === DEFAULT_SETTINGS.typeset &&
     settings.rag === DEFAULT_SETTINGS.rag;
 
-  const outputs = useMemo(() => {
-    if (!core) {
-      return atInitial ? initialOutputs : blocks.map(block => block.text);
-    }
-    return blocks.map(block => {
-      const [output = block.text] = core.processSegments([block.text], {
-        typeset: settings.typeset ? PAGE_TYPESET : false,
-        hyphenate: {
-          mode: block.kind === "title" ? "heading" : settings.mode,
-          rules: settings.rules,
-          joints: jointsFor(settings),
-        },
-      });
-      return output;
-    });
-  }, [core, atInitial, initialOutputs, blocks, settings]);
+  // At the page's own text and settings the server has already set every
+  // block (`initialOutputs`), so nothing is asked for.
+  const processed = useHyphenateAll(
+    atInitial
+      ? []
+      : blocks.map(block => ({
+          text: block.text,
+          options: {
+            mode: block.kind === "title" ? "heading" : settings.mode,
+            rules: settings.rules,
+            joints: jointsFor(settings),
+            typeset: settings.typeset ? PAGE_TYPESET : false,
+          },
+        }))
+  );
+  const outputs = atInitial ? initialOutputs : processed.texts;
 
   return (
     // `contents`: the three parts below are items of the section's grid (its

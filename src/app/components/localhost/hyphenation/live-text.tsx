@@ -15,11 +15,7 @@ import {
 import { SettledContent } from "@/app/components/localhost/hyphenation/settled-content";
 import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 import { cn } from "@/lib/utils";
-import {
-  useHyphenate,
-  useSettledRag,
-  useSkiptingar,
-} from "@/packages/skiptingar/src/client";
+import { useHyphenateAll, useSettledRag } from "@/packages/skiptingar/src/client";
 
 const { liveEditor } = localhostHyphenationClientContent;
 
@@ -53,24 +49,31 @@ function sameOutputSettings(a: Settings, b: Settings): boolean {
  */
 function useLiveOutput({ text, initial, fixed }: LiveTextProps) {
   const { settings: pageSettings, text: pageText } = usePlayground();
-  const core = useSkiptingar();
   const settings = { ...pageSettings, ...fixed };
   const source = text ?? firstParagraph(pageText);
   const initialSource = text ?? firstParagraph(liveEditor.initialText);
 
-  const processed = useHyphenate(source, {
-    mode: settings.mode,
-    rules: settings.rules,
-    joints: jointsFor(settings),
-    typeset: settings.typeset ? PAGE_TYPESET : false,
-  });
-
-  // The server and the first client render have no core, so both show
-  // `initial` and hydration matches.
+  // At the page's own text and settings the server has already set it
+  // (`initial`), so nothing is asked for and hydration matches.
   const atInitial =
     source === initialSource &&
     sameOutputSettings(settings, { ...DEFAULT_SETTINGS, ...fixed });
-  const output = !core && atInitial ? initial : processed;
+  const { texts } = useHyphenateAll(
+    atInitial
+      ? []
+      : [
+          {
+            text: source,
+            options: {
+              mode: settings.mode,
+              rules: settings.rules,
+              joints: jointsFor(settings),
+              typeset: settings.typeset ? PAGE_TYPESET : false,
+            },
+          },
+        ]
+  );
+  const output = atInitial ? initial : (texts[0] ?? source);
   return { output, settings };
 }
 

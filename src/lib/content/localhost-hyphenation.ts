@@ -279,10 +279,12 @@ export default function Page() {
             { text: "settle()", code: true },
             { text: " to settle the rag, " },
             { text: "useHyphenate()", code: true },
-            { text: " for text that only exists in the browser, and " },
+            {
+              text: " for text that only exists in the browser (it can ask your server instead of loading the patterns), and ",
+            },
             { text: "<CleanCopy />", code: true },
             {
-              text: ". The patterns load on first use, about 55 kB brotli; the rest is about 5.5 kB.",
+              text: ". The patterns load on first use, about 47 kB brotli; the rest is about 5.5 kB.",
             },
           ],
         },
@@ -292,7 +294,7 @@ export default function Page() {
       id: "cost",
       title: "What it costs a browser",
       intro:
-        "What a page downloads for each job, with Skiptingar and with the common alternatives. Most of Skiptingar runs on the server and sends nothing; the browser parts are small, apart from hyphenating there.",
+        "What a page downloads for each job, with Skiptingar and with the common alternatives. Most of Skiptingar runs on the server and sends nothing. Text that only exists in the browser can be sent to your server to hyphenate, so the patterns never download; this page does that.",
       unit: "kB",
       groups: [
         {
@@ -305,6 +307,13 @@ export default function Page() {
               kB: 0,
               own: true,
               note: "The soft hyphens are in the HTML.",
+            },
+            {
+              id: "sk-endpoint",
+              label: "Skiptingar via your server",
+              kB: 1.6,
+              own: true,
+              note: "useHyphenate with an endpoint: the browser sends the text and gets it back hyphenated.",
             },
             {
               id: "hyphen",
@@ -323,9 +332,9 @@ export default function Page() {
             {
               id: "sk-client",
               label: "Skiptingar in the browser",
-              kB: 58.5,
+              kB: 52.7,
               own: true,
-              note: "The 2020 data, loaded on first use. Hyphenate on the server when you can.",
+              note: "The 2020 data, loaded on first use, for a page with no server to ask. Larger than the old patterns because it breaks better.",
             },
           ],
         },
@@ -445,6 +454,11 @@ export default function Page() {
               id: "markdown",
               title: "Markdown and HTML",
               body: "A rehype plugin and a small CLI that hyphenate and typeset, for sites that are not built with React. Settling the rag needs the real widths, so it stays in the browser, through settle().",
+            },
+            {
+              id: "smaller-patterns",
+              title: "Smaller patterns, maybe",
+              body: "Train a smaller pattern set from the same 218.000-word list, trading a little accuracy for size, for pages that must hyphenate in the browser without a server. Only if the size turns out to matter.",
             },
             {
               id: "rich-text",
@@ -674,7 +688,9 @@ export default function Page() {
             text: " removes the soft hyphens and no-break spaces from copied text. Text that only exists in the browser can use the lazy client entry, ",
           },
           { text: "useHyphenate", code: true },
-          { text: ", about 55 kB brotli, loaded on first use." },
+          {
+            text: ", about 47 kB brotli, loaded on first use, or none at all when it asks your server.",
+          },
         ],
       },
       {
