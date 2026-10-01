@@ -161,7 +161,7 @@ function Panel({
       // A dynamic value: it names this tip's own trigger.
       style={{ positionAnchor: anchorName }}
     >
-      <span className="block w-max max-w-[16rem] whitespace-normal rounded-pill bg-foreground px-xs py-2xs text-left font-book text-background text-meta normal-case">
+      <span className="block w-max max-w-[16rem] whitespace-normal bg-foreground px-xs py-2xs text-left font-book text-background text-hy-note normal-case">
         {children}
       </span>
     </span>
@@ -204,9 +204,11 @@ export function Tip({ tip, children, className }: TipProps) {
 }
 
 /**
- * A small "i" button for a control whose label is not a button itself. `name`
- * is what the tip is about; it becomes the button's accessible name. The
- * button is a 24px hit area around a 12px solid circle, so a thumb can find it.
+ * A small "i" for a control whose label is not a button itself. `name` is
+ * what the tip is about; it becomes the button's accessible name. It is
+ * quiet on purpose: a thin grey ring around a grey "i", which turns dark on
+ * hover and focus. The button is a 24px hit area around the 12px ring, so a
+ * thumb can still find it.
  */
 export function HelpTip({ tip, name }: { tip: string; name: string }) {
   const { id, anchorName, panelRef, rootProps, triggerProps } = useTip();
@@ -215,12 +217,15 @@ export function HelpTip({ tip, name }: { tip: string; name: string }) {
     <span className="relative inline-block" {...rootProps}>
       <button
         aria-label={tips.help(name)}
-        className={cn("flex size-6 cursor-help items-center justify-center", FOCUS_CLASS)}
+        className={cn(
+          "group flex size-6 cursor-help items-center justify-center",
+          FOCUS_CLASS
+        )}
         {...triggerProps}
       >
         <span
           aria-hidden="true"
-          className="flex size-3 items-center justify-center rounded-full bg-foreground font-semibold text-background text-hy-mark"
+          className="flex size-3 items-center justify-center rounded-full border border-border font-semibold text-hy-mark text-muted group-hover:border-foreground group-hover:text-foreground group-focus-visible:border-foreground group-focus-visible:text-foreground"
         >
           {tips.mark}
         </span>

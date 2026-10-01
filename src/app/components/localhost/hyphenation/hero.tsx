@@ -1,6 +1,5 @@
-import { HelpTip } from "@/app/components/localhost/hyphenation/tip";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
-import { EXCEPTION_COUNT, PATTERN_COUNT } from "@/packages/skiptingar/src";
+import { EXCEPTION_COUNT, PATTERN_COUNT, SHORT_WORDS } from "@/packages/skiptingar/src";
 
 const { hero } = localhostHyphenationContent;
 
@@ -8,12 +7,14 @@ const { hero } = localhostHyphenationContent;
 const COUNTS = {
   patterns: new Intl.NumberFormat("is").format(PATTERN_COUNT),
   exceptions: new Intl.NumberFormat("is").format(EXCEPTION_COUNT),
+  shortWords: new Intl.NumberFormat("is").format(SHORT_WORDS.length),
 } as const;
 
 /**
  * The product on its own front page: its name, set in Geist across the full
  * width of the grid with the hyphens typed in, so the page shows what the
- * package does. Under it, one sentence on what skiptingar is and four facts.
+ * package does. Under it, one sentence on what skiptingar is and four facts,
+ * each a number and a sentence on why it matters.
  * The section is an `@container`, so `text-hy-hero` sizes the name from the
  * grid's width.
  */
@@ -35,19 +36,23 @@ export function Hero() {
         {hero.lede}
       </p>
 
-      <dl className="col-span-full grid grid-cols-2 gap-x-sm lg:grid-cols-4 lg:gap-x-md">
+      {/* Each fact is a number and the sentence that reads on from it, so
+          a screen reader hears "23.139 letter patterns from…". */}
+      <ul className="col-span-full grid gap-x-sm gap-y-xl pt-xl lg:grid-cols-4 lg:gap-x-md">
         {hero.stats.map(stat => (
-          <div className="flex flex-col gap-md pt-xl" key={stat.label}>
-            <dt className="flex items-start border-foreground border-t font-semibold text-hy-label text-muted">
-              <HelpTip name={stat.label} tip={stat.tip} />
-              {stat.label}
-            </dt>
-            <dd className="font-hy-title font-light text-foreground text-hy-stat">
+          <li
+            className="flex flex-col gap-md border-foreground border-t pt-md"
+            key={"count" in stat ? stat.count : stat.value}
+          >
+            <span className="font-hy-title font-light text-foreground text-hy-stat">
               {"count" in stat ? COUNTS[stat.count] : stat.value}
-            </dd>
-          </div>
+            </span>
+            <span className="max-w-96 text-pretty font-book text-hy-body text-muted">
+              {stat.description}
+            </span>
+          </li>
         ))}
-      </dl>
+      </ul>
     </section>
   );
 }

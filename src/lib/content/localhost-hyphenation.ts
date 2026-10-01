@@ -5,12 +5,10 @@
  * `src/packages/skiptingar/data/exceptions.txt`.
  */
 
-import {
-  localhostHyphenationClientContent,
-  njallSample,
-} from "@/lib/content/localhost-hyphenation-client";
+import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 
-const { marks } = localhostHyphenationClientContent;
+const njallSample =
+  "Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Velli á Rangárvöllum. Hann var ríkur höfðingi og málafylgjumaður mikill og svo mikill lögmaður að engir þóttu löglegir dómar dæmdir nema hann væri við. Hann átti dóttur eina er Unnur hét. Hún var væn kona og kurteis og vel að sér og þótti sá bestur kostur á Rangárvöllum.";
 
 const samples = {
   jonas:
@@ -35,9 +33,9 @@ export const localhostHyphenationContent = {
   samples,
 
   page: {
-    title: "skiptingar — Icelandic hyphenation",
+    title: "Skiptingar — Icelandic text, set well",
     description:
-      "skiptingar hyphenates Icelandic text on the server. Try it in the live editor, compare the patterns and report a wrong break.",
+      "Skiptingar hyphenates Icelandic text and evens ragged edges. It helps titles break at the right joint, and numbers, dates and names stay together.",
   },
 
   shell: {
@@ -48,28 +46,32 @@ export const localhostHyphenationContent = {
     /** The name a screen reader says. The visible title has its hyphens typed in. */
     name: "Skiptingar",
     title: "Skipt-ing-ar",
-    lede: "Skiptingar adds soft hyphens into Icelandic text on the server, so long compounds break where they should.",
+    lede: "Skiptingar hyphenates Icelandic text and evens ragged edges. It helps titles break at the right joint, and numbers, dates and names stay together.",
+    /**
+     * Three facts, each a number and the sentence that reads on from it: what
+     * it is, and why it matters to someone setting text.
+     */
     stats: [
       {
         // The number itself is read from the package, on the server.
         count: "patterns",
-        label: "Patterns",
-        tip: "Short letter patterns from the 2020 Árni Magnússon data. They say where an Icelandic word may break. This is Liang's method, the one TeX uses.",
+        description:
+          "letter patterns from the 2020 Árni Magnússon list mark where a word may break. There is no dictionary, so new and rare compounds break well too.",
       },
       {
         count: "exceptions",
-        label: "Exceptions",
-        tip: "Words checked by hand. Each one overrides the patterns where they get the word wrong.",
+        description:
+          "words checked by hand, where the patterns get it wrong. The list grows with every wrong break someone reports, so the results get better with use.",
+      },
+      {
+        count: "shortWords",
+        description:
+          "short words like og and í that settling the rag keeps off line ends, judged line by line as a typesetter would, along with holes, jutting lines and short hyphen pieces. The list and the judgement get better with use.",
       },
       {
         value: "0 kB",
-        label: "On the server path",
-        tip: "A page that only uses <Hyphenate> ships no hyphenation code: the server inserts the soft hyphens. This page's live editor and break editor load the engine on purpose, about 70 kB compressed.",
-      },
-      {
-        value: "2020",
-        label: "Data",
-        tip: "The 2020 Icelandic hyphenation list from the Árni Magnússon Institute. It fixes compound joints that the older TeX patterns get wrong.",
+        description:
+          "of hyphenation code on a normal page. The server puts the soft hyphens in, so every browser breaks the lines in the same places.",
       },
     ],
   },
@@ -79,7 +81,7 @@ export const localhostHyphenationContent = {
     lines: [
       [
         { text: "Set in " },
-        { text: "Geist", href: "https://vercel.com/font" },
+        { text: "Geist and Geist Mono", href: "https://vercel.com/font" },
         { text: " by Vercel (SIL Open Font License) and " },
         { text: "Bespoke Serif", href: "https://www.fontshare.com/fonts/bespoke-serif" },
         { text: " by Indian Type Foundry (ITF Free Font License)." },
@@ -100,10 +102,10 @@ export const localhostHyphenationContent = {
     liveEditor: {
       id: "live-editor",
       number: "A",
-      nav: "Live editor",
+      nav: "Editor",
       label: "Live editor",
       explanation:
-        "Edit the text and change the settings. The box below it shows what the components would render, at the width you choose.",
+        "Pick an example or write your own, and change the settings. The settings apply to the whole page, and the arrow sends your text to Sizes and Compare.",
     },
     sizes: {
       id: "sizes",
@@ -111,7 +113,7 @@ export const localhostHyphenationContent = {
       nav: "Sizes",
       label: "Sizes",
       explanation:
-        "One paragraph at three sizes, in the same measure. The breaks land in different places.",
+        "The first paragraph of your text at three sizes, in the same measure. Smaller type fits more letters on a line, so the breaks land in different places.",
     },
     compare: {
       id: "compare",
@@ -119,7 +121,7 @@ export const localhostHyphenationContent = {
       nav: "Compare",
       label: "Compare",
       explanation:
-        "The same paragraph three ways, in a box that is narrow on purpose. Then the old TeX patterns against the 2020 ones.",
+        "The first paragraph of your text three ways, at one width. Drag the width and watch the right edge. Then the old TeX patterns against the 2020 ones.",
     },
     howItWorks: {
       id: "how-it-works",
@@ -127,33 +129,41 @@ export const localhostHyphenationContent = {
       nav: "How it works",
       label: "How it works",
       explanation:
-        "Seven steps from a list of patterns to a line that breaks well. The server does the work, so a normal page downloads nothing extra.",
+        "From a word to a well-set line. The server does the work, so a normal page downloads nothing extra.",
     },
     samples: {
       id: "samples",
       number: "E",
       nav: "Samples",
       label: "Samples",
-      explanation: "Icelandic text in the places it turns up on a page.",
+      explanation:
+        "Icelandic text in the places it turns up on a page, each without the package and with it. The With side follows the page settings.",
     },
     typography: {
       id: "typography",
       number: "F",
       nav: "Typography",
       label: "Typography",
-      explanation: `Each rule swaps a plain space or quote for a better one. Off shows the text as written. On shows the typeset text, with ${marks.noBreakSpace} for every no-break space and a dotted ${marks.nonBreakingHyphen} for every non-breaking hyphen.`,
+      explanation: `Each rule swaps a plain space or quote for a better one. Off shows the text as written. On shows the typeset text, with every no-break space and non-breaking hyphen on an amber fill.`,
     },
     breakEditor: {
       id: "break-editor",
       number: "G",
-      nav: "Break editor",
+      nav: "Report",
       label: "Report a wrong break",
       explanation: "Fix the breaks, copy the line, add it to data/exceptions.txt.",
+    },
+    related: {
+      id: "related",
+      number: "H",
+      nav: "Related",
+      label: "Related",
+      explanation:
+        "Reading on setting text well, and tools that do the parts skiptingar leaves alone.",
     },
   },
 
   sizes: {
-    text: samples.njall,
     items: [
       { id: "display", label: "text-display" },
       { id: "prose", label: "text-prose" },
@@ -219,14 +229,38 @@ export const localhostHyphenationContent = {
   },
 
   howItWorks: {
-    pipelineLabel: "The pipeline",
-    pipelineArrow: "→",
-    pipeline: [
-      "Icelandic text",
-      "Patterns and exceptions",
-      "Soft hyphens, on the server",
-      "Plain HTML, the browser breaks the line",
-    ],
+    /** The diagram: one word through every stage, computed on the server. */
+    diagram: {
+      label: "One word, from the text to the line",
+      word: "þjóðfélagsumræða",
+      /** The browser stage sets the word in this line, narrow enough that it must break. */
+      line: "Ný þjóðfélagsumræða hafin",
+      server: "On the server",
+      browser: "In the browser",
+      stages: {
+        word: {
+          title: "Word",
+          note: "Any Icelandic word. There is no dictionary to look it up in.",
+        },
+        patterns: {
+          title: "Patterns",
+          note: "Each slot takes the highest digit of any pattern that covers it. Odd allows a break, even forbids one.",
+        },
+        rules: {
+          title: "Rules",
+          note: "The typographic rules keep the breaks with room on both sides. The exception list fixes the words the patterns get wrong.",
+        },
+        html: {
+          title: "HTML",
+          note: "An invisible soft hyphen at each break. The page ships no code to put them there.",
+        },
+        line: {
+          title: "Line",
+          note: "The browser picks the break that fits, and draws the hyphen only there.",
+        },
+      },
+      softHyphen: "&shy;",
+    },
     /** Each body is a list of parts; `code` parts are set in the code style. */
     steps: [
       {
@@ -240,9 +274,9 @@ export const localhostHyphenationContent = {
           {
             text: " (the dot is the end of the word). An odd number allows a break, an even number forbids one, and the highest number at each spot wins. The patterns are the 2020 Icelandic list from the Árni Magnússon Institute (CC BY 4.0). It gets compound joints right: ",
           },
-          { text: "þjóð-fé-lags-um-ræða", code: true },
+          { text: "þjóð-fé-lags-um-ræða", sample: true },
           { text: ", where the older TeX patterns gave " },
-          { text: "þjóð-fé-lagsum-ræða", code: true },
+          { text: "þjóð-fé-lagsum-ræða", sample: true },
           { text: "." },
         ],
       },
@@ -273,7 +307,7 @@ export const localhostHyphenationContent = {
           },
           { text: "ritreglur", code: true },
           { text: " allows every break the official spelling rules allow, such as " },
-          { text: "ó-lán", code: true },
+          { text: "ó-lán", sample: true },
           {
             text: ", with 1 letter before and 2 after, in words of 4 or more letters (skiptingar's own limit). Typographic never breaks where Ritreglur forbids it.",
           },
@@ -305,13 +339,13 @@ export const localhostHyphenationContent = {
           {
             text: " only swaps one character for another. Spaces become no-break spaces in ",
           },
-          { text: "1.000 kr.", code: true },
+          { text: "1.000 kr.", sample: true },
           { text: ", " },
-          { text: "30. september", code: true },
+          { text: "30. september", sample: true },
           { text: ", " },
-          { text: "bls. 12", code: true },
+          { text: "bls. 12", sample: true },
           { text: " and " },
-          { text: "dr. Jón", code: true },
+          { text: "dr. Jón", sample: true },
           {
             text: ", and straight quotes become Icelandic „…“. The text never changes length, so it can run across a whole JSX tree at once and pair quotes across inline elements such as ",
           },
@@ -356,7 +390,7 @@ export const localhostHyphenationContent = {
           {
             text: " turns it back on. Input is turned into NFC first, so decomposed letters, like those in macOS file names, still hyphenate. All-caps words of 4 to 8 letters, such as UNESCO, never break. Place names and patronymics break at their joint in heading mode, as in ",
           },
-          { text: "Sigurðar-dóttir", code: true },
+          { text: "Sigurðar-dóttir", sample: true },
           {
             text: ". Kennitala and phone numbers stay on one line, and CleanCopy puts the normal hyphen back on copy.",
           },
@@ -367,11 +401,12 @@ export const localhostHyphenationContent = {
       id: "css-pairs",
       title: "CSS it pairs with",
       intro:
-        "skiptingar only decides where a word may break. These properties decide how the browser uses those breaks. Each pair shows the same text at the same width, without and with the property.",
+        "skiptingar only decides where a word may break. These properties decide how the browser uses those breaks. Each pair sets the same text at the same width, without and with the property. Drag the width: at some widths the two agree, at others they part.",
       without: "Without",
       with: "With",
       usedLabel: "Used here",
       supportLabel: "Support",
+      snippetLabel: "HTML",
       rows: [
         {
           id: "pretty",
@@ -400,7 +435,7 @@ export const localhostHyphenationContent = {
           what: "Evens out the line lengths of a short block, so a heading of two or three lines does not end on one word.",
           used: [
             {
-              text: "The hero, the section titles, the heading samples and the pangram.",
+              text: "The section titles, the titles in the live editor and the heading samples.",
             },
           ],
           withoutCaption: "text-wrap: wrap",
@@ -430,19 +465,6 @@ export const localhostHyphenationContent = {
             },
           ],
           snippet: `<p lang="is">Hraðbrautarframkvæmdir</p>`,
-        },
-        {
-          id: "numeric",
-          property: "font-variant-numeric: tabular-nums",
-          what: "Gives every digit the same width, so numbers line up in a column. The example is set in Geist, the page's own text face.",
-          used: [
-            {
-              text: "The figures at the top of the page, the section numbers, the price table in Samples and the width readout.",
-            },
-          ],
-          withoutCaption: "font-variant-numeric: normal",
-          withCaption: "font-variant-numeric: tabular-nums",
-          numbers: ["1.111 kr.", "12.990 kr.", "4.500 kr.", "111.111 kr."],
         },
       ],
       balanceHeading: "Nýr vegur opnaður á milli bæjanna",
@@ -493,9 +515,9 @@ export const localhostHyphenationContent = {
           term: "Names in a sentence",
           body: [
             { text: "Forms like " },
-            { text: "til Jóns", code: true },
+            { text: "til Jóns", sample: true },
             { text: " and " },
-            { text: "Jóni", code: true },
+            { text: "Jóni", sample: true },
             { text: " need declension. Use " },
             { text: "beygla", href: "https://www.npmjs.com/package/beygla" },
             { text: "." },
@@ -519,9 +541,9 @@ export const localhostHyphenationContent = {
           id: "phone",
           term: "Phone numbers",
           body: [
-            { text: "555-1234", code: true },
+            { text: "555-1234", sample: true },
             { text: " and " },
-            { text: "555 1234", code: true },
+            { text: "555 1234", sample: true },
             {
               text: " are kept together by typeset(). Chrome otherwise breaks after the hyphen (tested in Chrome 154 on macOS).",
             },
@@ -546,8 +568,11 @@ export const localhostHyphenationContent = {
     heading: {
       label: "Heading, phone width",
       hint: [
-        { text: "text-balance", code: true },
-        { text: " evens out the lines, so a heading does not end on one word. " },
+        {
+          text: "Without the package a long compound runs out of the box. With it the word breaks at a joint, and ",
+        },
+        { text: "text-wrap: balance", code: true },
+        { text: " evens out the lines. " },
         { text: "Why, with and without", href: "#css-pairs" },
       ],
       headings: [
@@ -556,11 +581,11 @@ export const localhostHyphenationContent = {
       ],
     },
     short: {
-      label: "Short paragraph",
+      label: "Lede",
       hint: [
-        { text: "text-pretty", code: true },
-        { text: " stops the last line being one short word. " },
-        { text: "Why, with and without", href: "#css-pairs" },
+        {
+          text: "Large type puts few words on a line, so every short line shows. Without hyphens the right edge swings; with them it stays even.",
+        },
       ],
       text: samples.jonas,
       credit: samples.credits.jonas,
@@ -568,8 +593,11 @@ export const localhostHyphenationContent = {
     long: {
       label: "Long paragraph",
       hint: [
-        { text: "text-pretty", code: true },
-        { text: " stops the last line being one short word. " },
+        {
+          text: "A narrow column of saga prose. Compare the right edges, and the last line: ",
+        },
+        { text: "text-wrap: pretty", code: true },
+        { text: " keeps it from being one short word. " },
         { text: "Why, with and without", href: "#css-pairs" },
       ],
       text: samples.njall,
@@ -578,9 +606,13 @@ export const localhostHyphenationContent = {
     law: {
       label: "Law text",
       hint: [
-        { text: "text-pretty", code: true },
-        { text: " stops the last line being one short word. " },
-        { text: "Why, with and without", href: "#css-pairs" },
+        {
+          text: "Legal Icelandic is long compounds end to end, like ",
+        },
+        { text: "framkvæmdarvaldið", sample: true },
+        {
+          text: ". Without hyphens a whole word drops to the next line and leaves a gap.",
+        },
       ],
       articles: [
         { number: "1. gr.", text: samples.constitution.first },
@@ -590,6 +622,11 @@ export const localhostHyphenationContent = {
     },
     cards: {
       label: "Card grid",
+      hint: [
+        {
+          text: "Narrow cards with long names. Without the package the names run out of the cards.",
+        },
+      ],
       items: [
         {
           label: "Heilbrigðisráðuneytið",
@@ -617,37 +654,19 @@ export const localhostHyphenationContent = {
         },
       ],
     },
-    navigation: {
-      label: "Buttons and navigation",
-      navLabel: "Sample navigation",
-      href: "/localhost/hyphenation",
-      links: ["Upplýsingatækniþjónusta", "Þjónustuver", "Fyrirspurnir"],
-      button: "Skráðu þig á póstlistann",
-    },
-    table: {
-      label: "Table cell",
-      headers: ["Vara", "Verð", "Afhending"],
-      rows: [
-        ["Leturgerðarþjónusta", "12.990 kr.", "30. september"],
-        ["Umbrotshugbúnaður", "4.500 kr.", "1. október"],
-        ["Vefhönnunarráðgjöf", "25.000 kr.", "15. nóvember"],
-      ],
-    },
     names: {
       label: "Names and places",
       hint: [
         {
-          text: "Heading mode, typographic rules. Each · is the one place the name may break: the joint before its ending, such as ",
+          text: "Heading mode, with the page's rules. Each · is a place the name may break: the joint before its ending, such as ",
         },
-        { text: "-dóttir", code: true },
+        { text: "-dóttir", sample: true },
         { text: " or " },
-        { text: "-eyjar", code: true },
-        { text: ". Names under 12 letters, like " },
-        { text: "Akureyri", code: true },
-        { text: ", stay whole here. With " },
-        { text: 'rules: "ritreglur"', code: true },
-        { text: " they break too: " },
-        { text: "Akur·eyri", code: true },
+        { text: "-eyjar", sample: true },
+        { text: ". With typographic rules, names under 12 letters, like " },
+        { text: "Akureyri", sample: true },
+        { text: ", stay whole. Switch Rules to Ritreglur and they break too: " },
+        { text: "Akur·eyri", sample: true },
         { text: "." },
       ],
       names: [
@@ -655,7 +674,7 @@ export const localhostHyphenationContent = {
         "Vestmannaeyjar",
         "Guðmundsdóttir",
         "Stykkishólmur",
-        "Seyðisfjörður",
+        "Akureyri",
         "Hafnarfjörður",
       ],
     },
@@ -665,32 +684,173 @@ export const localhostHyphenationContent = {
         { text: "The two English phrases sit in " },
         { text: '<span lang="en">', code: true },
         {
-          text: ". Text under another language is left alone: no Icelandic hyphenation and no Icelandic quotes. The Icelandic words around it break as usual.",
+          text: ". The · marks show the result: the Icelandic words get breaks and „…“ quotes, the English ones are left as they are.",
         },
       ],
       before: "Enska orðið ",
       word: "internationalization",
       middle: " og tilvitnunin ",
       quote: '"straight quotes"',
-      after: " haldast óbreytt, en íslensku orðin brotna þar sem þau eiga að brotna.",
+      after:
+        ' haldast óbreytt, en íslensku orðin brotna og "gæsalappirnar" verða íslenskar.',
     },
     acronyms: {
       label: "Acronyms",
       hint: [
-        { text: "All-caps words of 4 to 8 letters never break. Longer ones still do." },
+        {
+          text: "All-caps words of 4 to 8 letters never break. Longer ones still do. The · marks show where each word may break.",
+        },
       ],
       text: "UNESCO og NATO haldast heil, en KEFLAVÍKURFLUGVÖLLUR brotnar.",
     },
-    pangram: {
-      label: "Pangram",
-      hint: [
-        { text: "Every Icelandic letter, at five weights. " },
-        { text: "text-balance", code: true },
-        { text: " evens out the lines. " },
-        { text: "Why, with and without", href: "#css-pairs" },
-      ],
-      text: "Kæmi ný öxi hér ykist þjófum nú bæði víl og ádrepa",
-    },
+  },
+
+  /**
+   * Reading and tools that sit next to skiptingar. Not credits: each one is
+   * here because it helps set Icelandic text well alongside the package.
+   */
+  related: {
+    groups: [
+      {
+        id: "reading",
+        label: "Reading",
+        items: [
+          {
+            id: "webkit-pretty",
+            title: "Better typography with text-wrap: pretty",
+            source: "WebKit blog",
+            href: "https://webkit.org/blog/16547/better-typography-with-text-wrap-pretty/",
+            body: [
+              {
+                text: "What makes a ragged edge look good: no short last line, an even right edge, hyphens where they help. It shows how Safari weighs these, with a live demo that draws the plain text faintly behind the improved one.",
+              },
+            ],
+          },
+          {
+            id: "chrome-pretty",
+            title: "CSS text-wrap: pretty",
+            source: "Chrome for Developers",
+            href: "https://developer.chrome.com/blog/css-text-wrap-pretty",
+            body: [
+              {
+                text: "Chrome's take on the same property. It keeps a paragraph from ending on one word, and near the end it adjusts hyphenation and earlier lines to make room. That is why its effect shows at some widths and not at others.",
+              },
+            ],
+          },
+          {
+            id: "chrome-balance",
+            title: "CSS text-wrap: balance",
+            source: "Chrome for Developers",
+            href: "https://developer.chrome.com/docs/css-ui/css-text-wrap-balance",
+            body: [
+              {
+                text: "When to balance a title, and the catch: browsers only balance blocks of a few lines, so it is for titles and captions, not paragraphs.",
+              },
+            ],
+          },
+          {
+            id: "butterick",
+            title: "Hyphenation",
+            source: "Butterick's Practical Typography",
+            href: "https://practicaltypography.com/hyphenation.html",
+            body: [
+              {
+                text: "A counterpoint worth reading: in ragged text hyphenation is optional, and headings are better without it. The typographic rules and heading mode take the same view, breaking less often, and in a title only long words.",
+              },
+            ],
+          },
+          {
+            id: "liang",
+            title: "Word Hy-phen-a-tion by Com-put-er",
+            source: "Frank Liang, 1983",
+            href: "https://tug.org/docs/liang/",
+            body: [
+              {
+                text: "The thesis behind the patterns skiptingar runs, and the reason it needs no dictionary.",
+              },
+            ],
+          },
+          {
+            id: "ritreglur",
+            title: "§ 33 Orðskipting",
+            source: "Ritreglur, Árnastofnun",
+            href: "https://ritreglur.arnastofnun.is/#33.",
+            body: [
+              {
+                text: "The official rules for breaking Icelandic words between lines. The Ritreglur preset follows them; the typographic preset is stricter and never breaks where they forbid it.",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "tools",
+        label: "Works well with",
+        items: [
+          {
+            id: "hanging-punctuation",
+            title: "hanging-punctuation",
+            source: "MDN",
+            href: "https://developer.mozilla.org/en-US/docs/Web/CSS/hanging-punctuation",
+            body: [
+              {
+                text: "Hangs an opening „ outside the text's edge, so a line that starts with a quote still lines up. Few browsers support it, and the rest ignore it, so it is safe to add.",
+              },
+            ],
+          },
+          {
+            id: "typeset",
+            title: "Typeset",
+            source: "David Merfield",
+            href: "https://typeset.lllllllllllllllll.com/",
+            body: [
+              {
+                text: "A server-side HTML pre-processor for hanging punctuation, optical margin alignment and small caps. It has its own quotes and hyphenation: turn off ",
+              },
+              { text: "quotes", code: true },
+              { text: " and " },
+              { text: "hyphenate", code: true },
+              { text: " and let skiptingar do those for Icelandic." },
+            ],
+          },
+          {
+            id: "hyphenopoly",
+            title: "Hyphenopoly",
+            source: "Mathias Nater",
+            href: "https://mnater.github.io/Hyphenopoly/",
+            body: [
+              {
+                text: "Hyphenation for many other languages, in the browser. skiptingar leaves text under another ",
+              },
+              { text: "lang", code: true },
+              { text: " alone, so the two can share a page." },
+            ],
+          },
+          {
+            id: "ylhyra",
+            title: "Icelandic hyphenation",
+            source: "Ylhýra",
+            href: "http://hyphenation.ylhyra.is/",
+            body: [
+              {
+                text: "A neural model that finds compound joints. A second opinion when you check a break before adding it to the exception list.",
+              },
+            ],
+          },
+          {
+            id: "greynir",
+            title: "GreynirCorrect",
+            source: "Miðeind",
+            href: "https://github.com/mideind/GreynirCorrect",
+            body: [
+              {
+                text: "Spelling and grammar checking for Icelandic, in Python. Correct the text first, then set it.",
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
 
   typography: {

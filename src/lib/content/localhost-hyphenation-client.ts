@@ -5,19 +5,56 @@
  * the client chunk. Keep server-only copy out of this file.
  */
 
-/** The Njáls saga sample: the live editor starts with it, and the server samples reuse it. */
-export const njallSample =
-  "Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Velli á Rangárvöllum. Hann var ríkur höfðingi og málafylgjumaður mikill og svo mikill lögmaður að engir þóttu löglegir dómar dæmdir nema hann væri við. Hann átti dóttur eina er Unnur hét. Hún var væn kona og kurteis og vel að sér og þótti sá bestur kostur á Rangárvöllum.";
+/**
+ * The three example texts. Each one holds every problem the package solves:
+ * long compounds, a title, numbers with units, dates and ordinals,
+ * abbreviations with numbers, a kennitala or phone number, a title before a
+ * name, straight quotes, a number range, one-letter words, a web address and
+ * an email that must stay whole, an acronym and a patronymic. A line that
+ * starts with `# ` is a title.
+ */
+const examples = [
+  {
+    id: "news",
+    label: "Frétt",
+    text: `# Kjörsókn í Vestmannaeyjum aldrei meiri í sveitarstjórnarkosningum
 
-/** Shown in place of the characters that are invisible in normal text. */
+Kjörsókn í sveitarstjórnarkosningunum 16. maí 2026 var sú mesta sem mælst hefur í Vestmannaeyjum. Á árunum 1990-2010 var hún að jafnaði u.þ.b. 62 af hundraði. "Þetta er söguleg niðurstaða," sagði dr. Guðrún Sigurðardóttir, formaður yfirkjörstjórnar, á blaðamannafundi kl. 14.30 í gær.
+
+Fulltrúar ODIHR fylgdust með framkvæmdinni. Í skýrslu þeirra, á bls. 12, kemur fram að kosningaþátttaka ungs fólks hafi aukist mest. Nánari upplýsingar eru á www.kosning.is og fyrirspurnir má senda á kosningar@vestmannaeyjar.is eða í síma 555-1234.`,
+  },
+  {
+    id: "notice",
+    label: "Tilkynning",
+    text: `# Heilbrigðisþjónusta á landsbyggðinni: nýr afgreiðslutími
+
+Frá og með 1. október 2026 verður heilsugæslustöðin á Egilsstöðum opin kl. 8-16 alla virka daga. Komugjald fyrir fullorðna er 1.000 kr. en 500 kr. fyrir börn og öryrkja. Bókið tíma á www.heilsuvera.is eða í síma 555 1234 og hafið kennitöluna, t.d. 010190-2939, við höndina.
+
+Í "Þjónustuhandbók" heilbrigðisráðuneytisins, sjá bls. 4, er fjallað um réttindi sjúklinga. Bólusetningar barna fylgja viðmiðum UNICEF. Hjúkrunarfræðingar svara fyrirspurnum á 2. hæð og sr. Anna Guðmundsdóttir veitir sálgæslu eftir samkomulagi.`,
+  },
+  {
+    id: "event",
+    label: "Viðburður",
+    text: `# Íslenskuverðlaun unga fólksins afhent í Eldborgarsal Hörpu
+
+Verðlaunin verða afhent fimmtudaginn 30. sep. 2026 kl. 20.00. Miðaverð er 4.500 kr. og dagskráin tekur um 90 mín. Kynnir kvöldsins er hr. Jón Þór Hafsteinsson og verðlaunin eru veitt í samstarfi við UNESCO.
+
+Sigurtextinn hefst á orðunum "Kæmi ný öxi hér, ykist þjófum nú bæði víl og ádrepa" og sýnir að íslenskan rúmar alla stafi stafrófsins í einni setningu. Miðar fást á www.harpa.is og í miðasölunni, sem er opin kl. 12-18, í síma 555-5555.`,
+  },
+] as const;
+
+/**
+ * Shown in place of the characters that are invisible in normal text. A
+ * no-break space and a non-breaking hyphen need no mark: each is shown as
+ * itself, on an amber fill.
+ */
 const marks = {
   softHyphen: "·",
-  noBreakSpace: "⍽",
-  nonBreakingHyphen: "\u2011",
 } as const;
 
 export const localhostHyphenationClientContent = {
   marks,
+  examples,
 
   tips: {
     /** The accessible name of an "i" button: what it explains. */
@@ -32,7 +69,18 @@ export const localhostHyphenationClientContent = {
   liveEditor: {
     textLabel: "Text",
     outputLabel: "Output",
-    initialText: njallSample,
+    initialText: examples[0].text,
+    composer: {
+      exampleLabel: "Example",
+      /** The select's first option, shown once the text no longer matches an example. */
+      customLabel: "Your text",
+      hint: "Start a line with # to make it a title.",
+      use: "Use this text on the whole page",
+      useShortcut: "Ctrl + Enter",
+      used: "The page now uses this text",
+      unused: "Not used on the page yet",
+      words: (count: number) => `${count} ${count === 1 ? "word" : "words"}`,
+    },
     /** What the editor starts with. The page renders the first output from these on the server. */
     initial: { mode: "body", rules: "typographic", typeset: true },
     mode: {
@@ -60,24 +108,57 @@ export const localhostHyphenationClientContent = {
     },
     showBreaks: {
       label: "Show breaks",
-      tip: "Draws · for every soft hyphen, ⍽ for every no-break space and a dotted \u2011 for every non-breaking hyphen (U+2011), so you can see what the components put in.",
+      tip: "Draws a red · for every soft hyphen, and puts every no-break space and non-breaking hyphen (U+2011) on an amber fill, so you can see what the components put in.",
+    },
+    rag: {
+      label: "Settle rag",
+      tip: "Looks at each line end the way a typesetter does. A short word like og, í or að left at the end, or a word that sticks out and leaves a hole in the edge, is tried on the next line, and the move is kept only if the whole paragraph's edge gets better. It needs the real line breaks, so it runs in the browser. With Show breaks on, each word it moved has an amber space after it.",
+    },
+    overhang: {
+      label: "Overhang",
+      tip: "The cheat a typesetter makes by hand: a line's last letter or mark may go a little past the edge, when that keeps a word on its line and makes the paragraph better. Never more than about one letter, less as the type gets bigger, and never at a hyphen. Works with Settle rag. With Show breaks on, the overhanging character is on an amber fill.",
     },
     textWrap: {
       label: "text-wrap",
       tip: "text-pretty (text-wrap: pretty) stops a paragraph ending on one short word and evens out the ragged edge. text-balance (text-wrap: balance) evens out the lines of a heading. Body mode uses pretty and heading mode uses balance. Off wraps each line greedily. How it works shows each one with and without.",
     },
-    width: {
-      label: "Width",
-      tip: "Drag to resize the box below. The breaks move with its edge.",
-      min: 120,
-      max: 720,
-      step: 10,
-      initial: 320,
-      value: (px: number) => `${px} px`,
-    },
+    /** The result box's width slider, in px. */
+    width: { min: 120, max: 720, initial: 320 },
     breaks: (count: number) => `${count} ${count === 1 ? "break" : "breaks"}`,
     noBreakSpaces: (count: number) =>
       `${count} no-break ${count === 1 ? "space" : "spaces"}`,
+  },
+
+  /** The settings, kept in view once the editor's own controls scroll away. */
+  dock: {
+    label: "Page settings",
+    open: "Edit settings",
+    close: "Close settings",
+    on: "on",
+    off: "off",
+  },
+
+  /** The copy button on a code block. */
+  copyCode: {
+    states: {
+      idle: "Copy",
+      copied: "Copied",
+      failed: "Copy failed",
+    },
+  },
+
+  /** A width slider over a specimen. */
+  measure: {
+    label: "Width",
+    value: (px: number) => `${px} px`,
+  },
+
+  /** A pair that shows a text without the package, then with it. */
+  pair: {
+    without: "Without",
+    withoutCaption: "the browser alone",
+    with: "With skiptingar",
+    withCaption: "page settings",
   },
 
   breakEditor: {

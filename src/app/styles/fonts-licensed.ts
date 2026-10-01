@@ -1,4 +1,4 @@
-import { Geist } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
@@ -12,6 +12,19 @@ export const GeistSans = Geist({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-geist-face",
+});
+
+/**
+ * Geist Mono, the code face of /localhost/hyphenation: code blocks, code in a
+ * sentence, and the break editor's exception line. Geist's monospace sibling,
+ * also by Vercel under the SIL Open Font License, also variable (`wght`
+ * 100–900). Each character has its own width and shape, so `l`, `I` and `1`
+ * cannot be mistaken for one another.
+ */
+export const GeistMono = Geist_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-mono-face",
 });
 
 /**

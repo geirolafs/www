@@ -140,7 +140,7 @@ export function BreakEditor() {
           autoComplete="off"
           autoCorrect="off"
           className={cn(
-            "w-full border border-border p-sm font-book text-body text-foreground",
+            "w-full border border-border p-sm font-book text-foreground text-hy-body",
             FOCUS_CLASS
           )}
           id={wordId}
@@ -154,7 +154,7 @@ export function BreakEditor() {
 
       <div className="flex flex-col gap-xs">
         <span className={LABEL_CLASS}>{content.keyLabel}</span>
-        <ul className="flex flex-wrap gap-x-md gap-y-2xs text-meta">
+        <ul className="flex flex-wrap gap-x-md gap-y-2xs font-book text-hy-note">
           {Object.values(content.states).map(state => (
             <li key={state.name}>
               <Tip tip={state.tip}>{`${state.mark} ${state.name}`}</Tip>
@@ -168,18 +168,18 @@ export function BreakEditor() {
         {cells.map(cell => (
           <span className="flex items-center" key={cell.id}>
             {/* Only the letters are Icelandic; the gap buttons' names are English. */}
-            <span className="font-semibold text-foreground text-hy-title" lang="is">
+            <span className="font-hy-title text-foreground text-hy-title" lang="is">
               {cell.letter}
             </span>
             {cell.gap ? (
               <button
                 aria-label={content.gapLabel(cell.letter, content.states[cell.gap].name)}
                 className={cn(
-                  "min-w-md px-2xs py-xs font-medium text-body",
+                  "min-w-md px-2xs py-xs font-bold text-hy-body",
                   FOCUS_CLASS,
                   cell.gap === "none" && "text-muted",
-                  cell.gap === "break" && "text-foreground",
-                  cell.gap === "joint" && "bg-highlight text-foreground"
+                  cell.gap === "break" && "text-hy-signal",
+                  cell.gap === "joint" && "bg-hy-accent text-foreground"
                 )}
                 onClick={() => cycle(cell.index)}
                 type="button"
@@ -197,7 +197,7 @@ export function BreakEditor() {
           <code
             className={cn(
               CODE_CLASS,
-              "break-words border border-border p-sm text-body text-foreground"
+              "break-words border border-border p-sm text-foreground text-hy-body"
             )}
             lang="is"
           >

@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
+import { CodeBlock, InlineCode } from "@/app/components/localhost/hyphenation/code";
+import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { RichText } from "@/app/components/localhost/hyphenation/rich-text";
 import {
-  CODE_CLASS,
+  BODY_CLASS,
+  ITEM_TITLE_CLASS,
   LABEL_CLASS,
+  NOTE_CLASS,
+  SUBTITLE_CLASS,
   TITLE_CLASS,
 } from "@/app/components/localhost/hyphenation/styles";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
@@ -13,20 +18,19 @@ const { howItWorks, compare } = localhostHyphenationContent;
 const { css } = howItWorks;
 
 /**
- * The demo measure, the same for both sides of every pair. It is a demo
- * constraint, not a design value, so it is not a token. `box-content` makes it
- * the width of the text, not of the dashed box around it. The text is the
- * static `text-link` size, so the same width breaks the same way on every
- * screen; the fluid sizes would move the breaks as the window grows.
+ * The box both sides of a pair share: the slider's width, dashed so the edge
+ * the lines wrap against is visible. The text is the static `text-link` size,
+ * so a width breaks the same way on every screen.
  */
-const DEMO_BOX = "box-content max-w-[13.5rem] border border-border border-dashed p-2xs";
+const DEMO_BOX = "w-(--measure) max-w-full border border-border border-dashed p-2xs";
 
 /**
- * The heading demo's measure is in `em`, not `rem`, so it follows the fluid
- * heading size and the line breaks stay the same at every screen width.
+ * Where each pair's slider starts: a width at which the two sides differ, so
+ * the property's effect shows before anyone drags. Found by sweeping the
+ * widths in Chrome: `pretty` only changes this text at some widths (170–240
+ * and 400–430px), which is why a fixed box can hide it.
  */
-const BALANCE_BOX =
-  "box-content max-w-[7em] border border-border border-dashed p-2xs text-hy-title";
+const START_WIDTH = { pretty: 220, balance: 360, hyphens: 230 } as const;
 
 /** A column caption: Without or With, and the CSS that the side sets. */
 function Side({
@@ -39,12 +43,10 @@ function Side({
   children: ReactNode;
 }) {
   return (
-    <figure className="flex flex-col gap-2xs">
-      <figcaption className="flex flex-col">
+    <figure className="flex min-w-0 flex-1 flex-col gap-2xs overflow-x-clip">
+      <figcaption className="flex flex-col items-start gap-2xs">
         <span className={cn(LABEL_CLASS, "text-foreground")}>{label}</span>
-        <code className={cn(CODE_CLASS, "text-label text-muted")} translate="no">
-          {caption}
-        </code>
+        <InlineCode className="text-label">{caption}</InlineCode>
       </figcaption>
       {children}
     </figure>
@@ -59,89 +61,65 @@ function Pair({ row }: { row: Row }) {
     return null;
   }
 
+  const pair = (without: ReactNode, withProperty: ReactNode) => (
+    <div className="flex flex-col gap-md md:flex-row">
+      <Side caption={row.withoutCaption} label={css.without}>
+        {without}
+      </Side>
+      <Side caption={row.withCaption} label={css.with}>
+        {withProperty}
+      </Side>
+    </div>
+  );
+  const paragraph = cn(DEMO_BOX, "font-book text-link");
+  const heading = cn(DEMO_BOX, TITLE_CLASS, "text-hy-title");
+
   switch (row.id) {
     case "pretty":
       return (
-        <div className="flex flex-wrap gap-md">
-          <Side caption={row.withoutCaption} label={css.without}>
+        <Measure initial={START_WIDTH.pretty} max={480} min={160}>
+          {pair(
             <Hyphenate>
-              <p
-                className={cn(DEMO_BOX, "hyphens-manual text-wrap font-book text-link")}
-                lang="is"
-              >
+              <p className={cn(paragraph, "hyphens-manual text-wrap")} lang="is">
+                {compare.text}
+              </p>
+            </Hyphenate>,
+            <Hyphenate>
+              <p className={cn(paragraph, "hyphens-manual text-pretty")} lang="is">
                 {compare.text}
               </p>
             </Hyphenate>
-          </Side>
-          <Side caption={row.withCaption} label={css.with}>
-            <Hyphenate>
-              <p
-                className={cn(DEMO_BOX, "hyphens-manual text-pretty font-book text-link")}
-                lang="is"
-              >
-                {compare.text}
-              </p>
-            </Hyphenate>
-          </Side>
-        </div>
+          )}
+        </Measure>
       );
     case "balance":
       return (
-        <div className="flex flex-wrap gap-md">
-          <Side caption={row.withoutCaption} label={css.without}>
-            <p className={cn(BALANCE_BOX, TITLE_CLASS, "text-wrap")} lang="is">
+        <Measure initial={START_WIDTH.balance} max={560} min={160}>
+          {pair(
+            <p className={cn(heading, "text-wrap")} lang="is">
+              {css.balanceHeading}
+            </p>,
+            <p className={cn(heading, "text-balance")} lang="is">
               {css.balanceHeading}
             </p>
-          </Side>
-          <Side caption={row.withCaption} label={css.with}>
-            <p className={cn(BALANCE_BOX, TITLE_CLASS, "text-balance")} lang="is">
-              {css.balanceHeading}
-            </p>
-          </Side>
-        </div>
+          )}
+        </Measure>
       );
     case "hyphens":
       return (
-        <div className="flex flex-wrap gap-md">
-          <Side caption={row.withoutCaption} label={css.without}>
-            {/* No soft hyphens here: `auto` leaves the choice to the browser. */}
-            <p
-              className={cn(DEMO_BOX, "hyphens-auto text-pretty font-book text-link")}
-              lang="is"
-            >
+        <Measure initial={START_WIDTH.hyphens} max={480} min={160}>
+          {pair(
+            // No soft hyphens here: `auto` leaves the choice to the browser.
+            <p className={cn(paragraph, "hyphens-auto text-pretty")} lang="is">
               {compare.text}
-            </p>
-          </Side>
-          <Side caption={row.withCaption} label={css.with}>
+            </p>,
             <Hyphenate>
-              <p
-                className={cn(DEMO_BOX, "hyphens-manual text-pretty font-book text-link")}
-                lang="is"
-              >
+              <p className={cn(paragraph, "hyphens-manual text-pretty")} lang="is">
                 {compare.text}
               </p>
             </Hyphenate>
-          </Side>
-        </div>
-      );
-    case "numeric":
-      return (
-        <div className="flex flex-wrap gap-md">
-          <Side caption={row.withoutCaption} label={css.without}>
-            <ul className="flex flex-col items-end font-hy-text font-medium text-body">
-              {row.numbers.map(number => (
-                <li key={number}>{number}</li>
-              ))}
-            </ul>
-          </Side>
-          <Side caption={row.withCaption} label={css.with}>
-            <ul className="flex flex-col items-end font-hy-text font-medium text-body tabular-nums">
-              {row.numbers.map(number => (
-                <li key={number}>{number}</li>
-              ))}
-            </ul>
-          </Side>
-        </div>
+          )}
+        </Measure>
       );
     default:
       return null;
@@ -157,15 +135,10 @@ export function CssPairs() {
   return (
     <div className="flex flex-col gap-md">
       <div className="flex flex-col gap-2xs">
-        <h3
-          className={cn(TITLE_CLASS, "scroll-mt-project text-foreground text-hy-lede")}
-          id={css.id}
-        >
+        <h3 className={cn(SUBTITLE_CLASS, "scroll-mt-project")} id={css.id}>
           {css.title}
         </h3>
-        <p className="max-w-3xl text-pretty font-book text-body text-muted">
-          {css.intro}
-        </p>
+        <p className={cn(BODY_CLASS, "max-w-3xl")}>{css.intro}</p>
       </div>
 
       <div className="flex flex-col">
@@ -175,33 +148,22 @@ export function CssPairs() {
             className="flex flex-col gap-sm border-border border-t py-sm"
             key={row.id}
           >
-            <h4
-              className="font-semibold text-body text-foreground"
-              id={`${css.id}-${row.id}`}
-            >
-              <code className={CODE_CLASS} translate="no">
-                {row.property}
-              </code>
+            <h4 className={ITEM_TITLE_CLASS} id={`${css.id}-${row.id}`}>
+              <InlineCode>{row.property}</InlineCode>
             </h4>
-            <p className="max-w-3xl text-pretty font-book text-body text-muted">
-              {row.what}
-            </p>
-            <p className="max-w-3xl text-pretty font-book text-meta text-muted">
+            <p className={cn(BODY_CLASS, "max-w-3xl")}>{row.what}</p>
+            <p className={cn(NOTE_CLASS, "max-w-3xl")}>
               <span className={LABEL_CLASS}>{css.usedLabel}</span>{" "}
               <RichText parts={row.used} />
             </p>
             {"support" in row ? (
-              <p className="max-w-3xl text-pretty font-book text-meta text-muted">
+              <p className={cn(NOTE_CLASS, "max-w-3xl")}>
                 <span className={LABEL_CLASS}>{css.supportLabel}</span>{" "}
                 <RichText parts={row.support} />
               </p>
             ) : null}
             {"snippet" in row ? (
-              <pre className="overflow-x-auto border border-border p-sm text-meta">
-                <code className={CODE_CLASS} translate="no">
-                  {row.snippet}
-                </code>
-              </pre>
+              <CodeBlock code={row.snippet} label={css.snippetLabel} />
             ) : null}
             <Pair row={row} />
           </section>

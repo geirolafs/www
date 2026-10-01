@@ -47,7 +47,12 @@ export const THEME_SCALES = {
 } as const;
 
 /** The page's `hy-*` colours. They share the prefix but are not sizes. */
-const HYPHENATION_COLOURS: ReadonlySet<string> = new Set(["hy-track", "hy-surface"]);
+const HYPHENATION_COLOURS: ReadonlySet<string> = new Set([
+  "hy-track",
+  "hy-surface",
+  "hy-signal",
+  "hy-accent",
+]);
 
 /**
  * The `hy-*` text sizes belong only to /localhost/hyphenation, so they are one

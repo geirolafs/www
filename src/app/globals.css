@@ -47,6 +47,17 @@
   --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
   --color-hy-track: #e5e5e5; /* /localhost/hyphenation: a switch's off track, the secondary button's border */
   --color-hy-surface: #f5f5f5; /* /localhost/hyphenation: the secondary button's fill */
+  /* /localhost/hyphenation: the two highlights. Signal is for what must be
+     seen: a break, the current section. It is 3.2:1 on white, so it marks
+     and draws but is never small text. Accent is the quieter one, a fill
+     behind dark text (foreground on it is 10:1); on white it is 1.9:1, so
+     never text or a line. */
+  --color-hy-signal: #ff4949;
+  --color-hy-accent: #ffb200;
+
+  /* /localhost/hyphenation: the one raised thing on the page, the settings
+     dock that floats over the specimens. */
+  --shadow-hy-float: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.1);
 
   /* ---- Font ------------------------------------------------------------ */
 
@@ -162,7 +173,7 @@
      explanations, 17 → 20. */
   --text-hy-body: clamp(1.0625rem, 0.996rem + 0.282vw, 1.25rem);
   --text-hy-body--line-height: 1.376;
-  --text-hy-body--letter-spacing: 0.02em;
+  --text-hy-body--letter-spacing: 0.01em;
 
   /* Hyphenation playground — only /localhost/hyphenation. The nav links, 16,
      static. */
@@ -172,6 +183,12 @@
 
   /* Hyphenation playground — only /localhost/hyphenation. Control labels and
      buttons (radios, switches, Copy), 14, static. */
+  /* Hyphenation playground — only /localhost/hyphenation. Small running
+     text: hints under a specimen, notes, captions, credits. 15, untracked,
+     with room between lines, since it is read, not scanned. */
+  --text-hy-note: 0.9375rem;
+  --text-hy-note--line-height: 1.5;
+  --text-hy-note--letter-spacing: 0.005em;
   --text-hy-control: 0.875rem;
   --text-hy-control--line-height: 1.4286;
   --text-hy-control--letter-spacing: 0.02em;
@@ -296,17 +313,18 @@
   }
 }
 
-/* Geist (text) and Bespoke Serif (titles), only on /localhost/hyphenation
-   (see `styles/fonts-licensed.ts`). Named by role, so a font change is one line
-   here. `inline` so `font-hy-text` and `font-hy-title` write
-   `var(--font-geist-face)` and `var(--font-bespoke-serif-face)` into the
-   element's own `font-family`. In the plain `@theme` block the tokens would
+/* Geist (text), Bespoke Serif (titles) and Geist Mono (code), only on
+   /localhost/hyphenation (see `styles/fonts-licensed.ts`). Named by role, so a
+   font change is one line here. `inline` so `font-hy-text`, `font-hy-title`
+   and `font-hy-mono` write the next/font variables into the element's own
+   `font-family`. In the plain `@theme` block the tokens would
    resolve on `:root`, where next/font has not set those variables (only the
    playground's wrapper has them), so the value would be invalid and fall back
    to Same Univers. */
 @theme inline {
   --font-hy-text: var(--font-geist-face), ui-sans-serif, system-ui, sans-serif;
   --font-hy-title: var(--font-bespoke-serif-face), ui-serif, Georgia, serif;
+  --font-hy-mono: var(--font-geist-mono-face), ui-monospace, monospace;
 }
 
 /* ==========================================================================
@@ -1003,6 +1021,92 @@ article a:active {
    scroll-driven animations (Firefox for now) the name is always shown. */
 .hy-shell {
   timeline-scope: --hy-hero;
+}
+
+/* /localhost/hyphenation: code, light and in greys. `.hy-code` is any code
+   on the page: the blocks, the chips inside a sentence and the diagram's
+   HTML. It redefines sugar-high's `--sh-*` variables (typography.css sets
+   the blog's colours at the root), so the tokens are told apart by lightness
+   and weight, not hue. Every grey is at least 4.5:1 on the surface. */
+.hy-code {
+  --sh-keyword: var(--color-foreground);
+  --sh-class: var(--color-foreground);
+  --sh-jsxliterals: #2b2b2b;
+  --sh-identifier: #2e2e2e;
+  --sh-property: #474747;
+  --sh-entity: #474747;
+  --sh-string: #595959;
+  --sh-sign: #6b6b6b;
+  --sh-comment: #6b6b6b;
+  background: var(--color-hy-surface);
+  color: var(--sh-identifier);
+}
+
+.hy-code .sh__token--keyword,
+.hy-code .sh__token--class {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Code inside a sentence: a chip that keeps to the line. The padding is
+   in `em`, so it scales with the text around it, and the monospace is set a
+   step smaller, as monospace runs large. */
+.hy-inline-code {
+  padding: 0.1em 0.35em;
+  font-family: var(--font-geist-mono-face), ui-monospace, monospace;
+  font-size: 0.875em;
+  box-decoration-break: clone;
+}
+
+/* /localhost/hyphenation: a width slider, drawn as little as it can be: a
+   hairline track and a thin bar for the thumb, like the edge of a measure.
+   The input stays 24px tall, so it is easy to catch; the box it moves is its
+   own feedback, so there is no label or readout on screen. */
+.hy-range {
+  height: 1.5rem;
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.hy-range::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--color-border);
+}
+
+.hy-range::-moz-range-track {
+  height: 1px;
+  background: var(--color-border);
+}
+
+.hy-range::-webkit-slider-thumb {
+  width: 3px;
+  height: 1rem;
+  /* Centred on the 1px track. */
+  margin-top: calc(-0.5rem + 0.5px);
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-foreground);
+}
+
+.hy-range::-moz-range-thumb {
+  width: 3px;
+  height: 1rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-foreground);
+}
+
+.hy-range:focus-visible {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: 2px;
+}
+
+/* /localhost/hyphenation: the nav jumps between sections at once. The site
+   scrolls smoothly (reset.css), but on a long specimen page a smooth scroll
+   past five sections is a wait, not a transition. */
+html:has(.hy-shell) {
+  scroll-behavior: auto;
 }
 
 .hy-hero-title {

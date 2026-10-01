@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { RichText } from "@/app/components/localhost/hyphenation/rich-text";
+import { SectionNav } from "@/app/components/localhost/hyphenation/section-nav";
 import { FOCUS_CLASS } from "@/app/components/localhost/hyphenation/styles";
-import { BespokeSerif, GeistSans } from "@/app/styles/fonts-licensed";
+import { BespokeSerif, GeistMono, GeistSans } from "@/app/styles/fonts-licensed";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +11,7 @@ const { shell, sections, colophon, hero } = localhostHyphenationContent;
 /**
  * The frame of the playground, which is a page of its own and shares nothing
  * with the rest of the site but its grid: every band is a `page-grid`, so the
- * columns are the site's. The outermost element carries the fonts and sets
+ * columns are the site's. The outermost element carries the three fonts and sets
  * Geist; titles opt in to Bespoke Serif. The root layout already renders the
  * `main`, so this is a plain `div`.
  */
@@ -19,6 +20,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div
       className={cn(
         GeistSans.variable,
+        GeistMono.variable,
         BespokeSerif.variable,
         "hy-shell flex min-h-dvh flex-col bg-background font-book font-hy-text text-foreground"
       )}
@@ -30,8 +32,8 @@ export function Shell({ children }: { children: ReactNode }) {
           sits in columns 1–4 and only shows once the hero title has scrolled
           under the bar (`hy-logo`, in globals.css). The links run over
           columns 5–12, the content column of every section. On a phone the
-          name takes 3 of the 8 columns and the letters 5, so seven 24px
-          targets still fit at 320px. */}
+          name takes 3 of the 8 columns and the letters 5: eight 24px targets
+          from 360px up, 20px below that (`SectionNav`). */}
       <header className="page-grid sticky top-0 z-20 h-group items-end bg-background pb-sm">
         <a
           className={cn(
@@ -45,33 +47,20 @@ export function Shell({ children }: { children: ReactNode }) {
           <span className="sr-only">{hero.name}</span>
           <span aria-hidden="true">{hero.title}</span>
         </a>
-        <nav aria-label={shell.navLabel} className="col-span-5 lg:col-span-8">
-          <ul className="flex justify-between whitespace-nowrap">
-            {Object.values(sections).map(section => (
-              <li key={section.id}>
-                <a
-                  className={cn(
-                    "inline-block min-w-6 py-2xs text-center font-regular text-foreground text-hy-nav hover:text-muted lg:min-w-0 lg:text-left",
-                    FOCUS_CLASS
-                  )}
-                  href={`#${section.id}`}
-                  title={section.nav}
-                >
-                  {/* A phone shows the letter only; the name stays for
-                      screen readers. From `lg` up it reads "A. Live editor". */}
-                  {section.number}
-                  <span className="max-lg:sr-only">. {section.nav}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <SectionNav
+          label={shell.navLabel}
+          sections={Object.values(sections).map(({ id, number, nav }) => ({
+            id,
+            number,
+            nav,
+          }))}
+        />
       </header>
 
       {children}
 
       <footer className="page-grid">
-        <div className="col-span-full flex flex-col gap-2xs border-border border-t py-xl text-meta text-muted">
+        <div className="col-span-full flex flex-col gap-2xs border-border border-t py-xl font-book text-hy-note text-muted">
           <h2 className="sr-only">{colophon.label}</h2>
           {colophon.lines.map(parts => (
             <p key={parts.map(part => part.text).join("")}>

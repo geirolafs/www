@@ -24,12 +24,13 @@ function pieces(text: string): Piece[] {
 }
 
 /**
- * Text with its invisible characters made visible: each soft hyphen as a
- * muted dot, each no-break space as a muted open box and each non-breaking
- * hyphen as a dotted hyphen. The marks are hidden from assistive tech; the
- * real character stays in the text for them. A soft hyphen keeps a `<wbr />` after its mark, so the
- * line can still break there; the mark stands in for the hyphen the browser
- * would draw.
+ * Text with its invisible characters made visible: each soft hyphen as a red
+ * dot (`hy-signal`: a break must be seen), and each no-break space and
+ * non-breaking hyphen as itself on an amber fill (`hy-accent`: glue, quieter
+ * than a break). The fill is the mark; no symbol is needed. The marks are hidden from
+ * assistive tech; the real character stays in the text for them. A soft
+ * hyphen keeps a `<wbr />` after its mark, so the line can still break there;
+ * the mark stands in for the hyphen the browser would draw.
  *
  * It has no state or effects, so a server page and a client component can both
  * render it.
@@ -39,38 +40,19 @@ export function MarkedText({ text }: { text: string }) {
     if (piece.text === SOFT_HYPHEN) {
       return (
         <span key={piece.id}>
-          <span aria-hidden="true" className="text-muted">
+          <span aria-hidden="true" className="font-bold text-hy-signal">
             {marks.softHyphen}
           </span>
           <wbr />
         </span>
       );
     }
-    if (piece.text === NON_BREAKING_HYPHEN) {
-      // The real U+2011 stays for assistive tech and for copying. The mark is
-      // a hyphen with a dotted underline, so it reads as a hyphen that cannot
-      // break, apart from an ordinary one.
+    if (piece.text === NON_BREAKING_HYPHEN || piece.text === NO_BREAK_SPACE) {
+      // The real character, on an amber fill: it keeps its width and its
+      // meaning for screen readers and copying, and the fill shows it.
       return (
-        <span key={piece.id}>
-          <span className="sr-only">{NON_BREAKING_HYPHEN}</span>
-          <span
-            aria-hidden="true"
-            className="text-muted underline decoration-dotted underline-offset-4"
-          >
-            {marks.nonBreakingHyphen}
-          </span>
-        </span>
-      );
-    }
-    if (piece.text === NO_BREAK_SPACE) {
-      // The real no-break space stays for screen readers, so "1.000 kr." is
-      // not read as "1.000kr." It is out of the layout, so only the mark shows.
-      return (
-        <span key={piece.id}>
-          <span className="sr-only">{NO_BREAK_SPACE}</span>
-          <span aria-hidden="true" className="text-muted">
-            {marks.noBreakSpace}
-          </span>
+        <span className="bg-hy-accent" key={piece.id}>
+          {piece.text}
         </span>
       );
     }

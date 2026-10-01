@@ -1,10 +1,14 @@
-import { CODE_CLASS, FOCUS_CLASS } from "@/app/components/localhost/hyphenation/styles";
+import { InlineCode } from "@/app/components/localhost/hyphenation/code";
+import { FOCUS_CLASS } from "@/app/components/localhost/hyphenation/styles";
 import { cn } from "@/lib/utils";
 
 export type Part = {
   readonly text: string;
   readonly href?: string;
+  /** Code: a highlighted chip in the monospace. */
   readonly code?: true;
+  /** Icelandic sample text, like `þjóð-fé-lags-um-ræða`: set in the editor's serif, not as code. */
+  readonly sample?: true;
 };
 
 const LINK_CLASS = cn(
@@ -23,9 +27,8 @@ function withOffsets(parts: readonly Part[]) {
 }
 
 /**
- * A line of text built from parts: plain text, links and code. The copy stays
- * in the content file, and the markup stays here. Code is marked
- * `translate="no"`, so a translator leaves it alone.
+ * A line of text built from parts: plain text, links, code and Icelandic
+ * samples. The copy stays in the content file, and the markup stays here.
  */
 export function RichText({ parts }: { parts: readonly Part[] }) {
   return withOffsets(parts).map(part => {
@@ -37,14 +40,13 @@ export function RichText({ parts }: { parts: readonly Part[] }) {
       );
     }
     if (part.code) {
+      return <InlineCode key={part.offset}>{part.text}</InlineCode>;
+    }
+    if (part.sample) {
       return (
-        <code
-          className={cn(CODE_CLASS, "text-foreground")}
-          key={part.offset}
-          translate="no"
-        >
+        <span className="font-hy-title text-foreground" key={part.offset} lang="is">
           {part.text}
-        </code>
+        </span>
       );
     }
     return <span key={part.offset}>{part.text}</span>;

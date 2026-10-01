@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
-import { CODE_CLASS, LABEL_CLASS } from "@/app/components/localhost/hyphenation/styles";
+import { InlineCode } from "@/app/components/localhost/hyphenation/code";
+import {
+  ITEM_TITLE_CLASS,
+  LABEL_CLASS,
+} from "@/app/components/localhost/hyphenation/styles";
 import { Tip } from "@/app/components/localhost/hyphenation/tip";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { cn } from "@/lib/utils";
@@ -40,10 +44,12 @@ export function TypographyFeature({ label, tag, tip, off, on }: TypographyFeatur
   return (
     <div className="col-span-full flex flex-col gap-y-xs border-border border-t pt-sm lg:grid lg:grid-cols-subgrid">
       <div className="flex flex-col lg:col-span-4">
-        <span className="font-semibold text-body text-foreground">{label}</span>
+        <span className={ITEM_TITLE_CLASS}>{label}</span>
         <span>
           <Tip tip={tip}>
-            <code className={cn(CODE_CLASS, "text-label text-muted")}>{tag}</code>
+            <span className="text-hy-note">
+              <InlineCode>{tag}</InlineCode>
+            </span>
           </Tip>
         </span>
       </div>

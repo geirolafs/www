@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
-import { LABEL_CLASS, TITLE_CLASS } from "@/app/components/localhost/hyphenation/styles";
+import {
+  LABEL_CLASS,
+  NOTE_CLASS,
+  TITLE_CLASS,
+} from "@/app/components/localhost/hyphenation/styles";
 import { cn } from "@/lib/utils";
 
 /**
@@ -112,10 +116,10 @@ type SpecimenProps = {
 /** One specimen inside a section, with its `h3` caption above it. */
 export function Specimen({ label, hint, className, children }: SpecimenProps) {
   return (
-    <div className={cn("flex min-w-0 flex-col gap-xs", className)}>
-      <div className="flex flex-col">
+    <div className={cn("flex min-w-0 flex-col gap-sm", className)}>
+      <div className="flex flex-col gap-2xs">
         <h3 className={LABEL_CLASS}>{label}</h3>
-        {hint ? <p className="font-regular text-label text-muted">{hint}</p> : null}
+        {hint ? <p className={cn(NOTE_CLASS, "max-w-2xl")}>{hint}</p> : null}
       </div>
       {children}
     </div>

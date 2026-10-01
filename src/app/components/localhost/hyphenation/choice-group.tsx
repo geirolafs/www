@@ -30,7 +30,10 @@ export function ControlGroup({ label, hideLabel, tip, children }: ControlGroupPr
     <fieldset className="flex flex-col gap-2xs">
       <legend className="sr-only">{label}</legend>
       {hideLabel ? null : (
-        <div className="flex min-h-6 items-center gap-2xs">
+        // The space under the row, not the label, so the label and the "i"
+        // share one centre line. The "i" is a 24px hit area around a 12px
+        // dot, so a 2px gap puts the dot 8px after the word.
+        <div className="flex min-h-6 items-center gap-0.5 pb-1.5">
           <span aria-hidden="true" className={GROUP_LABEL_CLASS}>
             {label}
           </span>
@@ -114,7 +117,7 @@ type SwitchProps = {
 /** One on/off setting. */
 export function Switch({ label, tip, checked, onChange }: SwitchProps) {
   return (
-    <div className="flex items-center gap-2xs">
+    <div className="flex items-center gap-0.5">
       <label className={cn(ROW_LABEL_CLASS, "py-2xs")}>
         <input
           checked={checked}
