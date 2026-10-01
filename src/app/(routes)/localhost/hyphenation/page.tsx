@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 /**
  * The playground for the `skiptingar` package, and its one real consumer page.
  * It is a standalone type-specimen page: a hero
- * that shows the product, then numbered sections that each pair a title with a
+ * that shows the product, then lettered sections that each pair a title with a
  * specimen. It shares no chrome with the rest of the site.
  */
 export default function Page() {
@@ -60,23 +60,23 @@ export default function Page() {
       <CleanCopy />
       <Hero />
 
-      <Section {...sections.liveEditor}>
+      <Section {...sections.liveEditor} layout="free">
         <LiveEditor initialOutput={initialOutput} />
       </Section>
 
-      <Section {...sections.sizes}>
+      <Section {...sections.sizes} layout="wide">
         <Sizes />
       </Section>
 
-      <Section {...sections.compare}>
+      <Section {...sections.compare} layout="wide">
         <Compare />
       </Section>
 
-      <Section {...sections.howItWorks}>
+      <Section {...sections.howItWorks} layout="side">
         <HowItWorks />
       </Section>
 
-      <Section {...sections.samples}>
+      <Section {...sections.samples} layout="side">
         <Specimen
           hint={<RichText parts={samples.heading.hint} />}
           label={samples.heading.label}
@@ -133,11 +133,11 @@ export default function Page() {
         </Specimen>
       </Section>
 
-      <Section {...sections.typography}>
+      <Section {...sections.typography} layout="wide">
         <Typography />
       </Section>
 
-      <Section {...sections.breakEditor}>
+      <Section {...sections.breakEditor} layout="side">
         <BreakEditor />
       </Section>
     </Shell>

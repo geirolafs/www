@@ -2,37 +2,77 @@ import type { ReactNode } from "react";
 import { LABEL_CLASS, TITLE_CLASS } from "@/app/components/localhost/hyphenation/styles";
 import { cn } from "@/lib/utils";
 
+/**
+ * How a section lays out its specimen on a wide screen. On a phone every
+ * section is one column: the header, then the specimen.
+ *
+ * - `side`: the header stays in view in columns 1–4, beside one specimen in
+ *   columns 5–12. For a tool or a text read in order.
+ * - `wide`: the header sits on top in columns 1–4, and the specimen runs
+ *   under it across all 12 columns, so things to compare stand side by side.
+ *   The specimen is a subgrid of the page's columns; its children place
+ *   themselves with `lg:col-span-*`.
+ * - `free`: the children are items of the section's own grid and place
+ *   themselves, for a specimen that puts its controls in the header column.
+ */
+export type SectionLayout = "side" | "wide" | "free";
+
 type SectionProps = {
   /** The anchor the top bar links to. */
   id: string;
-  /** The section's place in the page, like `01`. */
+  /** The section's letter in the page, like `A`. */
   number: string;
   label: string;
   /** One line under the title: what the specimen shows. */
   explanation?: string;
+  layout: SectionLayout;
   children: ReactNode;
 };
 
 /**
- * A numbered section of the playground. On a wide screen the title column
- * stays in view beside the specimen; on a phone the two stack. The title is
- * the section's `h2`; specimens inside it caption themselves with `h3`.
+ * A lettered section of the playground on the site's `page-grid`. The title
+ * is the section's `h2`; specimens inside it caption themselves with `h3`.
  */
-export function Section({ id, number, label, explanation, children }: SectionProps) {
+export function Section({
+  id,
+  number,
+  label,
+  explanation,
+  layout,
+  children,
+}: SectionProps) {
   const titleId = `${id}-title`;
 
   return (
     <section
       aria-labelledby={titleId}
-      className="grid scroll-mt-project gap-x-md gap-y-xl border-border border-t py-project lg:grid-cols-12"
+      className={cn(
+        "page-grid scroll-mt-project pb-project",
+        // `free` sets its text box and its controls a step apart, so its rows
+        // are closer; the rule's margin keeps the header 96px below the rule.
+        layout === "free" ? "gap-y-md" : "gap-y-xl"
+      )}
       id={id}
     >
-      <header className="flex min-w-0 flex-col gap-xs lg:sticky lg:top-project lg:col-span-4 lg:self-start">
-        {/* Tabular figures keep 01 to 07 the same width. */}
-        <p
-          aria-hidden="true"
-          className="font-semibold text-hy-label text-muted tabular-nums"
-        >
+      {/* The rule runs across the columns only, not into the page margin. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "col-span-full border-border border-t",
+          layout === "free" ? "mb-group" : "mb-xl"
+        )}
+      />
+      <header
+        className={cn(
+          "col-span-full flex min-w-0 flex-col gap-xs lg:col-span-4",
+          layout === "side" && "lg:sticky lg:top-project lg:self-start",
+          // A `free` specimen places its parts on explicit rows, and the grid
+          // places those before any auto-placed item, so the header needs a
+          // fixed spot too.
+          layout === "free" && "lg:col-start-1 lg:row-start-2"
+        )}
+      >
+        <p aria-hidden="true" className="font-semibold text-hy-label text-muted">
           {number}
         </p>
         <h2
@@ -45,7 +85,19 @@ export function Section({ id, number, label, explanation, children }: SectionPro
           <p className="text-pretty font-book text-hy-body text-muted">{explanation}</p>
         ) : null}
       </header>
-      <div className="flex min-w-0 flex-col gap-project lg:col-span-8">{children}</div>
+      {layout === "free" ? (
+        children
+      ) : (
+        <div
+          className={cn(
+            "col-span-full flex min-w-0 flex-col gap-y-project",
+            layout === "side" && "lg:col-span-8",
+            layout === "wide" && "lg:grid lg:grid-cols-subgrid"
+          )}
+        >
+          {children}
+        </div>
+      )}
     </section>
   );
 }
@@ -53,13 +105,14 @@ export function Section({ id, number, label, explanation, children }: SectionPro
 type SpecimenProps = {
   label: string;
   hint?: ReactNode;
+  className?: string;
   children: ReactNode;
 };
 
 /** One specimen inside a section, with its `h3` caption above it. */
-export function Specimen({ label, hint, children }: SpecimenProps) {
+export function Specimen({ label, hint, className, children }: SpecimenProps) {
   return (
-    <div className="flex flex-col gap-xs">
+    <div className={cn("flex min-w-0 flex-col gap-xs", className)}>
       <div className="flex flex-col">
         <h3 className={LABEL_CLASS}>{label}</h3>
         {hint ? <p className="font-regular text-label text-muted">{hint}</p> : null}

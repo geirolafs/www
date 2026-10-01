@@ -105,8 +105,6 @@ export function ChoiceGroup<T extends string>({
 
 type SwitchProps = {
   label: string;
-  /** Keep the label for assistive tech but do not draw it. */
-  hideLabel?: boolean;
   /** What the setting does. Adds an "i" button after the label. */
   tip?: string;
   checked: boolean;
@@ -114,7 +112,7 @@ type SwitchProps = {
 };
 
 /** One on/off setting. */
-export function Switch({ label, hideLabel, tip, checked, onChange }: SwitchProps) {
+export function Switch({ label, tip, checked, onChange }: SwitchProps) {
   return (
     <div className="flex items-center gap-2xs">
       <label className={cn(ROW_LABEL_CLASS, "py-2xs")}>
@@ -126,7 +124,7 @@ export function Switch({ label, hideLabel, tip, checked, onChange }: SwitchProps
           role="switch"
           type="checkbox"
         />
-        <span className={cn(hideLabel && "sr-only")}>{label}</span>
+        <span>{label}</span>
       </label>
       {tip ? <HelpTip name={label} tip={tip} /> : null}
     </div>

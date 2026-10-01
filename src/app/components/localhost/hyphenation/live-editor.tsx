@@ -72,15 +72,19 @@ export function LiveEditor({ initialOutput }: LiveEditorProps) {
   const isHeading = mode === "heading";
 
   return (
-    <div className="flex flex-col gap-md">
-      <div className="flex flex-col gap-xs">
+    // `contents`: the three parts below are items of the section's grid
+    // (the section's `free` layout). The DOM order is the phone's order: the
+    // text, the controls, then the result. From `lg` up the controls move to
+    // columns 1–4 under the header and stay in view beside the result.
+    <div className="contents">
+      <div className="col-span-full flex flex-col gap-xs lg:col-span-8 lg:col-start-5 lg:row-start-2">
         <label className={LABEL_CLASS} htmlFor={textId}>
           {content.textLabel}
         </label>
         <textarea
           className={cn(
             EDITOR_CLASS,
-            "w-full rounded-pill border border-border bg-transparent px-2.5 py-2xs",
+            "w-full border border-border bg-transparent px-2.5 py-2xs",
             FOCUS_CLASS
           )}
           id={textId}
@@ -91,43 +95,44 @@ export function LiveEditor({ initialOutput }: LiveEditorProps) {
         />
       </div>
 
-      <div className="flex flex-col gap-sm">
-        <div className="flex flex-wrap items-start gap-x-xl gap-y-md">
-          <ChoiceGroup
-            label={content.mode.label}
-            onChange={setMode}
-            options={content.mode.options}
-            tip={content.mode.tip}
-            value={mode}
+      <div className="col-span-full flex flex-wrap items-start gap-x-xl gap-y-md lg:sticky lg:top-project lg:col-span-4 lg:col-start-1 lg:row-start-3 lg:flex-col lg:gap-xl lg:self-start">
+        <ChoiceGroup
+          label={content.mode.label}
+          onChange={setMode}
+          options={content.mode.options}
+          tip={content.mode.tip}
+          value={mode}
+        />
+        <ChoiceGroup
+          label={content.rules.label}
+          onChange={setRules}
+          options={content.rules.options}
+          tip={content.rules.tip}
+          value={rules}
+        />
+        <ControlGroup label={content.options.label}>
+          <Switch
+            checked={typeset}
+            label={content.typeset.label}
+            onChange={setTypeset}
+            tip={content.typeset.tip}
           />
-          <ChoiceGroup
-            label={content.rules.label}
-            onChange={setRules}
-            options={content.rules.options}
-            tip={content.rules.tip}
-            value={rules}
+          <Switch
+            checked={showBreaks}
+            label={content.showBreaks.label}
+            onChange={setShowBreaks}
+            tip={content.showBreaks.tip}
           />
-          <ControlGroup label={content.options.label}>
-            <Switch
-              checked={typeset}
-              label={content.typeset.label}
-              onChange={setTypeset}
-              tip={content.typeset.tip}
-            />
-            <Switch
-              checked={showBreaks}
-              label={content.showBreaks.label}
-              onChange={setShowBreaks}
-              tip={content.showBreaks.tip}
-            />
-            <Switch
-              checked={pretty}
-              label={content.textWrap.label}
-              onChange={setPretty}
-              tip={content.textWrap.tip}
-            />
-          </ControlGroup>
-        </div>
+          <Switch
+            checked={pretty}
+            label={content.textWrap.label}
+            onChange={setPretty}
+            tip={content.textWrap.tip}
+          />
+        </ControlGroup>
+      </div>
+
+      <div className="col-span-full flex min-w-0 flex-col gap-md lg:col-span-8 lg:col-start-5 lg:row-start-3">
         <div className="flex items-center gap-xs">
           <label className={cn(GROUP_LABEL_CLASS, "pb-0")} htmlFor={widthId}>
             {content.width.label}
@@ -151,29 +156,29 @@ export function LiveEditor({ initialOutput }: LiveEditorProps) {
             {content.width.value(width)}
           </output>
         </div>
+
+        <section
+          className={cn(
+            "max-w-full hyphens-manual border border-border border-dashed p-sm text-foreground",
+            isHeading ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
+            !pretty && "text-wrap",
+            pretty && (isHeading ? "text-balance" : "text-pretty")
+          )}
+          lang="is"
+          aria-label={content.outputLabel}
+          // A live user value from the slider, not a design token.
+          style={{ width }}
+        >
+          {showBreaks ? <MarkedText text={output} /> : output}
+        </section>
+
+        <p className="flex flex-wrap gap-x-md font-medium text-meta text-muted">
+          <Tip tip={tips.softHyphen}>{content.breaks(count(output, SOFT_HYPHEN))}</Tip>
+          <Tip tip={tips.noBreakSpace}>
+            {content.noBreakSpaces(count(output, NO_BREAK_SPACE))}
+          </Tip>
+        </p>
       </div>
-
-      <section
-        className={cn(
-          "max-w-full hyphens-manual border border-border border-dashed p-sm text-foreground",
-          isHeading ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
-          !pretty && "text-wrap",
-          pretty && (isHeading ? "text-balance" : "text-pretty")
-        )}
-        lang="is"
-        aria-label={content.outputLabel}
-        // A live user value from the slider, not a design token.
-        style={{ width }}
-      >
-        {showBreaks ? <MarkedText text={output} /> : output}
-      </section>
-
-      <p className="flex flex-wrap gap-x-md font-medium text-meta text-muted">
-        <Tip tip={tips.softHyphen}>{content.breaks(count(output, SOFT_HYPHEN))}</Tip>
-        <Tip tip={tips.noBreakSpace}>
-          {content.noBreakSpaces(count(output, NO_BREAK_SPACE))}
-        </Tip>
-      </p>
     </div>
   );
 }

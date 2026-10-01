@@ -26,7 +26,10 @@ function Column({
   children: ReactNode;
 }) {
   return (
-    <figure className="flex flex-col gap-2xs">
+    // From `lg` up each figure spans the two rows of a subgrid: the captions
+    // share the first row, so the three boxes start on one line even where a
+    // hint makes one caption taller.
+    <figure className="flex flex-col gap-2xs lg:col-span-4 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:items-start">
       <figcaption className="max-w-[11rem]">
         <Tip className={cn(LABEL_CLASS, "text-foreground")} tip={tip}>
           {label}
@@ -40,13 +43,17 @@ function Column({
   );
 }
 
-/** The same paragraph three ways, then the table of pattern differences. */
+/**
+ * The same paragraph three ways, side by side in the section's `wide`
+ * layout (four columns each), then the table of pattern differences across
+ * the full width.
+ */
 export function Compare() {
   const { columns, table, text } = compare;
 
   return (
-    <div className="flex flex-col gap-xl">
-      <div className="flex flex-wrap gap-md">
+    <>
+      <div className="col-span-full flex flex-col gap-y-md lg:grid lg:grid-cols-subgrid lg:grid-rows-[auto_auto]">
         <Column label={columns.none.label} tip={columns.none.tip}>
           <p className={cn(COLUMN_CLASS, "hyphens-manual")} lang="is">
             {text}
@@ -70,7 +77,7 @@ export function Compare() {
         </Column>
       </div>
 
-      <div className="flex flex-col gap-sm">
+      <div className="col-span-full flex flex-col gap-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-meta">
             <caption className={cn(LABEL_CLASS, "pb-xs text-left text-foreground")}>
@@ -119,6 +126,6 @@ export function Compare() {
         </div>
         <p className="text-pretty font-book text-meta text-muted">{table.note}</p>
       </div>
-    </div>
+    </>
   );
 }

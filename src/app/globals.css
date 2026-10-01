@@ -111,16 +111,28 @@
 
   /* Hyphenation playground — only /localhost/hyphenation. Its own scale, set in
      Geist and a serif for titles, all fluid 375 → 1440. `hy-hero` is Geist
-     Medium, the page title "Skipt-ing-ar" with its hyphens typed in. At this
-     tracking the word measures 5.33 × the font size wide (measured in Chrome),
-     so 60.8px at 375 keeps it inside the 327px column, and 228px at 1440 keeps
-     it inside the 1232px container. The tracking is tight but stops short of
-     contact: the t and the hyphen are the closest pair, 0.015em apart.
-     Geist at -0.08em made a and r overlap, and -0.05em left t touching the
-     hyphen. */
-  --text-hy-hero: clamp(3.8rem, 0.1203rem + 15.7vw, 14.25rem);
+     SemiBold, the page title "Skipt-ing-ar" with its hyphens typed in, sized
+     from the width of its container (`cqi`), so the word fills the grid edge
+     to edge at every screen width. Its parent must be an `@container`. At
+     this tracking the ink of the word (from the S's left edge to the r's
+     right edge, measured in Chrome) is 5.025 × the font size wide; the
+     divisor below is that ratio. The S starts 0.05em in from its box, so the
+     title pulls itself left by that much (`hero.tsx`). */
+  --text-hy-hero: calc(100cqi / 5.025);
   --text-hy-hero--line-height: 1;
-  --text-hy-hero--letter-spacing: -0.03em;
+  --text-hy-hero--letter-spacing: -0.065em;
+
+  /* Hyphenation playground — only /localhost/hyphenation. The page name in
+     the top bar, Geist SemiBold, 20 → 24. */
+  --text-hy-logo: clamp(1.25rem, 1.162rem + 0.376vw, 1.5rem);
+  --text-hy-logo--line-height: 1.25;
+  --text-hy-logo--letter-spacing: -0.0175em;
+
+  /* Hyphenation playground — only /localhost/hyphenation. The hero's one
+     sentence under the name, Bespoke Serif Regular, 28 → 68. */
+  --text-hy-intro: clamp(1.75rem, 0.87rem + 3.756vw, 4.25rem);
+  --text-hy-intro--line-height: 1.31;
+  --text-hy-intro--letter-spacing: -0.049em;
 
   /* Hyphenation playground — only /localhost/hyphenation. Section titles and
      large specimens, 28 → 44. */
@@ -135,10 +147,10 @@
   --text-hy-lede--letter-spacing: -0.015em;
 
   /* Hyphenation playground — only /localhost/hyphenation. The hero stats' big
-     numbers, Geist Light, 36 → 62.5. */
-  --text-hy-stat: clamp(2.25rem, 1.667rem + 2.488vw, 3.9075rem);
-  --text-hy-stat--line-height: 0.735;
-  --text-hy-stat--letter-spacing: -0.0145em;
+     numbers, Bespoke Serif Light, 56 → 110. */
+  --text-hy-stat: clamp(3.5rem, 2.312rem + 5.07vw, 6.875rem);
+  --text-hy-stat--line-height: 1;
+  --text-hy-stat--letter-spacing: -0.008em;
 
   /* Hyphenation playground — only /localhost/hyphenation. Small Geist labels:
      stat names and section numbers, 16, static. */
@@ -978,6 +990,49 @@ article a:active {
       animation-range:
         entry 0% entry 100%,
         exit 0% exit 100%;
+    }
+  }
+}
+
+/* /localhost/hyphenation: the page name in the top bar stays hidden while the
+   hero title is on screen, and fades in over the last 50px of scroll before
+   the title has gone under the bar. The bar is `--spacing-group` tall, so the
+   title's view timeline starts there. `timeline-scope` on the shell lets the
+   bar, which comes before the hero, read the hero's timeline. `visibility`
+   animates with it, so the hidden name takes no keyboard focus. Without
+   scroll-driven animations (Firefox for now) the name is always shown. */
+.hy-shell {
+  timeline-scope: --hy-hero;
+}
+
+.hy-hero-title {
+  view-timeline-name: --hy-hero;
+  view-timeline-inset: var(--spacing-group) 0;
+}
+
+@keyframes hy-logo-in {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .hy-logo {
+    animation: hy-logo-in linear both;
+    animation-timeline: --hy-hero;
+    animation-range: exit calc(100% - 50px) exit 100%;
+  }
+
+  /* Reduced motion: no fade. The name appears in one step at the end of the
+     same range. */
+  @media (prefers-reduced-motion: reduce) {
+    .hy-logo {
+      animation-timing-function: steps(1, end);
     }
   }
 }

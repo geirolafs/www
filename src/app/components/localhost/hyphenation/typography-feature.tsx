@@ -1,11 +1,10 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { useState } from "react";
-import { Switch } from "@/app/components/localhost/hyphenation/choice-group";
-import { CODE_CLASS } from "@/app/components/localhost/hyphenation/styles";
+import { CODE_CLASS, LABEL_CLASS } from "@/app/components/localhost/hyphenation/styles";
 import { Tip } from "@/app/components/localhost/hyphenation/tip";
+import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { cn } from "@/lib/utils";
+
+const { typography } = localhostHyphenationContent;
 
 type TypographyFeatureProps = {
   label: string;
@@ -19,17 +18,28 @@ type TypographyFeatureProps = {
   on: ReactNode;
 };
 
+/** The text on one side of a row, with its caption for a phone and a screen reader. */
+function Side({ caption, children }: { caption: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-2xs lg:col-span-4">
+      {/* From `lg` up the captions sit once above the columns (`Typography`). */}
+      <span className={cn(LABEL_CLASS, "lg:sr-only")}>{caption}</span>
+      <p className="font-book text-foreground text-prose" lang="is">
+        {children}
+      </p>
+    </div>
+  );
+}
+
 /**
- * One typesetting rule as an Off/On feature, like a font's OpenType feature
- * list. Both strings come from the server, so the core never reaches the
- * client bundle.
+ * One typesetting rule as a row, like a font's OpenType feature list: the
+ * name in columns 1–4, the text as written in 5–8 and typeset in 9–12, so
+ * the two compare side by side. Both strings come from the server.
  */
 export function TypographyFeature({ label, tag, tip, off, on }: TypographyFeatureProps) {
-  const [enabled, setEnabled] = useState(true);
-
   return (
-    <div className="flex flex-col gap-xs border-border border-t pt-sm xl:grid xl:grid-cols-4 xl:gap-x-md">
-      <div className="flex flex-col">
+    <div className="col-span-full flex flex-col gap-y-xs border-border border-t pt-sm lg:grid lg:grid-cols-subgrid">
+      <div className="flex flex-col lg:col-span-4">
         <span className="font-semibold text-body text-foreground">{label}</span>
         <span>
           <Tip tip={tip}>
@@ -37,10 +47,8 @@ export function TypographyFeature({ label, tag, tip, off, on }: TypographyFeatur
           </Tip>
         </span>
       </div>
-      <Switch checked={enabled} hideLabel label={label} onChange={setEnabled} />
-      <p className="font-book text-foreground text-prose xl:col-span-2" lang="is">
-        {enabled ? on : off}
-      </p>
+      <Side caption={typography.off}>{off}</Side>
+      <Side caption={typography.on}>{on}</Side>
     </div>
   );
 }

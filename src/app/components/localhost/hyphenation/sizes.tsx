@@ -13,15 +13,16 @@ const SIZE_CLASS = {
 } as const;
 
 /**
- * One paragraph at three sizes, all in the same measure. The measure is in rem
- * on purpose: a smaller size fits more letters per line, so the breaks land in
+ * One paragraph at three sizes, all in the same measure, side by side in the
+ * section's `wide` layout: four columns each. The measure is in rem on
+ * purpose: a smaller size fits more letters per line, so the breaks land in
  * different places.
  */
 export function Sizes() {
   return (
-    <div className="flex flex-col gap-xl">
+    <>
       {sizes.items.map(item => (
-        <Specimen key={item.id} label={item.label}>
+        <Specimen className="lg:col-span-4" key={item.id} label={item.label}>
           <Hyphenate>
             {/* The same narrow measure at every size, on purpose. */}
             <p
@@ -36,6 +37,6 @@ export function Sizes() {
           </Hyphenate>
         </Specimen>
       ))}
-    </div>
+    </>
   );
 }

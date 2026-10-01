@@ -99,7 +99,7 @@ export const localhostHyphenationContent = {
   sections: {
     liveEditor: {
       id: "live-editor",
-      number: "01",
+      number: "A",
       nav: "Live editor",
       label: "Live editor",
       explanation:
@@ -107,7 +107,7 @@ export const localhostHyphenationContent = {
     },
     sizes: {
       id: "sizes",
-      number: "02",
+      number: "B",
       nav: "Sizes",
       label: "Sizes",
       explanation:
@@ -115,7 +115,7 @@ export const localhostHyphenationContent = {
     },
     compare: {
       id: "compare",
-      number: "03",
+      number: "C",
       nav: "Compare",
       label: "Compare",
       explanation:
@@ -123,7 +123,7 @@ export const localhostHyphenationContent = {
     },
     howItWorks: {
       id: "how-it-works",
-      number: "04",
+      number: "D",
       nav: "How it works",
       label: "How it works",
       explanation:
@@ -131,21 +131,21 @@ export const localhostHyphenationContent = {
     },
     samples: {
       id: "samples",
-      number: "05",
+      number: "E",
       nav: "Samples",
       label: "Samples",
       explanation: "Icelandic text in the places it turns up on a page.",
     },
     typography: {
       id: "typography",
-      number: "06",
+      number: "F",
       nav: "Typography",
       label: "Typography",
       explanation: `Each rule swaps a plain space or quote for a better one. Off shows the text as written. On shows the typeset text, with ${marks.noBreakSpace} for every no-break space and a dotted ${marks.nonBreakingHyphen} for every non-breaking hyphen.`,
     },
     breakEditor: {
       id: "break-editor",
-      number: "07",
+      number: "G",
       nav: "Break editor",
       label: "Report a wrong break",
       explanation: "Fix the breaks, copy the line, add it to data/exceptions.txt.",
@@ -694,6 +694,9 @@ export const localhostHyphenationContent = {
   },
 
   typography: {
+    /** The two column captions: the text as written, and typeset. */
+    off: "Off",
+    on: "On",
     /** `options` is the `typeset()` option that the row turns on. */
     rules: [
       {
