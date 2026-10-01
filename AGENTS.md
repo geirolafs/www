@@ -36,11 +36,12 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
   for a word, a line or a lone sentence. Set the token; never rely on
   `font-weight: normal`. Nothing below 400 — muted text is colour, not weight.
 - **Type styles come from Figma.** If a value isn't there, ask.
-- **Exception: `/localhost/hyphenation`.** A standalone page set in Geist
-  (text, UI) and Bespoke Serif (titles, lede, editor text), not Same Univers,
-  with its own `--text-hy-*` scale and `font-hy-text` / `font-hy-title`
-  families. The two rules above don't apply there: it uses Geist's weight
-  range (100–900) on purpose.
+- **Exception: `/localhost/hyphenation`.** A standalone page set in three
+  variable faces, not Same Univers: Geist (text, UI), Bespoke Serif (titles,
+  lede, editor text) and Geist Mono (all code). It has its own `--text-hy-*`
+  scale and `font-hy-text` / `font-hy-title` / `font-hy-mono` families. The
+  two rules above don't apply there: it uses Geist's weight range (100–900)
+  on purpose.
 - **`/localhost/*` experiments stand alone.** No site header, footer or back
   link; titles have no site suffix (`localhost/layout.tsx`). The `/localhost`
   index itself keeps the site look.
@@ -52,9 +53,9 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
 
 - Commit a font file from `src/app/styles/local-fonts/licensed/`. Bespoke
   Serif is under the ITF Free Font License: self-hosting is allowed, but
-  sharing the file through a public repository is not. (Geist, OFL, is not a
-  committed file either: `next/font/google` fetches it at build.) It comes
-  from the private fonts repo at build time (`bun run fonts`, needs
+  sharing the file through a public repository is not. (Geist and Geist Mono,
+  OFL, are not committed files either: `next/font/google` fetches them at
+  build.) It comes from the private fonts repo at build time (`bun run fonts`, needs
   `FONTS_TOKEN_SKIPTIR` in CI). Don't subset or convert it either — the
   license forbids it.
 - Add a dependency without asking.
@@ -69,9 +70,14 @@ The site is meant to be nearly still. That's a decision, not an unfinished
 state.
 
 - Animate `transform` and `opacity` only. The hero moves, it doesn't fade — its
-  first paragraph is the LCP element. The one exception is the page tint, which
-  moves `--color-background` with the scroll (`usePageTint` in
-  `components/home/ambient-stripe/tint.ts`).
+  first paragraph is the LCP element. Two exceptions:
+  - The page tint moves `--color-background` with the scroll (`usePageTint` in
+    `components/home/ambient-stripe/tint.ts`).
+  - A box that grows with what you type may transition its `height`, so it
+    eases instead of snapping: the text field sizes itself (`field-sizing:
+content`), and a wrapper follows its height with a `ResizeObserver`
+    (`Composer` on /localhost/hyphenation). Short, ease-out, and none under
+    reduced motion.
 - Respect reduced motion with `useLiveReducedMotion()` for anything JS-driven,
   `motion-reduce:` for pure CSS.
 - The stripe is the ambient glow (`SiteStripe`, tuned as preset 1 on
