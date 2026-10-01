@@ -13,6 +13,8 @@ type MeasureProps = {
   min?: number;
   max?: number;
   className?: string;
+  /** What the slider sizes, for its accessible name ("Width, Law text"). */
+  name?: string;
   /** Read the width as `var(--measure)`, e.g. with `w-(--measure)`. */
   children: ReactNode;
 };
@@ -28,6 +30,7 @@ export function Measure({
   min = 160,
   max = 640,
   className,
+  name,
   children,
 }: MeasureProps) {
   const [width, setWidth] = useState(initial);
@@ -37,7 +40,7 @@ export function Measure({
       {/* No visible label or readout: the box moving is the feedback. A
           screen reader gets the name and the width in px. */}
       <input
-        aria-label={content.label}
+        aria-label={name ? `${content.label}, ${name}` : content.label}
         aria-valuetext={content.value(width)}
         className="hy-range w-full max-w-64"
         max={max}

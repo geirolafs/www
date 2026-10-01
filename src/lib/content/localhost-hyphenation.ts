@@ -47,6 +47,17 @@ export const localhostHyphenationContent = {
     name: "Skiptingar",
     title: "Skipt-ing-ar",
     lede: "Skiptingar hyphenates Icelandic text and evens ragged edges. It helps titles break at the right joint, and numbers, dates and names stay together.",
+    /** One title and paragraph, as the browser sets it alone and with the package. */
+    demo: {
+      label: "The same text in the same narrow column",
+      without: {
+        label: "The browser alone",
+        caption: "hyphens: auto, text-wrap: pretty",
+      },
+      with: { label: "With Skiptingar", caption: "soft hyphens, typeset, rag settled" },
+      title: "Kjörsókn í Hrafnafjarðarbyggð aldrei meiri í sveitarstjórnarkosningum",
+      text: 'Kjörsókn í sveitarstjórnarkosningunum 16. maí 2026 var sú mesta sem mælst hefur í Hrafnafjarðarbyggð, 91,4%. "Þetta er söguleg niðurstaða," sagði dr. Guðrún Sigurðardóttir, formaður yfirkjörstjórnar, kl. 14.30 daginn eftir.',
+    },
     /**
      * Four facts, each a number and the sentence that reads on from it: what
      * it is, and why it matters to someone setting text.
@@ -111,43 +122,11 @@ export const localhostHyphenationContent = {
       nav: "Editor",
       label: "Editor",
       explanation:
-        "Pick an example or write your own, and change the settings. The settings apply to the whole page, and the arrow sends your text to Sizes and Compare.",
-    },
-    sizes: {
-      id: "sizes",
-      number: "B",
-      nav: "Sizes",
-      label: "Sizes",
-      explanation:
-        "The first paragraph of your text at three sizes, in the same measure. Smaller type fits more letters on a line, so the breaks land in different places.",
-    },
-    compare: {
-      id: "compare",
-      number: "C",
-      nav: "Compare",
-      label: "Compare",
-      explanation:
-        "The first paragraph of your text three ways, at one width. Drag the width and watch the right edge. Then the old TeX patterns against the 2020 ones.",
-    },
-    howItWorks: {
-      id: "how-it-works",
-      number: "D",
-      nav: "How it works",
-      label: "How it works",
-      explanation:
-        "From a word to a well-set line. The server does the work, so a normal page downloads nothing extra.",
-    },
-    install: {
-      id: "install",
-      number: "E",
-      nav: "Install",
-      label: "Install",
-      explanation:
-        "One package with three entry points. The server does the work, so most pages need only the first two.",
+        "Pick an example or write your own, and change the settings. The settings apply to the whole page, and the arrow sends your text to Sizes in Samples and to Compare.",
     },
     samples: {
       id: "samples",
-      number: "F",
+      number: "B",
       nav: "Samples",
       label: "Samples",
       explanation:
@@ -155,21 +134,45 @@ export const localhostHyphenationContent = {
     },
     typography: {
       id: "typography",
-      number: "G",
+      number: "C",
       nav: "Typography",
       label: "Typography",
       explanation: `Each rule swaps a plain space or quote for a better one. Off shows the text as written. On shows the typeset text, with every no-break space and non-breaking hyphen on an amber fill.`,
     },
+    compare: {
+      id: "compare",
+      number: "D",
+      nav: "Compare",
+      label: "Compare",
+      explanation:
+        "The first paragraph of your text three ways, at one width. Drag the width and watch the right edge. Then the old TeX patterns against the 2020 ones.",
+    },
+    howItWorks: {
+      id: "how-it-works",
+      number: "E",
+      nav: "How it works",
+      label: "How it works",
+      explanation:
+        "From a word to a well-set line. The server does the work, so a normal page downloads nothing extra.",
+    },
+    install: {
+      id: "install",
+      number: "F",
+      nav: "Install",
+      label: "Install",
+      explanation:
+        "One package with three entry points. The server does the work, so most pages need only the first two.",
+    },
     breakEditor: {
       id: "break-editor",
-      number: "H",
+      number: "G",
       nav: "Report",
       label: "Report a wrong break",
       explanation: "Fix the breaks, copy the line, add it to data/exceptions.txt.",
     },
     related: {
       id: "related",
-      number: "I",
+      number: "H",
       nav: "Related",
       label: "Related",
       explanation:
@@ -340,7 +343,7 @@ export default function Page() {
       },
       browser: {
         label: "Browser",
-        hint: "hyphens: auto, with the browser’s own dictionary. Only Firefox has one for Icelandic; Chrome, Edge and Safari do not.",
+        hint: "hyphens: auto, with the browser’s own dictionary. Only Firefox has one for Icelandic, so in Chrome, Edge and Safari this column sets like None. Open the page in Firefox to see it hyphenate.",
       },
       skiptingar: {
         label: "Skiptingar",
@@ -349,6 +352,8 @@ export default function Page() {
     },
     table: {
       caption: "TeX patterns vs 2020 patterns",
+      /** Shown on a narrow screen, where the table scrolls sideways. */
+      scrollHint: "Scroll the table sideways for the 2020 column.",
       headers: {
         word: "Word",
         tex: "TeX hyphen/is",
@@ -632,88 +637,6 @@ export default function Page() {
       ],
       balanceHeading: "Nýr vegur opnaður á milli bæjanna",
     },
-    platform: {
-      id: "platform",
-      title: "Icelandic on the platform",
-      intro:
-        "Some things the browser does for Icelandic and some it does not. These notes say what to use instead of writing it yourself.",
-      items: [
-        {
-          id: "intl",
-          term: "Dates and numbers",
-          body: [
-            {
-              text: "Chrome and Edge on the desktop ship no Icelandic Intl data. Tested in Chrome 154 on macOS: dates render in English, and ",
-            },
-            { text: 'Intl.Collator("is")', code: true },
-            {
-              text: " sorts æ next to a and ö with o, and á, é and í as plain a, e and i. Node, Bun, Firefox and Safari are fine. Format dates and numbers on the server, and for sorting in the browser use ",
-            },
-            { text: "cldr-is", href: "https://github.com/gudrodur/cldr-is" },
-            { text: " (on GitHub, not on npm yet)." },
-          ],
-        },
-        {
-          id: "plurals",
-          term: "Plurals",
-          body: [
-            { text: 'Intl.PluralRules("is")', code: true },
-            {
-              text: " works everywhere. It treats 21, 31 and 101 as singular, as Icelandic does.",
-            },
-          ],
-        },
-        {
-          id: "slugs",
-          term: "Slugs",
-          body: [
-            { text: "slugify", href: "https://www.npmjs.com/package/slugify" },
-            {
-              text: " (the npm package) already maps þ to th, ð to d, æ to ae and ö to o, the ÍST 130 table.",
-            },
-          ],
-        },
-        {
-          id: "names",
-          term: "Names in a sentence",
-          body: [
-            { text: "Forms like " },
-            { text: "til Jóns", sample: true },
-            { text: " and " },
-            { text: "Jóni", sample: true },
-            { text: " need declension. Use " },
-            { text: "beygla", href: "https://www.npmjs.com/package/beygla" },
-            { text: "." },
-          ],
-        },
-        {
-          id: "kennitala",
-          term: "Kennitala",
-          body: [
-            {
-              text: "Format it, but do not validate the check digit. Þjóðskrá stopped using it for new numbers on 18 February 2026. See ",
-            },
-            {
-              text: "kennitölur án vartölu",
-              href: "https://www.skra.is/folk/eg-i-thjodskra/um-kennitolur/kennitolur-an-vartolu/",
-            },
-            { text: "." },
-          ],
-        },
-        {
-          id: "phone",
-          term: "Phone numbers",
-          body: [
-            { text: "555-1234", sample: true },
-            { text: " and " },
-            { text: "555 1234", sample: true },
-            {
-              text: " are kept together by typeset(). Browsers otherwise break after the hyphen.",
-            },
-          ],
-        },
-      ],
-    },
     example: {
       label: "Usage",
       source: `import { Hyphenate } from "skiptingar/react";
@@ -728,6 +651,14 @@ export default function Page() {
   },
 
   samplesSection: {
+    sizes: {
+      label: "Sizes",
+      hint: [
+        {
+          text: "The first paragraph of your text at three sizes, in the same measure. Smaller type fits more letters on a line, so the breaks land in different places.",
+        },
+      ],
+    },
     heading: {
       label: "Heading, phone width",
       hint: [
@@ -873,6 +804,88 @@ export default function Page() {
    * here because it helps set Icelandic text well alongside the package.
    */
   related: {
+    platform: {
+      id: "platform",
+      title: "Icelandic on the platform",
+      intro:
+        "Some things the browser does for Icelandic and some it does not. These notes say what to use instead of writing it yourself.",
+      items: [
+        {
+          id: "intl",
+          term: "Dates and numbers",
+          body: [
+            {
+              text: "Chrome and Edge on the desktop ship no Icelandic Intl data. Tested in Chrome 154 on macOS: dates render in English, and ",
+            },
+            { text: 'Intl.Collator("is")', code: true },
+            {
+              text: " sorts æ next to a and ö with o, and á, é and í as plain a, e and i. Node, Bun, Firefox and Safari are fine. Format dates and numbers on the server, and for sorting in the browser use ",
+            },
+            { text: "cldr-is", href: "https://github.com/gudrodur/cldr-is" },
+            { text: " (on GitHub, not on npm yet)." },
+          ],
+        },
+        {
+          id: "plurals",
+          term: "Plurals",
+          body: [
+            { text: 'Intl.PluralRules("is")', code: true },
+            {
+              text: " works everywhere. It treats 21, 31 and 101 as singular, as Icelandic does.",
+            },
+          ],
+        },
+        {
+          id: "slugs",
+          term: "Slugs",
+          body: [
+            { text: "slugify", href: "https://www.npmjs.com/package/slugify" },
+            {
+              text: " (the npm package) already maps þ to th, ð to d, æ to ae and ö to o, the ÍST 130 table.",
+            },
+          ],
+        },
+        {
+          id: "names",
+          term: "Names in a sentence",
+          body: [
+            { text: "Forms like " },
+            { text: "til Jóns", sample: true },
+            { text: " and " },
+            { text: "Jóni", sample: true },
+            { text: " need declension. Use " },
+            { text: "beygla", href: "https://www.npmjs.com/package/beygla" },
+            { text: "." },
+          ],
+        },
+        {
+          id: "kennitala",
+          term: "Kennitala",
+          body: [
+            {
+              text: "Format it, but do not validate the check digit. Þjóðskrá stopped using it for new numbers on 18 February 2026. See ",
+            },
+            {
+              text: "kennitölur án vartölu",
+              href: "https://www.skra.is/folk/eg-i-thjodskra/um-kennitolur/kennitolur-an-vartolu/",
+            },
+            { text: "." },
+          ],
+        },
+        {
+          id: "phone",
+          term: "Phone numbers",
+          body: [
+            { text: "555-1234", sample: true },
+            { text: " and " },
+            { text: "555 1234", sample: true },
+            {
+              text: " are kept together by typeset(). Browsers otherwise break after the hyphen.",
+            },
+          ],
+        },
+      ],
+    },
     groups: [
       {
         id: "reading",
@@ -1020,10 +1033,15 @@ export default function Page() {
     /** The two column captions: the text as written, and typeset. */
     off: "Off",
     on: "On",
-    /** `options` is the `typeset()` option that the row turns on. */
+    /**
+     * `options` is the `typeset()` option that the row turns on. `measure`
+     * is the column width in em where the text as written breaks at a space
+     * the rule glues, so the two sides wrap differently (measured in Chrome).
+     */
     rules: [
       {
         id: "units",
+        measure: 9.5,
         label: "Number and unit",
         tag: "units",
         tip: "Puts a no-break space between a number and its unit, so 1.000 kr. and 5 km never split across two lines.",
@@ -1031,6 +1049,7 @@ export default function Page() {
       },
       {
         id: "dates",
+        measure: 9,
         label: "Date",
         tag: "dates",
         tip: "Keeps a month and the year after it together, so sep. 2026 and sept. 2027 never split.",
@@ -1038,6 +1057,7 @@ export default function Page() {
       },
       {
         id: "ordinals",
+        measure: 11,
         label: "Ordinal",
         tag: "ordinals",
         tip: "Keeps a number with a full stop, like 1. or 30., on the same line as the lowercase word after it.",
@@ -1045,6 +1065,7 @@ export default function Page() {
       },
       {
         id: "prefixes",
+        measure: 11,
         label: "Abbreviation and number",
         tag: "prefixes",
         tip: "Keeps an abbreviation with the number that follows it, so nr. 5, bls. 12 or kl. 14.30 never split across lines. Standard abbreviations like t.d. and o.s.frv. have no spaces, so they never break.",
@@ -1052,6 +1073,7 @@ export default function Page() {
       },
       {
         id: "numbers",
+        measure: 9.5,
         label: "Kennitala and phone",
         tag: "numbers",
         tip: "Kennitala and phone numbers never split across lines: the hyphen becomes a non-breaking hyphen (U+2011) and the spaces become no-break spaces. CleanCopy puts a normal hyphen back when you copy.",
@@ -1059,6 +1081,7 @@ export default function Page() {
       },
       {
         id: "titles",
+        measure: 13.25,
         label: "Titles",
         tag: "titles",
         tip: "Keeps dr., sr., próf. and hr. on the same line as the capitalised name after them.",
@@ -1073,6 +1096,7 @@ export default function Page() {
       },
       {
         id: "dashes",
+        measure: 13.5,
         label: "Dashes",
         tag: "dashes",
         tip: "Swaps the hyphen in a number range, and a spaced hyphen, for an en dash. Off by default, so this row turns it on.",
@@ -1081,6 +1105,7 @@ export default function Page() {
       },
       {
         id: "single-letter",
+        measure: 11,
         label: "One-letter words",
         tag: "singleLetter",
         tip: "Puts a no-break space after a one-letter word, so it never ends a line alone. Off by default, so this row turns it on.",
@@ -1089,6 +1114,7 @@ export default function Page() {
       },
       {
         id: "last-words",
+        measure: 11,
         label: "Last two words",
         tag: "lastWords",
         tip: "Puts a no-break space between the last two words of the text, so the last line is never a single word. Off by default, so this row turns it on. text-pretty does this better where the browser supports it, so use this rule only as a fallback for Firefox and Safari before 26, which do not support it.",

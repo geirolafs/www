@@ -46,7 +46,10 @@ function usePastEditorSettings(): boolean {
  * change here moves every live specimen on the page.
  *
  * It moves with `transform` and `opacity` only, and not at all with reduced
- * motion. Hidden, it is `inert`, so it takes no focus.
+ * motion. Hidden, it is `inert`, so it takes no focus. The panel comes after
+ * the button in the document, so Tab goes from the button into it, and shows
+ * above it (`flex-col-reverse`). It is a disclosure, not a dialog: it does not
+ * take focus or trap it, and Escape closes it.
  */
 export function SettingsDock() {
   const panelId = useId();
@@ -96,7 +99,7 @@ export function SettingsDock() {
   return (
     <div
       className={cn(
-        "fixed right-sm bottom-sm z-30 flex max-w-[calc(100vw-2*var(--spacing-sm))] flex-col items-end gap-xs transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
+        "fixed right-sm bottom-sm z-30 flex max-w-[calc(100vw-2*var(--spacing-sm))] flex-col-reverse items-end gap-xs transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-2 opacity-0"
@@ -104,21 +107,6 @@ export function SettingsDock() {
       inert={!visible}
       ref={rootRef}
     >
-      {open ? (
-        <section
-          aria-label={content.label}
-          className="flex max-h-[70dvh] max-w-full flex-col gap-md overflow-y-auto border border-hy-track bg-background p-md shadow-hy-float"
-          id={panelId}
-          role="dialog"
-        >
-          <div className="flex items-center justify-between gap-md">
-            <h2 className={LABEL_CLASS}>{content.label}</h2>
-            <ExampleSelect />
-          </div>
-          <SettingsPanel layout="row" />
-        </section>
-      ) : null}
-
       {/* The icon alone, until the pointer or focus is on it: then the
           current settings slide out to its left. The summary is inside the
           button, so hovering or clicking it counts as the button. Open, the
@@ -180,6 +168,20 @@ export function SettingsDock() {
           </svg>
         )}
       </button>
+
+      {open ? (
+        <section
+          aria-label={content.label}
+          className="flex max-h-[70dvh] max-w-full flex-col gap-md overflow-y-auto border border-hy-track bg-background p-md shadow-hy-float"
+          id={panelId}
+        >
+          <div className="flex items-center justify-between gap-md">
+            <h2 className={LABEL_CLASS}>{content.label}</h2>
+            <ExampleSelect />
+          </div>
+          <SettingsPanel layout="row" />
+        </section>
+      ) : null}
     </div>
   );
 }

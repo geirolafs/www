@@ -31,6 +31,7 @@ export function Typography() {
         <TypographyFeature
           key={rule.id}
           label={rule.label}
+          measure={"measure" in rule ? rule.measure : undefined}
           off={rule.input}
           on={
             <MarkedText

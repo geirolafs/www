@@ -33,7 +33,7 @@ export function ExampleSelect({ className }: { className?: string }) {
       </label>
       <select
         className={cn(
-          "hy-select h-8 min-w-36 cursor-pointer appearance-none border border-hy-track bg-background pr-8 pl-2.5 font-medium text-foreground text-hy-control shadow-hy-control hover:bg-hy-surface",
+          "hy-select h-8 min-w-36 cursor-pointer appearance-none border border-border bg-background pr-8 pl-2.5 font-medium text-foreground text-hy-control shadow-hy-control hover:bg-hy-surface",
           FOCUS_CLASS
         )}
         id={id}

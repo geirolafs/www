@@ -2,19 +2,51 @@ import { RichText } from "@/app/components/localhost/hyphenation/rich-text";
 import {
   BODY_CLASS,
   FOCUS_CLASS,
+  INTRO_CLASS,
   ITEM_TITLE_CLASS,
   LABEL_CLASS,
   NOTE_CLASS,
+  SUBTITLE_CLASS,
 } from "@/app/components/localhost/hyphenation/styles";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { cn } from "@/lib/utils";
 
 const { related } = localhostHyphenationContent;
 
+/** Notes on what the platform does for Icelandic and what it does not. */
+function Platform() {
+  const { platform } = related;
+
+  return (
+    <div className="flex flex-col gap-xl">
+      <div className="flex flex-col gap-xs">
+        <h3 className={cn(SUBTITLE_CLASS, "scroll-mt-project")} id={platform.id}>
+          {platform.title}
+        </h3>
+        <p className={cn(INTRO_CLASS, "max-w-measure")}>{platform.intro}</p>
+      </div>
+      <ul className="flex flex-col">
+        {platform.items.map(item => (
+          <li
+            className="flex flex-col gap-1 border-border border-t py-md md:grid md:grid-cols-3 md:gap-x-md"
+            key={item.id}
+          >
+            <p className={ITEM_TITLE_CLASS}>{item.term}</p>
+            <p className={cn(BODY_CLASS, "md:col-span-2")}>
+              <RichText parts={item.body} />
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /**
- * Reading and tools that sit next to the package, in two groups. Each row is
- * the title as a link, where it comes from, and one line on why it belongs
- * beside skiptingar. The links leave the page, so the arrow says so.
+ * Reading and tools that sit next to the package, in two groups, then notes
+ * on what the platform does for Icelandic. Each row is the title as a link,
+ * where it comes from, and one line on why it belongs beside skiptingar. The
+ * links leave the page, so the arrow says so.
  */
 export function Related() {
   return (
@@ -61,6 +93,7 @@ export function Related() {
           </ul>
         </section>
       ))}
+      <Platform />
     </div>
   );
 }

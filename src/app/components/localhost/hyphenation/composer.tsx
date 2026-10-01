@@ -56,7 +56,7 @@ export function Composer() {
       <label className="sr-only" htmlFor={id}>
         {liveEditor.textLabel}
       </label>
-      <div className="flex flex-col border border-hy-track bg-background shadow-hy-control focus-within:border-foreground hover:border-border">
+      <div className="flex flex-col border border-border bg-background shadow-hy-control focus-within:border-foreground hover:border-muted">
         <div
           className="overflow-hidden transition-[height] duration-200 ease-out motion-reduce:transition-none"
           // The field's measured height, a live value, not a design token.

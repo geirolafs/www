@@ -1,3 +1,4 @@
+import { HeroDemo } from "@/app/components/localhost/hyphenation/hero-demo";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { EXCEPTION_COUNT, PATTERN_COUNT, SHORT_WORDS } from "@/packages/skiptingar/src";
 
@@ -13,8 +14,9 @@ const COUNTS = {
 /**
  * The product on its own front page: its name, set in Geist across the full
  * width of the grid with the hyphens typed in, so the page shows what the
- * package does. Under it, one sentence on what skiptingar is and four facts,
- * each a number and a sentence on why it matters.
+ * package does. Under it, one sentence on what skiptingar is, the same text
+ * without and with the package (`HeroDemo`), and four facts, each a number
+ * and a sentence on why it matters.
  * The section is an `@container`, so `text-hy-hero` sizes the name from the
  * grid's width.
  */
@@ -35,6 +37,8 @@ export function Hero() {
       <p className="col-span-full mt-28 text-pretty border-foreground border-t pt-xl font-book font-hy-title text-foreground text-hy-intro">
         {hero.lede}
       </p>
+
+      <HeroDemo />
 
       {/* Each fact is a number and the sentence that reads on from it, so
           a screen reader hears "23.139 letter patterns from…". */}

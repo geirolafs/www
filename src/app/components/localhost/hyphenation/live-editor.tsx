@@ -138,6 +138,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
       <div className="col-span-full flex min-w-0 flex-col gap-md lg:col-span-8 lg:col-start-5 lg:row-start-3">
         <Measure
           initial={content.width.initial}
+          name={content.outputLabel}
           max={content.width.max}
           min={content.width.min}
         >
@@ -158,8 +159,10 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
         </Measure>
 
         <p className="flex flex-wrap gap-x-md font-book text-hy-note text-muted">
-          <Tip tip={tips.softHyphen}>{content.breaks(count(outputs, SOFT_HYPHEN))}</Tip>
-          <Tip tip={tips.noBreakSpace}>
+          <Tip className="min-h-6" tip={tips.softHyphen}>
+            {content.breaks(count(outputs, SOFT_HYPHEN))}
+          </Tip>
+          <Tip className="min-h-6" tip={tips.noBreakSpace}>
             {content.noBreakSpaces(count(outputs, NO_BREAK_SPACE))}
           </Tip>
         </p>

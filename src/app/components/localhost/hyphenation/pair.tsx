@@ -38,6 +38,8 @@ function Side({
 type PairProps = {
   /** The starting width in px: one where the difference shows at once. */
   initial: number;
+  /** The specimen's name, for the slider's accessible name. */
+  name?: string;
   min?: number;
   max?: number;
   /**
@@ -58,6 +60,7 @@ type PairProps = {
  */
 export function Pair({
   initial,
+  name,
   min,
   max,
   stack,
@@ -65,7 +68,7 @@ export function Pair({
   with: withPackage,
 }: PairProps) {
   return (
-    <Measure initial={initial} max={max} min={min}>
+    <Measure initial={initial} max={max} min={min} name={name}>
       <div
         className={cn(
           "flex flex-col gap-xl md:gap-md",

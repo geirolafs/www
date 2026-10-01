@@ -54,6 +54,7 @@ export function HeadingSample() {
       initial={320}
       max={560}
       min={200}
+      name={content.heading.label}
       stack
       with={
         <div className={cn(PAIR_BOX, "flex flex-col gap-md")}>
@@ -92,14 +93,17 @@ function ParagraphPair({
   text,
   className,
   initial,
+  name,
 }: {
   text: string;
   className: string;
   initial: number;
+  name: string;
 }) {
   return (
     <Pair
       initial={initial}
+      name={name}
       max={560}
       min={180}
       with={
@@ -124,7 +128,8 @@ export function ShortParagraph() {
       {/* Weight 300 is a scoped exception for this route (see AGENTS.md). */}
       <ParagraphPair
         className="font-light text-foreground text-hy-lede"
-        initial={320}
+        initial={280}
+        name={content.short.label}
         text={content.short.text}
       />
       <Credit>{content.short.credit}</Credit>
@@ -138,6 +143,7 @@ export function LongParagraph() {
       <ParagraphPair
         className="font-book text-foreground text-prose"
         initial={360}
+        name={content.long.label}
         text={content.long.text}
       />
       <Credit>{content.long.credit}</Credit>
@@ -154,7 +160,8 @@ export function LawText() {
   return (
     <>
       <Pair
-        initial={340}
+        name={content.law.label}
+        initial={280}
         max={560}
         min={180}
         with={
@@ -202,6 +209,7 @@ export function CardGrid() {
       initial={480}
       max={720}
       min={300}
+      name={content.cards.label}
       stack
       with={
         <ul className={grid}>
@@ -270,7 +278,7 @@ export function Names() {
 export function MixedLanguages() {
   const { mixed } = content;
   return (
-    <Measure initial={320} max={560} min={180}>
+    <Measure initial={320} max={560} min={180} name={mixed.label}>
       <SettledSegments
         className={cn(PAIR_BOX, "font-book text-prose")}
         segments={[
@@ -288,7 +296,7 @@ export function MixedLanguages() {
 /** The acronyms, with every mark shown: none in UNESCO, several in the long one. */
 export function Acronyms() {
   return (
-    <Measure initial={260} max={560} min={160}>
+    <Measure initial={260} max={560} min={160} name={content.acronyms.label}>
       <SettledSegments
         className={cn(PAIR_BOX, "font-book text-prose")}
         segments={[{ text: processed(content.acronyms.text) }]}

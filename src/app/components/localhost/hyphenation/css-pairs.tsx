@@ -78,7 +78,7 @@ function Pair({ row }: { row: Row }) {
   switch (row.id) {
     case "pretty":
       return (
-        <Measure initial={START_WIDTH.pretty} max={480} min={160}>
+        <Measure initial={START_WIDTH.pretty} max={480} min={160} name={row.property}>
           {pair(
             <Hyphenate>
               <p className={cn(paragraph, "hyphens-manual text-wrap")} lang="is">
@@ -95,7 +95,7 @@ function Pair({ row }: { row: Row }) {
       );
     case "balance":
       return (
-        <Measure initial={START_WIDTH.balance} max={560} min={160}>
+        <Measure initial={START_WIDTH.balance} max={560} min={160} name={row.property}>
           {pair(
             <p className={cn(heading, "text-wrap")} lang="is">
               {css.balanceHeading}
@@ -108,7 +108,7 @@ function Pair({ row }: { row: Row }) {
       );
     case "hyphens":
       return (
-        <Measure initial={START_WIDTH.hyphens} max={480} min={160}>
+        <Measure initial={START_WIDTH.hyphens} max={480} min={160} name={row.property}>
           {pair(
             // No soft hyphens here: `auto` leaves the choice to the browser.
             <p className={cn(paragraph, "hyphens-auto text-pretty")} lang="is">

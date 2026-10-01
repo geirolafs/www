@@ -40,7 +40,7 @@ function PatternWord({ word }: { word: string }) {
               <sup
                 className={cn(
                   "font-hy-text text-[0.5em] tabular-nums",
-                  odd ? "font-bold text-hy-signal" : "font-medium text-muted"
+                  odd ? "font-bold text-hy-signal-ink" : "font-medium text-muted"
                 )}
               >
                 {digit}

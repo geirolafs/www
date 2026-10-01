@@ -6,9 +6,7 @@ import { type Part, RichText } from "@/app/components/localhost/hyphenation/rich
 import { Specimen } from "@/app/components/localhost/hyphenation/section";
 import {
   BODY_CLASS,
-  INTRO_CLASS,
   ITEM_TITLE_CLASS,
-  SUBTITLE_CLASS,
   TITLE_CLASS,
 } from "@/app/components/localhost/hyphenation/styles";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
@@ -25,35 +23,6 @@ function withCounts(parts: readonly Part[]): Part[] {
     ...part,
     text: part.text.replace("{patterns}", PATTERNS),
   }));
-}
-
-/** Notes on what the platform does for Icelandic and what it does not. */
-function Platform() {
-  const { platform } = content;
-
-  return (
-    <div className="flex flex-col gap-xl">
-      <div className="flex flex-col gap-xs">
-        <h3 className={cn(SUBTITLE_CLASS, "scroll-mt-project")} id={platform.id}>
-          {platform.title}
-        </h3>
-        <p className={cn(INTRO_CLASS, "max-w-measure")}>{platform.intro}</p>
-      </div>
-      <ul className="flex flex-col">
-        {platform.items.map(item => (
-          <li
-            className="flex flex-col gap-1 border-border border-t py-md md:grid md:grid-cols-3 md:gap-x-md"
-            key={item.id}
-          >
-            <p className={ITEM_TITLE_CLASS}>{item.term}</p>
-            <p className={cn(BODY_CLASS, "md:col-span-2")}>
-              <RichText parts={item.body} />
-            </p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 /**
@@ -107,8 +76,6 @@ export function HowItWorks() {
         </Specimen>
 
         <CssPairs />
-
-        <Platform />
       </div>
     </>
   );

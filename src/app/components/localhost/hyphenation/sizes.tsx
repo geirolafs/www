@@ -25,7 +25,7 @@ export function Sizes() {
   const initial = initialOutput(firstParagraph(liveEditor.initialText));
 
   return (
-    <Measure className="col-span-full" initial={320} max={480} min={200}>
+    <Measure className="col-span-full" initial={320} max={480} min={200} name="Sizes">
       <div className="flex flex-col gap-y-hyhead lg:grid lg:grid-cols-3 lg:gap-x-md">
         {sizes.items.map(item => (
           <figure className="flex min-w-0 flex-col gap-sm" key={item.id}>

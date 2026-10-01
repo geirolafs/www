@@ -45,14 +45,17 @@
   --color-surface-footer: #d8d8d8; /* foreground on it is 13.3:1 */
   --color-selection: #ffe577; /* the stripe's last stop; foreground 14.9:1, muted 3.62:1 */
   --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
-  --color-hy-track: #e5e5e5; /* /localhost/hyphenation: a field's and a button's border, the hover fill */
+  --color-hy-track: #e5e5e5; /* /localhost/hyphenation: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
   --color-hy-surface: #f5f5f5; /* /localhost/hyphenation: code blocks, a button's hover fill, a highlighted option */
   /* /localhost/hyphenation: the two highlights. Signal is for what must be
-     seen: a break, the current section. It is 3.2:1 on white, so it marks
-     and draws but is never small text. Accent is the quieter one, a fill
-     behind dark text (foreground on it is 10:1); on white it is 1.9:1, so
-     never text or a line. */
+     seen: a break, the current section. It is 3.25:1 on the background, so
+     it marks and draws but is never small text. Accent is the quieter one, a
+     fill behind dark text (foreground on it is 8:1); on the background it is
+     1.8:1, so never text or a line. */
   --color-hy-signal: #ff4949;
+  /* The same red dark enough for text, such as a pattern digit: 5.02:1 on
+     the background. `hy-signal` (3.25:1) is for marks and lines, which need 3:1. */
+  --color-hy-signal-ink: #d42424;
   --color-hy-accent: #ffb200;
 
   /* /localhost/hyphenation: the one raised thing on the page, the settings
@@ -1168,7 +1171,7 @@ article a:active {
     min-width: anchor-size(width);
     margin-block: 0.25rem;
     padding: 0.25rem;
-    border: 1px solid var(--color-hy-track);
+    border: 1px solid var(--color-border);
     border-radius: 0;
     background: var(--color-background);
     box-shadow: var(--shadow-hy-float);

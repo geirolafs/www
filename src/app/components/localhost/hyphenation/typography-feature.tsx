@@ -20,15 +20,35 @@ type TypographyFeatureProps = {
   off: ReactNode;
   /** The typeset text, computed on the server. */
   on: ReactNode;
+  /** A column width in em where the two sides wrap differently, if there is one. */
+  measure?: number;
 };
 
 /** The text on one side of a row, with its caption for a phone and a screen reader. */
-function Side({ caption, children }: { caption: string; children: ReactNode }) {
+function Side({
+  caption,
+  measure,
+  children,
+}: {
+  caption: string;
+  measure?: number;
+  children: ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-1 lg:col-span-4">
       {/* From `lg` up the captions sit once above the columns (`Typography`). */}
       <span className={cn(LABEL_CLASS, "lg:sr-only")}>{caption}</span>
-      <p className="font-book text-foreground text-prose" lang="is">
+      <p
+        className={cn(
+          "max-w-full font-book text-foreground text-prose",
+          // The column's edge, so it is clear why a line breaks where it does.
+          measure !== undefined &&
+            "box-content border-border border-r border-dashed pr-xs"
+        )}
+        lang="is"
+        // A width in em from the content, not a design token.
+        style={measure === undefined ? undefined : { width: `${measure}em` }}
+      >
         {children}
       </p>
     </div>
@@ -41,7 +61,14 @@ function Side({ caption, children }: { caption: string; children: ReactNode }) {
  * 5–8 and typeset in 9–12, so the two compare side by side. Both strings come
  * from the server.
  */
-export function TypographyFeature({ label, tag, tip, off, on }: TypographyFeatureProps) {
+export function TypographyFeature({
+  label,
+  tag,
+  tip,
+  off,
+  on,
+  measure,
+}: TypographyFeatureProps) {
   return (
     <div className="col-span-full flex flex-col gap-y-sm border-border border-t pt-md pb-xl lg:grid lg:grid-cols-subgrid">
       <div className="flex flex-col items-start gap-xs lg:col-span-4 lg:pr-xl">
@@ -53,8 +80,12 @@ export function TypographyFeature({ label, tag, tip, off, on }: TypographyFeatur
         </div>
         <p className={NOTE_CLASS}>{tip}</p>
       </div>
-      <Side caption={typography.off}>{off}</Side>
-      <Side caption={typography.on}>{on}</Side>
+      <Side caption={typography.off} measure={measure}>
+        {off}
+      </Side>
+      <Side caption={typography.on} measure={measure}>
+        {on}
+      </Side>
     </div>
   );
 }

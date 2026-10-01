@@ -157,7 +157,9 @@ export function BreakEditor() {
         <ul className="flex flex-wrap gap-x-md gap-y-2xs font-book text-hy-note">
           {Object.values(content.states).map(state => (
             <li key={state.name}>
-              <Tip tip={state.tip}>{`${state.mark} ${state.name}`}</Tip>
+              <Tip className="min-h-6" tip={state.tip}>
+                {`${state.mark} ${state.name}`}
+              </Tip>
             </li>
           ))}
         </ul>
@@ -178,7 +180,7 @@ export function BreakEditor() {
                   "min-w-md px-2xs py-xs font-bold text-hy-body",
                   FOCUS_CLASS,
                   cell.gap === "none" && "text-muted",
-                  cell.gap === "break" && "text-hy-signal",
+                  cell.gap === "break" && "text-hy-signal-ink",
                   cell.gap === "joint" && "bg-hy-accent text-foreground"
                 )}
                 onClick={() => cycle(cell.index)}

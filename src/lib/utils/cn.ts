@@ -55,6 +55,7 @@ const HYPHENATION_COLOURS: ReadonlySet<string> = new Set([
   "hy-track",
   "hy-surface",
   "hy-signal",
+  "hy-signal-ink",
   "hy-accent",
 ]);
 

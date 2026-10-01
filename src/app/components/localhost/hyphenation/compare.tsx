@@ -56,7 +56,7 @@ export function Compare() {
 
   return (
     <>
-      <Measure className="col-span-full" initial={220} max={420} min={140}>
+      <Measure className="col-span-full" initial={220} max={420} min={140} name="Compare">
         <div className="flex flex-col gap-y-xl lg:grid lg:grid-cols-3 lg:grid-rows-[auto_auto] lg:gap-x-md">
           <Column hint={columns.none.hint} label={columns.none.label}>
             <p className={cn(COLUMN_CLASS, "hyphens-manual text-wrap")} lang="is">
@@ -77,6 +77,7 @@ export function Compare() {
       {/* `min-w-0`: a grid item is as wide as its content by default, so the
           table would widen the page on a phone instead of scrolling. */}
       <div className="col-span-full flex min-w-0 flex-col gap-sm lg:col-span-8">
+        <p className={cn(NOTE_CLASS, "md:hidden")}>{table.scrollHint}</p>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-hy-note">
             <caption className={cn(LABEL_CLASS, "pb-sm text-left")}>

@@ -71,23 +71,13 @@ export default function Page() {
           <LiveEditor initialOutputs={initialOutputs} />
         </Section>
 
-        <Section {...sections.sizes} layout="wide">
-          <Sizes />
-        </Section>
-
-        <Section {...sections.compare} layout="wide">
-          <Compare />
-        </Section>
-
-        <Section {...sections.howItWorks} layout="wide">
-          <HowItWorks />
-        </Section>
-
-        <Section {...sections.install} layout="side">
-          <Install />
-        </Section>
-
         <Section {...sections.samples} layout="side">
+          <Specimen
+            hint={<RichText parts={samples.sizes.hint} />}
+            label={samples.sizes.label}
+          >
+            <Sizes />
+          </Specimen>
           <Specimen
             hint={<RichText parts={samples.heading.hint} />}
             label={samples.heading.label}
@@ -140,6 +130,18 @@ export default function Page() {
 
         <Section {...sections.typography} layout="wide">
           <Typography />
+        </Section>
+
+        <Section {...sections.compare} layout="wide">
+          <Compare />
+        </Section>
+
+        <Section {...sections.howItWorks} layout="wide">
+          <HowItWorks />
+        </Section>
+
+        <Section {...sections.install} layout="side">
+          <Install />
         </Section>
 
         <Section {...sections.breakEditor} layout="side">
