@@ -174,7 +174,7 @@ export const localhostHyphenationClientContent = {
     },
     rag: {
       label: "Settle rag",
-      tip: "Chooses every line break for the whole paragraph the way a typesetter would: lines full enough, no word jutting out or leaving a hole, few hyphens and no 3-letter pieces, a short word like og, í or að kept off a line’s end when that costs nothing elsewhere (a preference of this package, not an Icelandic rule), and a last line that is not one word. Titles are balanced. It needs the real line widths, so it runs in the browser. With Show breaks on, each space it glued has an amber fill.",
+      tip: "Chooses every line break for the whole paragraph the way a typesetter would: lines full enough, no word jutting out or leaving a hole, few hyphens and no 3-letter pieces, a short word like og, í or að kept off a line’s end when that costs nothing elsewhere (a preference of this package, not an Icelandic rule), and a last line of one word only when the edge is better for it. Titles are balanced. It needs the real line widths, so it runs in the browser. With Show breaks on, each space it glued has an amber fill.",
     },
     overhang: {
       label: "Overhang",
