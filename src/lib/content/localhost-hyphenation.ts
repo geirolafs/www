@@ -82,7 +82,7 @@ export const localhostHyphenationContent = {
       {
         value: "0 kB",
         description:
-          "of JavaScript to hyphenate. The server puts the soft hyphens in, so every browser gets the same places to break. Settling the rag in the browser adds about 5 kB.",
+          "of JavaScript to hyphenate. The server puts the soft hyphens in, so every browser gets the same places to break. Settling the rag in the browser adds about 5.5 kB.",
       },
     ],
   },
@@ -261,7 +261,7 @@ export default function Page() {
             { text: " for text that only exists in the browser, and " },
             { text: "<CleanCopy />", code: true },
             {
-              text: ". The patterns load on first use, about 55 kB brotli; the rest is about 4.5 kB.",
+              text: ". The patterns load on first use, about 55 kB brotli; the rest is about 5.5 kB.",
             },
           ],
         },
