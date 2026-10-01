@@ -17,10 +17,14 @@
  *
  * The file is written exactly as it is served: the license forbids
  * subsetting, converting or editing them. The token is never printed.
+ *
+ * `--optional` (used by `bun run dev`) warns instead of failing, so the rest
+ * of the site still runs without the token. Only /localhost/hyphenation then
+ * fails to compile. `bun run build` stays strict.
  */
 
-import { existsSync } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
+import { mkdir, rename } from "node:fs/promises";
 import { join } from "node:path";
 
 const FONT_DIR = join(import.meta.dir, "../src/app/styles/local-fonts/licensed");
@@ -33,12 +37,34 @@ const repo = process.env.FONTS_REPO ?? "geirolafs/fonts";
 /** Unset means the repo's default branch, whatever it is called. */
 const ref = process.env.FONTS_REF;
 const prefix = (process.env.FONTS_PATH_PREFIX ?? "").replace(/^\/+|\/+$/g, "");
+const optional = process.argv.includes("--optional");
+
+function isWoff2(bytes: Uint8Array): boolean {
+  return new TextDecoder().decode(bytes.slice(0, 4)) === WOFF2_SIGNATURE;
+}
+
+/** A file is in place only when it exists and starts like a WOFF2 file. */
+function isInPlace(file: string): boolean {
+  const path = join(FONT_DIR, file);
+  return existsSync(path) && isWoff2(readFileSync(path));
+}
+
+/** Ends the script: a warning with `--optional`, an error otherwise. */
+function fail(message: string): never {
+  if (optional) {
+    console.warn(`${message}\n\nfonts: continuing without them (--optional).`);
+    process.exit(0);
+  }
+  console.error(message);
+  process.exit(1);
+}
 
 async function download(file: string, authToken: string): Promise<void> {
   const path = prefix ? `${prefix}/${file}` : file;
   const query = ref ? `?ref=${encodeURIComponent(ref)}` : "";
   const url = `https://api.github.com/repos/${repo}/contents/${path}${query}`;
   const response = await fetch(url, {
+    signal: AbortSignal.timeout(30_000),
     headers: {
       Authorization: `Bearer ${authToken}`,
       Accept: "application/vnd.github.raw",
@@ -49,22 +75,25 @@ async function download(file: string, authToken: string): Promise<void> {
     throw new Error(`${file}: ${repo}/${path} answered ${response.status}`);
   }
   const bytes = new Uint8Array(await response.arrayBuffer());
-  if (new TextDecoder().decode(bytes.slice(0, 4)) !== WOFF2_SIGNATURE) {
+  if (!isWoff2(bytes)) {
     throw new Error(`${file}: the download is not a WOFF2 file`);
   }
-  await Bun.write(join(FONT_DIR, file), bytes);
+  // Write then rename, so a cut-off download never leaves a broken file.
+  const target = join(FONT_DIR, file);
+  await Bun.write(`${target}.part`, bytes);
+  await rename(`${target}.part`, target);
   console.log(`fonts: downloaded ${file}`);
 }
 
 async function main(): Promise<void> {
-  const missing = FILES.filter(file => !existsSync(join(FONT_DIR, file)));
+  const missing = FILES.filter(file => !isInPlace(file));
   if (missing.length === 0) {
     console.log("fonts: licensed fonts are in place");
     return;
   }
 
   if (!token) {
-    console.error(
+    fail(
       [
         `fonts: missing ${missing.join(", ")}`,
         "",
@@ -74,7 +103,6 @@ async function main(): Promise<void> {
         "access to the private fonts repo, so they can be downloaded here.",
       ].join("\n")
     );
-    process.exit(1);
   }
 
   await mkdir(FONT_DIR, { recursive: true });
@@ -84,6 +112,5 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : "fonts: download failed");
-  process.exit(1);
+  fail(error instanceof Error ? error.message : "fonts: download failed");
 });

@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "bun@1.2.21",
   "scripts": {
-    "dev": "bun run fonts && next dev",
+    "dev": "bun run fonts --optional && next dev",
     "build": "bun run fonts && next build",
     "start": "next start",
     "fonts": "bun run scripts/fetch-licensed-fonts.ts",

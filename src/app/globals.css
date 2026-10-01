@@ -34,7 +34,8 @@
 @theme {
   /* ---- Colour ---------------------------------------------------------- */
   /* Eight values here and the stripe gradient in `:root`. That is the whole
-     palette. */
+     palette. The two `hy-` values below belong to /localhost/hyphenation
+     only. */
 
   --color-background: #fff;
   --color-foreground: #121212; /* 18.9:1 on white */
