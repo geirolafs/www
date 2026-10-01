@@ -51,6 +51,13 @@ type PairProps = {
   without: ReactNode;
   /** The same text with skiptingar and the page settings. */
   with: ReactNode;
+  /** Each side's label and caption, when they are not "Without" and "With Skiptingar". */
+  labels?: Record<"without" | "with", { label: string; caption: string }>;
+};
+
+const DEFAULT_LABELS = {
+  without: { label: pair.without, caption: pair.withoutCaption },
+  with: { label: pair.with, caption: pair.withCaption },
 };
 
 /**
@@ -66,6 +73,7 @@ export function Pair({
   stack,
   without,
   with: withPackage,
+  labels = DEFAULT_LABELS,
 }: PairProps) {
   return (
     <Measure initial={initial} max={max} min={min} name={name}>
@@ -76,10 +84,10 @@ export function Pair({
           stack && "md:gap-xl"
         )}
       >
-        <Side caption={pair.withoutCaption} label={pair.without}>
+        <Side caption={labels.without.caption} label={labels.without.label}>
           {without}
         </Side>
-        <Side caption={pair.withCaption} label={pair.with}>
+        <Side caption={labels.with.caption} label={labels.with.label}>
           {withPackage}
         </Side>
       </div>

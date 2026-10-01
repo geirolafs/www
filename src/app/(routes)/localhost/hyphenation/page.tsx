@@ -8,6 +8,13 @@ import { initialOutput } from "@/app/components/localhost/hyphenation/initial-ou
 import { Install } from "@/app/components/localhost/hyphenation/install";
 import { LiveEditor } from "@/app/components/localhost/hyphenation/live-editor";
 import { PlaygroundProvider } from "@/app/components/localhost/hyphenation/playground";
+import {
+  RagBody,
+  RagDiagram,
+  RagJudgment,
+  RagTable,
+  RagTitles,
+} from "@/app/components/localhost/hyphenation/rag-figure";
 import { Related } from "@/app/components/localhost/hyphenation/related";
 import { RichText } from "@/app/components/localhost/hyphenation/rich-text";
 import {
@@ -53,7 +60,12 @@ export const metadata: Metadata = {
  * settings, since changing them would hide what they show.
  */
 export default function Page() {
-  const { sections, samplesSection: samples, liveEditor } = localhostHyphenationContent;
+  const {
+    sections,
+    samplesSection: samples,
+    ragSection: rag,
+    liveEditor,
+  } = localhostHyphenationContent;
   // The editor's first output, block by block, with its initial settings, so
   // the server HTML already holds the processed text. A title is set in
   // heading mode.
@@ -69,6 +81,31 @@ export default function Page() {
       <PlaygroundProvider>
         <Section {...sections.liveEditor} hideRule layout="free">
           <LiveEditor initialOutputs={initialOutputs} />
+        </Section>
+
+        {/* Settle rag against the browser's text-wrap, nothing else different. */}
+        <Section {...sections.rag} layout="wide">
+          <div className="col-span-full flex min-w-0 flex-col gap-y-hyblock lg:col-span-8 lg:col-start-5">
+            <Specimen
+              hint={<RichText parts={rag.titles.hint} />}
+              label={rag.titles.label}
+            >
+              <RagTitles />
+            </Specimen>
+            <Specimen hint={<RichText parts={rag.body.hint} />} label={rag.body.label}>
+              <RagBody />
+            </Specimen>
+            <Specimen
+              hint={<RichText parts={rag.judgment.hint} />}
+              label={rag.judgment.label}
+            >
+              <RagJudgment />
+            </Specimen>
+            <Specimen hint={<RichText parts={rag.table.hint} />} label={rag.table.label}>
+              <RagTable />
+            </Specimen>
+          </div>
+          <RagDiagram />
         </Section>
 
         <Section {...sections.samples} layout="side">

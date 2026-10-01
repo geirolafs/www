@@ -11,6 +11,13 @@ import sizes from "@/packages/skiptingar/sizes.json";
 /** A size from `bun run size` (sizes.json), in kB brotli, unit kept with the number. */
 const kB = (setup: keyof typeof sizes) => `${sizes[setup].brotli}\u00a0kB`;
 
+/**
+ * Two other line breakers' sizes in kB brotli, as the cost chart gives them.
+ * The Settle rag table uses the same numbers.
+ */
+const TEX_LINEBREAK2_KB = 26.5;
+const TYPESET_P_KB = 29.6;
+
 const njallSample =
   "Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Velli á Rangárvöllum. Hann var ríkur höfðingi og málafylgjumaður mikill og svo mikill lögmaður að engir þóttu löglegir dómar dæmdir nema hann væri við. Hann átti dóttur eina er Unnur hét. Hún var væn kona og kurteis og vel að sér og þótti sá bestur kostur á Rangárvöllum.";
 
@@ -148,9 +155,17 @@ export const localhostHyphenationContent = {
       explanation:
         "Pick an example or write your own, and change the settings. The settings apply to the whole page, and the arrow sends your text to Sizes in Samples and to Compare.",
     },
+    rag: {
+      id: "settle-rag",
+      number: "B",
+      nav: "Settle rag",
+      label: "Settle rag",
+      explanation:
+        "The rag is the uneven right edge of text set flush left. The browser judges a few lines; Settle rag judges the whole paragraph. Both sides get the same text and the same places to break, with no typesetting and no overhang, so only the choice of breaks differs.",
+    },
     samples: {
       id: "samples",
-      number: "B",
+      number: "C",
       nav: "Samples",
       label: "Samples",
       explanation:
@@ -158,14 +173,14 @@ export const localhostHyphenationContent = {
     },
     typography: {
       id: "typography",
-      number: "C",
+      number: "D",
       nav: "Typography",
       label: "Typography",
       explanation: `Each rule swaps a plain space or quote for a better one. Off shows the text as written. On shows the typeset text, with every no-break space and non-breaking hyphen on an amber fill.`,
     },
     compare: {
       id: "compare",
-      number: "D",
+      number: "E",
       nav: "Compare",
       label: "Compare",
       explanation:
@@ -173,7 +188,7 @@ export const localhostHyphenationContent = {
     },
     howItWorks: {
       id: "how-it-works",
-      number: "E",
+      number: "F",
       nav: "How it works",
       label: "How it works",
       explanation:
@@ -181,7 +196,7 @@ export const localhostHyphenationContent = {
     },
     install: {
       id: "install",
-      number: "F",
+      number: "G",
       nav: "Install",
       label: "Install",
       explanation:
@@ -189,14 +204,14 @@ export const localhostHyphenationContent = {
     },
     breakEditor: {
       id: "break-editor",
-      number: "G",
+      number: "H",
       nav: "Report",
       label: "Report a wrong break",
       explanation: "Fix the breaks, copy the line, add it to data/exceptions.txt.",
     },
     related: {
       id: "related",
-      number: "H",
+      number: "I",
       nav: "Related",
       label: "Related",
       explanation:
@@ -393,7 +408,7 @@ export default function Page() {
             {
               id: "texlb2",
               label: "tex-linebreak2",
-              kB: 26.5,
+              kB: TEX_LINEBREAK2_KB,
               own: false,
               method: "redraws its own lines",
               note: "Ragged or justified; its line breaks are copied with the text. No hyphenation included.",
@@ -401,7 +416,7 @@ export default function Page() {
             {
               id: "typeset-p",
               label: "typeset-p",
-              kB: 29.6,
+              kB: TYPESET_P_KB,
               own: false,
               method: "redraws its own lines",
               note: "A Web Component. The size includes its whole pipeline: Knuth–Plass, English hyphenation, smart quotes and optical margins.",
@@ -820,6 +835,178 @@ export default function Page() {
       resultLabel: "Result",
       resultHint: "The real output for the heading above. Each · is a soft hyphen.",
       heading: "Sveitarstjórnarkosningar á landsbyggðinni",
+    },
+  },
+
+  /**
+   * Settle rag against the browser's own `text-wrap`, one text at a time.
+   * The texts are fixed, not the editor's: each is where the difference is
+   * clearest.
+   */
+  ragSection: {
+    browser: "the browser",
+    skiptingar: "Skiptingar",
+    settle: "Settle rag",
+    titles: {
+      label: "Titles",
+      hint: [
+        { text: "Both sides break only at compound joints. " },
+        { text: "text-wrap: balance", code: true },
+        {
+          text: " evens the lines it gets. Settle rag also keeps í off a line’s end and weighs a hyphen on two lines in a row.",
+        },
+      ],
+      without: "text-wrap: balance",
+      headings: [
+        "Kjörsókn í Hrafnafjarðarbyggð aldrei meiri í sveitarstjórnarkosningum",
+        "Hraðbrautarframkvæmdir á landsbyggðinni",
+      ],
+    },
+    body: {
+      label: "Body text",
+      hint: [
+        { text: "Watch the last line and the short pieces. " },
+        { text: "text-wrap: pretty", code: true },
+        {
+          text: " differs by browser: Chrome adjusts the last few lines, Safari 26 the whole paragraph, and Firefox wraps line by line.",
+        },
+      ],
+      without: "text-wrap: pretty",
+      text: samples.njall,
+      credit: samples.credits.njall,
+    },
+    judgment: {
+      label: "A judgment, not a rule",
+      hint: [
+        {
+          text: "At this size and width Settle rag leaves one word on the last line. A rule would forbid that. Here it keeps the edge calm, where the browser’s choice opens two holes in it.",
+        },
+      ],
+      without: "text-wrap: pretty",
+      text: samples.jonas,
+      credit: samples.credits.jonas,
+    },
+    /**
+     * Settle rag beside the other ways to set a paragraph's lines. Each cell
+     * comes from the library's own README or source (checked 2026-10-01):
+     * github.com/egilll/tex-linebreak2, github.com/appler1009/typeset-p, and
+     * for CSS the WebKit blog and MDN browser-compat-data. A cell that the
+     * sources did not settle is left out, not guessed.
+     */
+    table: {
+      label: "Other ways to set the lines",
+      hint: [
+        {
+          text: "What each one does to a paragraph, from its own documentation and source. Settle rag has gaps too, and they are in the table.",
+        },
+      ],
+      columns: ["CSS text-wrap", "tex-linebreak2", "typeset-p", "Settle rag"],
+      rows: [
+        {
+          label: "Judges",
+          cells: [
+            "pretty: the last few lines in Chrome, the whole paragraph in Safari 26, nothing in Firefox. balance: titles",
+            "The whole paragraph, justified or ragged",
+            "The whole paragraph, justified or ragged",
+            "The whole paragraph, ragged; titles balanced",
+          ],
+        },
+        {
+          label: "The page holds",
+          cells: [
+            "Your text",
+            "A span for each word and space, and a line break before each line",
+            "One span per line, made from the plain text",
+            "Your text, with some spaces made no-break and some soft hyphens taken out; a span where it overhangs or tightens a line",
+          ],
+        },
+        {
+          label: "Copied text",
+          cells: [
+            "Your text",
+            "Every line break and hyphen goes with it",
+            "The hyphen at each broken line goes with it",
+            "Your text, with <CleanCopy />",
+          ],
+        },
+        {
+          label: "Links and emphasis inside",
+          cells: [
+            "Kept",
+            "Kept, each measured in its own font",
+            "Lost: it sets the plain text",
+            "Not yet: it sets a plain string",
+          ],
+        },
+        {
+          label: "First paint",
+          cells: [
+            "Final",
+            "The browser’s lines, then its own",
+            "The browser’s lines, then its own",
+            "The browser’s lines, then its own",
+          ],
+        },
+        {
+          label: "Hyphenation",
+          cells: [
+            "hyphens: auto, the browser’s dictionary: Icelandic in Firefox only",
+            "None included; it uses your soft hyphens",
+            "English only, built in",
+            "Icelandic, on the server",
+          ],
+        },
+        {
+          label: "Can be tuned",
+          cells: [
+            "No",
+            "Hyphen penalties and how far spaces stretch",
+            "No",
+            "Every weight",
+          ],
+        },
+        {
+          label: "JavaScript",
+          cells: [
+            "0 kB",
+            `${TEX_LINEBREAK2_KB} kB`,
+            `${TYPESET_P_KB} kB, with its hyphenation and quotes`,
+            `${kB("rag")}; hyphenation runs on the server`,
+          ],
+        },
+      ],
+    },
+    diagram: {
+      label: "One paragraph, from the breaks to the edge",
+      server: "On the server",
+      browser: "In the browser",
+      text: samples.jonas,
+      greedy: "Line by line",
+      whole: "Whole paragraph",
+      cost: "edge cost",
+      kept: "kept",
+      stages: {
+        breaks: {
+          title: "Breaks",
+          note: "Every space and every soft hyphen (red dot) is a place a line may end.",
+        },
+        measure: {
+          title: "Measure",
+          note: "The browser sets the text on one line once and reads where each letter starts. Any line’s width is then a subtraction.",
+        },
+        weigh: {
+          title: "Weigh",
+          note: "Each line costs its gap, a hole or a step, and a short word or hyphen at its end. The search weighs every way to break the paragraph and keeps the cheapest, as TeX does (Knuth and Plass).",
+        },
+        glue: {
+          title: "Glue",
+          note: "To make the browser break there, every later break that would still fit is forbidden: a space becomes a no-break space (amber), a soft hyphen is taken out.",
+        },
+        line: {
+          title: "Line",
+          note: "The browser wraps as usual and lands on the chosen breaks. It is still plain text, so copy, find and screen readers work.",
+        },
+      },
     },
   },
 
