@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "portfolio-website",
@@ -25,6 +26,7 @@
         "@types/bun": "^1.4.2",
         "@types/node": "^26.6.3",
         "@types/react-dom": "^19.3.0",
+        "@vgpu/wgsl": "0.5.0",
         "baseline-browser-mapping": "^2.11.26",
         "prettier": "^3.9.9",
         "react-grab": "^0.2.0",
