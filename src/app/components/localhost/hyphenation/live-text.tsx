@@ -92,7 +92,10 @@ export function LiveBlock({
 }: LiveBlockProps) {
   const ref = useRef<HTMLElement>(null);
   const { output, settings } = useLiveOutput(props);
-  const settled = useSettledRag(ref, output, settings.rag, ragOptions(settings, title));
+  const settled = useSettledRag(ref, output, {
+    enabled: settings.rag,
+    ...ragOptions(settings, title),
+  });
 
   return (
     <Element

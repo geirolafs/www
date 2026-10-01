@@ -50,7 +50,10 @@ function EditorBlock({
 }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const heading = title || settings.mode === "heading";
-  const settled = useSettledRag(ref, output, settings.rag, ragOptions(settings, heading));
+  const settled = useSettledRag(ref, output, {
+    enabled: settings.rag,
+    ...ragOptions(settings, heading),
+  });
 
   return (
     <p

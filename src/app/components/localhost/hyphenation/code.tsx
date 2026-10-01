@@ -28,7 +28,7 @@ function token(text: string, kind: "property" | "sign" | "class"): string {
  * through sugar-high. Both write the `--sh-*` colours from `typography.css`,
  * the blog's palette, so inline code and code blocks match.
  */
-export function highlightCode(code: string): string {
+function highlightCode(code: string): string {
   const css = CSS_DECLARATION.exec(code);
   if (css) {
     const [, property = "", colon = "", value = "", semicolon = ""] = css;

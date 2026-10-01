@@ -5,8 +5,7 @@ import { usePlayground } from "@/app/components/localhost/hyphenation/playground
 import { ragOptions, wrapClass } from "@/app/components/localhost/hyphenation/settings";
 import { SettledContent } from "@/app/components/localhost/hyphenation/settled-content";
 import { cn } from "@/lib/utils";
-import { useRagPlan } from "@/packages/skiptingar/src/client";
-import { applyRag } from "@/packages/skiptingar/src/rag";
+import { applyRag, useRagPlan } from "@/packages/skiptingar/src/client";
 
 export type Segment = {
   /** Already processed on the server: hyphenated and typeset, or left alone. */
@@ -31,7 +30,7 @@ export function SettledSegments({
   const ref = useRef<HTMLParagraphElement>(null);
   const { settings } = usePlayground();
   const text = segments.map(segment => segment.text).join("");
-  const plan = useRagPlan(ref, text, settings.rag, ragOptions(settings));
+  const plan = useRagPlan(ref, text, { enabled: settings.rag, ...ragOptions(settings) });
 
   // Each segment takes the forbidden breaks and the hangs that fall inside it.
   let start = 0;

@@ -48,7 +48,7 @@ export const PAGE_TYPESET = { dashes: true } as const;
  * How far a line may overhang the edge, in em at 16px text: about one
  * letter. Bigger type gets a smaller share of its size.
  */
-export const OVERHANG_EM = 0.5;
+const OVERHANG_EM = 0.5;
 
 /**
  * The options the rag judgement takes from the settings. A title is
@@ -57,8 +57,8 @@ export const OVERHANG_EM = 0.5;
 export function ragOptions(
   settings: Pick<Settings, "overhang">,
   title = false
-): { overshoot: number; balance: boolean } {
-  return { overshoot: settings.overhang ? OVERHANG_EM : 0, balance: title };
+): { overhang: number; balance: boolean } {
+  return { overhang: settings.overhang ? OVERHANG_EM : 0, balance: title };
 }
 
 /**

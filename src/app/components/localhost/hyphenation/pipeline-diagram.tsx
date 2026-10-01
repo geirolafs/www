@@ -3,8 +3,7 @@ import { MarkedText } from "@/app/components/localhost/hyphenation/marked-text";
 import { LABEL_CLASS, NOTE_CLASS } from "@/app/components/localhost/hyphenation/styles";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { cn } from "@/lib/utils";
-import { hyphenate, SOFT_HYPHEN } from "@/packages/skiptingar/src";
-import { patternPoints } from "@/packages/skiptingar/src/engine";
+import { hyphenate, patternPoints, SOFT_HYPHEN } from "@/packages/skiptingar/src";
 
 const { diagram } = localhostHyphenationContent.howItWorks;
 
