@@ -6,6 +6,10 @@
  */
 
 import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
+import sizes from "@/packages/skiptingar/sizes.json";
+
+/** A size from `bun run size` (sizes.json), in kB brotli, unit kept with the number. */
+const kB = (setup: keyof typeof sizes) => `${sizes[setup].brotli}\u00a0kB`;
 
 const njallSample =
   "Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Velli á Rangárvöllum. Hann var ríkur höfðingi og málafylgjumaður mikill og svo mikill lögmaður að engir þóttu löglegir dómar dæmdir nema hann væri við. Hann átti dóttur eina er Unnur hét. Hún var væn kona og kurteis og vel að sér og þótti sá bestur kostur á Rangárvöllum.";
@@ -102,8 +106,7 @@ export const localhostHyphenationContent = {
       },
       {
         value: "0 kB",
-        description:
-          "of JavaScript to hyphenate. The server puts the soft hyphens in, so every browser gets the same places to break. Settling the rag in the browser adds about 4.3 kB (Settle rag only).",
+        description: `of JavaScript to hyphenate. The server puts the soft hyphens in, so every browser gets the same places to break. Settling the rag in the browser adds ${kB("rag")} (Settle rag only).`,
       },
     ],
   },
@@ -284,7 +287,7 @@ export default function Page() {
             },
             { text: "<CleanCopy />", code: true },
             {
-              text: ". The patterns load on first use, about 47 kB brotli; the full client entry is about 5.5 kB, Settle rag alone about 4.3 kB.",
+              text: `. The hyphenation core loads on first use, ${kB("patterns")} brotli; the full client entry is ${kB("client")}, Settle rag alone ${kB("rag")}.`,
             },
           ],
         },
@@ -312,7 +315,7 @@ export default function Page() {
             {
               id: "sk-endpoint",
               label: "Skiptingar via your server",
-              kB: 1.6,
+              kB: sizes.endpoint.brotli,
               own: true,
               method: "soft hyphens from your server",
               note: "useHyphenate with an endpoint: the browser sends the text and gets it back hyphenated.",
@@ -336,7 +339,7 @@ export default function Page() {
             {
               id: "sk-client",
               label: "Skiptingar in the browser",
-              kB: 52.7,
+              kB: sizes.browser.brotli,
               own: true,
               method: "soft hyphens added in the browser",
               note: "The 2020 data, loaded on first use, for a page with no server to ask. Larger than the old patterns because it breaks better.",
@@ -374,7 +377,7 @@ export default function Page() {
             {
               id: "sk-rag",
               label: "Skiptingar Settle rag",
-              kB: 4.3,
+              kB: sizes.rag.brotli,
               own: true,
               method: "set by the browser’s own wrapping",
               note: "The whole paragraph, ragged, with an optional overhang of the last character. Rag only: hyphenation is done on the server, so it is not in this size.",
@@ -710,7 +713,7 @@ export default function Page() {
           },
           { text: "useHyphenate", code: true },
           {
-            text: ", about 47 kB brotli, loaded on first use, or none at all when it asks your server.",
+            text: `, ${kB("patterns")} brotli, loaded on first use, or none at all when it asks your server.`,
           },
         ],
       },
