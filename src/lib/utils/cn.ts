@@ -17,25 +17,7 @@ import { extendTailwindMerge } from "tailwind-merge";
  * @see https://github.com/dcastil/tailwind-merge/blob/main/docs/configuration.md
  */
 export const THEME_SCALES = {
-  // `hy-*` are only /localhost/hyphenation.
-  text: [
-    "display",
-    "body",
-    "prose",
-    "meta",
-    "link",
-    "label",
-    "hy-hero",
-    "hy-title",
-    "hy-lede",
-    "hy-stat",
-    "hy-label",
-    "hy-body",
-    "hy-nav",
-    "hy-control",
-    "hy-editor",
-    "hy-mark",
-  ],
+  text: ["display", "body", "prose", "meta", "link", "label"],
   // `medium` and `semibold` are Tailwind defaults, so listing them changes
   // nothing — but it keeps the invariant "everything in @theme appears here"
   // simple enough to assert.
@@ -64,8 +46,23 @@ export const THEME_SCALES = {
   radius: ["pill"],
 } as const;
 
+/** The page's `hy-*` colours. They share the prefix but are not sizes. */
+const HYPHENATION_COLOURS: ReadonlySet<string> = new Set(["hy-track", "hy-surface"]);
+
+/**
+ * The `hy-*` text sizes belong only to /localhost/hyphenation, so they are one
+ * rule here and not ten names in the site-wide `text` scale above.
+ */
+export const isHyphenationText = (value: string) =>
+  value.startsWith("hy-") && !HYPHENATION_COLOURS.has(value);
+
 const twMerge = extendTailwindMerge({
-  extend: { theme: THEME_SCALES as unknown as Record<string, string[]> },
+  extend: {
+    theme: {
+      ...THEME_SCALES,
+      text: [...THEME_SCALES.text, isHyphenationText],
+    },
+  },
 });
 
 /**

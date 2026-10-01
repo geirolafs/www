@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { cn, THEME_SCALES } from "./cn";
+import { cn, isHyphenationText, THEME_SCALES } from "./cn";
 
 /**
  * tailwind-merge only knows Tailwind's default scales. Every custom scale in
@@ -83,6 +83,22 @@ describe("cn", () => {
     expect(cn("text-muted", "text-foreground")).toBe("text-foreground");
   });
 
+  test("the page-only hy-* sizes keep a colour and replace each other", () => {
+    expect(cn("text-hy-title", "text-foreground")).toBe("text-hy-title text-foreground");
+    expect(cn("text-hy-title", "text-hy-body")).toBe("text-hy-body");
+    expect(cn("text-hy-control text-muted")).toBe("text-hy-control text-muted");
+    expect(cn("text-hy-title text-hy-track")).toBe("text-hy-title text-hy-track");
+  });
+
+  test("no hy-* colour in globals.css is read as a text size", () => {
+    const css = readFileSync(join(import.meta.dir, "../../app/globals.css"), "utf8");
+    const colours = [...css.matchAll(/--color-(hy-[\w-]+):/g)].map(
+      match => match[1] ?? ""
+    );
+    expect(colours.length).toBeGreaterThan(0);
+    expect(colours.filter(isHyphenationText)).toEqual([]);
+  });
+
   test("leaves different breakpoints alone", () => {
     expect(cn("gap-sm lg:gap-md")).toBe("gap-sm lg:gap-md");
   });
@@ -91,7 +107,12 @@ describe("cn", () => {
     const declared = THEME_SCALES as unknown as Record<string, readonly string[]>;
 
     for (const [namespace, names] of Object.entries(themeKeysFromCss())) {
-      const missing = names.filter(n => !declared[namespace]?.includes(n));
+      // The page-only `hy-*` text sizes are covered by a validator, not a name.
+      const missing = names.filter(
+        n =>
+          !declared[namespace]?.includes(n) &&
+          !(namespace === "text" && isHyphenationText(n))
+      );
 
       expect(
         missing,

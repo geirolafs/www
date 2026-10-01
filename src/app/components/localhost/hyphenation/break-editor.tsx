@@ -8,13 +8,13 @@ import {
   LABEL_CLASS,
 } from "@/app/components/localhost/hyphenation/styles";
 import { Tip } from "@/app/components/localhost/hyphenation/tip";
-import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
+import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 import { cn } from "@/lib/utils";
-import { loadSkiptingar } from "@/packages/skiptingar/src/client";
+import { useSkiptingar } from "@/packages/skiptingar/src/client";
 
-const { breakEditor: content } = localhostHyphenationContent;
+const { breakEditor: content } = localhostHyphenationClientContent;
 
-type Core = Awaited<ReturnType<typeof loadSkiptingar>>;
+type Core = NonNullable<ReturnType<typeof useSkiptingar>>;
 type Gap = keyof typeof content.states;
 type CopyState = keyof typeof content.copy;
 
@@ -25,20 +25,20 @@ const COPY_RESET_MS = 1500;
 const NEXT_GAP: Record<Gap, Gap> = { none: "break", break: "joint", joint: "none" };
 
 function lettersOf(value: string): string[] {
-  return [...value].filter(character => LETTER.test(character));
+  // NFC first: a decomposed á is a letter and a combining accent, and the
+  // filter would drop the accent.
+  return [...value.normalize("NFC")].filter(character => LETTER.test(character));
 }
 
 /**
- * The engine's answer for a word, as one state per gap between letters. The
- * engine names joints only through heading mode, which keeps an exception's
- * `=` joints and nothing else. A word with no exception gives the same
- * breaks in both modes, so a heading result that is not shorter is no joints.
+ * The engine's answer for a word, as one state per gap between letters. A gap
+ * is a joint where the word's exception line has `=` (or the engine finds a
+ * name ending), else a break where the ritreglur rules allow one, else none.
  */
 function engineGaps(core: Core, letters: string[]): Gap[] {
-  const word = letters.join("");
-  const breaks = core.hyphenateWord(word, { rules: "ritreglur" });
-  const headingBreaks = core.hyphenateWord(word, { rules: "ritreglur", mode: "heading" });
-  const joints = headingBreaks.length < breaks.length ? headingBreaks : [];
+  const { breaks, joints } = core.analyzeWord(letters.join(""), {
+    rules: "ritreglur",
+  });
   return letters.slice(0, -1).map((_, index) => {
     if (joints.includes(index + 1)) {
       return "joint";
@@ -66,7 +66,7 @@ function exceptionLine(letters: string[], gaps: Gap[]): string {
 export function BreakEditor() {
   const wordId = useId();
   const [word, setWord] = useState<string>(content.initialWord);
-  const [core, setCore] = useState<Core | null>(null);
+  const core = useSkiptingar();
   const [edit, setEdit] = useState<{ word: string; gaps: Gap[] } | null>(null);
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,11 +74,6 @@ export function BreakEditor() {
 
   useEffect(() => {
     mounted.current = true;
-    loadSkiptingar().then(loaded => {
-      if (mounted.current) {
-        setCore(loaded);
-      }
-    });
     return () => {
       mounted.current = false;
       if (resetTimer.current) {

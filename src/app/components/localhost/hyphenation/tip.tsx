@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+  FocusEvent as ReactFocusEvent,
   MouseEvent as ReactMouseEvent,
   ReactNode,
   PointerEvent as ReactPointerEvent,
@@ -8,10 +9,10 @@ import type {
 } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { FOCUS_CLASS } from "@/app/components/localhost/hyphenation/styles";
-import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
+import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 import { cn } from "@/lib/utils";
 
-const { tips } = localhostHyphenationContent;
+const { tips } = localhostHyphenationClientContent;
 
 /**
  * Tooltips on the platform, with no positioning code of our own:
@@ -31,6 +32,10 @@ const { tips } = localhostHyphenationContent;
  *   also how a keyboard user brings it back after Escape: Enter or Space on
  *   the focused trigger pins it. A keyboard click only ever pins, so it can
  *   never close a tip that focus opened.
+ * - Focus counts only when the browser would draw a focus ring (`:focus-visible`,
+ *   so keyboard focus). A mouse click also focuses the button in Chrome and
+ *   Firefox, and that must not hold the tip open once the pointer leaves.
+ *   Blur clears the pin as well, so Tab never leaves two tips open.
  */
 function useTip() {
   const reactId = useId();
@@ -99,8 +104,13 @@ function useTip() {
     type: "button" as const,
     // A dynamic value: every trigger needs an anchor name of its own.
     style: { anchorName },
-    onFocus: () => setFocused(true),
-    onBlur: () => setFocused(false),
+    onFocus: (event: ReactFocusEvent<HTMLButtonElement>) => {
+      setFocused(event.currentTarget.matches(":focus-visible"));
+    },
+    onBlur: () => {
+      setFocused(false);
+      setPinned(false);
+    },
     // A touch has no hover, and Safari does not focus a button on tap, so a
     // tap opens the tip itself, and a second tap closes it.
     onPointerDown: (event: ReactPointerEvent) => {

@@ -1,10 +1,12 @@
-import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
+import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
+import {
+  NO_BREAK_SPACE,
+  NON_BREAKING_HYPHEN,
+  SOFT_HYPHEN,
+} from "@/packages/skiptingar/src/client";
 
-const { marks } = localhostHyphenationContent;
+const { marks } = localhostHyphenationClientContent;
 
-const SOFT_HYPHEN = "­";
-const NO_BREAK_SPACE = " ";
-const NON_BREAKING_HYPHEN = "\u2011";
 const INVISIBLE = /([\u00AD\u00A0\u2011])/;
 
 type Piece = { id: number; text: string };

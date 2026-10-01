@@ -15,39 +15,60 @@ import {
   TITLE_CLASS,
 } from "@/app/components/localhost/hyphenation/styles";
 import { HelpTip, Tip } from "@/app/components/localhost/hyphenation/tip";
-import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
+import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 import { cn } from "@/lib/utils";
-import { useHyphenate } from "@/packages/skiptingar/src/client";
+import {
+  NO_BREAK_SPACE,
+  SOFT_HYPHEN,
+  useHyphenate,
+  useSkiptingar,
+} from "@/packages/skiptingar/src/client";
 
-const { liveEditor: content, tips } = localhostHyphenationContent;
+const { liveEditor: content, tips } = localhostHyphenationClientContent;
 
 type Mode = (typeof content.mode.options)[number]["value"];
 type Rules = (typeof content.rules.options)[number]["value"];
-
-const SOFT_HYPHEN = "­";
-const NO_BREAK_SPACE = " ";
 
 function count(text: string, character: string): number {
   return text.split(character).length - 1;
 }
 
+type LiveEditorProps = {
+  /**
+   * The editor's initial text, processed on the server with the initial
+   * options (`content.initial`). Until the engine has loaded, the box shows it
+   * while the text and every option are still at their initial values, so the
+   * first paint is the processed text and nothing reflows when the engine
+   * arrives. Once anything changes it shows the text as typed until then.
+   */
+  initialOutput: string;
+};
+
 /**
  * The text you type, run through the engine in the browser, in a box you can
- * resize. The engine loads on first render as its own chunk, so until then
- * the box shows the text as typed.
+ * resize. The engine loads on first render as its own chunk.
  */
-export function LiveEditor() {
+export function LiveEditor({ initialOutput }: LiveEditorProps) {
   const textId = useId();
   const widthId = useId();
   const [text, setText] = useState<string>(content.initialText);
-  const [mode, setMode] = useState<Mode>("body");
-  const [rules, setRules] = useState<Rules>("typographic");
-  const [typeset, setTypeset] = useState(true);
+  const [mode, setMode] = useState<Mode>(content.initial.mode);
+  const [rules, setRules] = useState<Rules>(content.initial.rules);
+  const [typeset, setTypeset] = useState<boolean>(content.initial.typeset);
   const [showBreaks, setShowBreaks] = useState(false);
   const [pretty, setPretty] = useState(true);
   const [width, setWidth] = useState<number>(content.width.initial);
 
-  const output = useHyphenate(text, { mode, rules, typeset });
+  const core = useSkiptingar();
+  const processed = useHyphenate(text, { mode, rules, typeset });
+  const atInitial =
+    text === content.initialText &&
+    mode === content.initial.mode &&
+    rules === content.initial.rules &&
+    typeset === content.initial.typeset;
+  // The server HTML and the first client render both have no core, so they
+  // both show `initialOutput` and hydration matches.
+  const output = !core && atInitial ? initialOutput : processed;
   const isHeading = mode === "heading";
 
   return (
@@ -132,7 +153,7 @@ export function LiveEditor() {
         </div>
       </div>
 
-      <div
+      <section
         className={cn(
           "max-w-full hyphens-manual border border-border border-dashed p-sm text-foreground",
           isHeading ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
@@ -140,11 +161,12 @@ export function LiveEditor() {
           pretty && (isHeading ? "text-balance" : "text-pretty")
         )}
         lang="is"
+        aria-label={content.outputLabel}
         // A live user value from the slider, not a design token.
         style={{ width }}
       >
         {showBreaks ? <MarkedText text={output} /> : output}
-      </div>
+      </section>
 
       <p className="flex flex-wrap gap-x-md font-medium text-meta text-muted">
         <Tip tip={tips.softHyphen}>{content.breaks(count(output, SOFT_HYPHEN))}</Tip>

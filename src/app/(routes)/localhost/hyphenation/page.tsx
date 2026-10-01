@@ -23,6 +23,7 @@ import { Shell } from "@/app/components/localhost/hyphenation/shell";
 import { Sizes } from "@/app/components/localhost/hyphenation/sizes";
 import { Typography } from "@/app/components/localhost/hyphenation/typography";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
+import { processSegments, resolveTypeset } from "@/packages/skiptingar/src";
 import { CleanCopy } from "@/packages/skiptingar/src/client";
 
 const { page: pageContent } = localhostHyphenationContent;
@@ -44,7 +45,14 @@ export const metadata: Metadata = {
  * specimen. It shares no chrome with the rest of the site.
  */
 export default function Page() {
-  const { sections, samplesSection: samples } = localhostHyphenationContent;
+  const { sections, samplesSection: samples, liveEditor } = localhostHyphenationContent;
+  // The live editor's first output, made here with the editor's own initial
+  // state, so the server HTML already holds the processed text.
+  const { initialText, initial } = liveEditor;
+  const [initialOutput = initialText] = processSegments([initialText], {
+    typeset: resolveTypeset(initial.typeset),
+    hyphenate: { mode: initial.mode, rules: initial.rules },
+  });
 
   return (
     <Shell>
@@ -52,48 +60,23 @@ export default function Page() {
       <CleanCopy />
       <Hero />
 
-      <Section
-        explanation={sections.liveEditor.explanation}
-        id={sections.liveEditor.id}
-        label={sections.liveEditor.label}
-        number={sections.liveEditor.number}
-      >
-        <LiveEditor />
+      <Section {...sections.liveEditor}>
+        <LiveEditor initialOutput={initialOutput} />
       </Section>
 
-      <Section
-        explanation={sections.sizes.explanation}
-        id={sections.sizes.id}
-        label={sections.sizes.label}
-        number={sections.sizes.number}
-      >
+      <Section {...sections.sizes}>
         <Sizes />
       </Section>
 
-      <Section
-        explanation={sections.compare.explanation}
-        id={sections.compare.id}
-        label={sections.compare.label}
-        number={sections.compare.number}
-      >
+      <Section {...sections.compare}>
         <Compare />
       </Section>
 
-      <Section
-        explanation={sections.howItWorks.explanation}
-        id={sections.howItWorks.id}
-        label={sections.howItWorks.label}
-        number={sections.howItWorks.number}
-      >
+      <Section {...sections.howItWorks}>
         <HowItWorks />
       </Section>
 
-      <Section
-        explanation={sections.samples.explanation}
-        id={sections.samples.id}
-        label={sections.samples.label}
-        number={sections.samples.number}
-      >
+      <Section {...sections.samples}>
         <Specimen
           hint={<RichText parts={samples.heading.hint} />}
           label={samples.heading.label}
@@ -150,21 +133,11 @@ export default function Page() {
         </Specimen>
       </Section>
 
-      <Section
-        explanation={sections.typography.explanation}
-        id={sections.typography.id}
-        label={sections.typography.label}
-        number={sections.typography.number}
-      >
+      <Section {...sections.typography}>
         <Typography />
       </Section>
 
-      <Section
-        explanation={sections.breakEditor.explanation}
-        id={sections.breakEditor.id}
-        label={sections.breakEditor.label}
-        number={sections.breakEditor.number}
-      >
+      <Section {...sections.breakEditor}>
         <BreakEditor />
       </Section>
     </Shell>
