@@ -182,7 +182,7 @@ export const localhostHyphenationClientContent = {
     },
     textWrap: {
       label: "text-wrap",
-      tip: "text-pretty (text-wrap: pretty) stops a paragraph ending on one short word and evens out the ragged edge. text-balance (text-wrap: balance) evens out the lines of a heading. Body mode uses pretty and heading mode uses balance. Off wraps each line greedily. How it works shows each one with and without.",
+      tip: "The browser’s own line breaking, used when Settle rag is off: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off wraps each line greedily. With Settle rag on this does nothing: Settle rag chooses every break itself and balances titles. How it works shows each one with and without.",
     },
     /** The result box's width slider, in px. */
     width: { min: 120, max: 720, initial: 320 },

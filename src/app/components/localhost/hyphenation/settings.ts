@@ -50,16 +50,23 @@ export const PAGE_TYPESET = { dashes: true } as const;
  */
 export const OVERHANG_EM = 0.5;
 
-/** The options the rag judgement takes from the settings. */
-export function ragOptions(settings: Pick<Settings, "overhang">): { overshoot: number } {
-  return { overshoot: settings.overhang ? OVERHANG_EM : 0 };
+/**
+ * The options the rag judgement takes from the settings. A title is
+ * balanced: as few lines as greedy wrapping gives, made as even as possible.
+ */
+export function ragOptions(
+  settings: Pick<Settings, "overhang">,
+  title = false
+): { overshoot: number; balance: boolean } {
+  return { overshoot: settings.overhang ? OVERHANG_EM : 0, balance: title };
 }
 
 /**
  * The `text-wrap` class the settings ask for, for a title or for body text.
  * With Settle rag on it is plain wrapping: the rag judgement has chosen every
- * break already and needs the browser to break at the last place that fits
- * (see `settleRag`), which `pretty` and `balance` would second-guess.
+ * break already, balancing a title itself (`ragOptions`), and needs the
+ * browser to break at the last place that fits (see `settleRag`), which
+ * `pretty` and `balance` would second-guess.
  */
 export function wrapClass(
   settings: Pick<Settings, "pretty" | "rag">,

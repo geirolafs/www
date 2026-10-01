@@ -35,9 +35,9 @@ function count(texts: readonly string[], character: string): number {
 }
 
 /**
- * One block of the result. With Short words on it measures its own lines and
- * moves a short word left at a line's end down when that makes the paragraph
- * no worse (`useSettledRag`). A title is set like a heading.
+ * One block of the result. With Settle rag on it measures its own lines and
+ * sets the breaks a typesetter would (`useSettledRag`). A title is set like
+ * a heading, and balanced.
  */
 function EditorBlock({
   output,
@@ -49,8 +49,8 @@ function EditorBlock({
   title: boolean;
 }) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const settled = useSettledRag(ref, output, settings.rag, ragOptions(settings));
   const heading = title || settings.mode === "heading";
+  const settled = useSettledRag(ref, output, settings.rag, ragOptions(settings, heading));
 
   return (
     <p

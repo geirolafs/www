@@ -80,9 +80,9 @@ type LiveBlockProps = LiveTextProps & {
 /**
  * The live text in its own element, with the `text-wrap` the page settings
  * ask for. The element is Icelandic and breaks only at the soft hyphens.
- * With Short words on, it measures its own lines and moves a short word
- * left at a line's end down to the next line when that makes the paragraph
- * better (`useSettledRag`); Show breaks puts an amber space after each one.
+ * With Settle rag on, it measures its own lines and sets the breaks a
+ * typesetter would (`useSettledRag`), balancing a title; Show breaks puts an
+ * amber fill on each space it glued.
  */
 export function LiveBlock({
   as: Element = "p",
@@ -92,7 +92,7 @@ export function LiveBlock({
 }: LiveBlockProps) {
   const ref = useRef<HTMLElement>(null);
   const { output, settings } = useLiveOutput(props);
-  const settled = useSettledRag(ref, output, settings.rag, ragOptions(settings));
+  const settled = useSettledRag(ref, output, settings.rag, ragOptions(settings, title));
 
   return (
     <Element
