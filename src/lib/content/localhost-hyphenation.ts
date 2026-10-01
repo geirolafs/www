@@ -61,17 +61,17 @@ export const localhostHyphenationContent = {
       {
         count: "exceptions",
         description:
-          "words checked by hand, where the patterns get it wrong. The list grows with every wrong break someone reports, so the results get better with use.",
+          "words marked by hand: a few the patterns break wrongly or not at all, and compounds whose joints titles should break at. Your own words go in a dictionary option.",
       },
       {
         count: "shortWords",
         description:
-          "short words like og and í that settling the rag keeps off line ends, judged line by line as a typesetter would, along with holes, jutting lines and short hyphen pieces. The list and the judgement get better with use.",
+          "short words like og and að, and every one-letter word like í, that Settle rag weighs at a line’s end, with holes, jutting lines, short hyphen pieces and a lone last word. A preference, not a rule: the whole paragraph decides.",
       },
       {
         value: "0 kB",
         description:
-          "of hyphenation code on a normal page. The server puts the soft hyphens in, so every browser breaks the lines in the same places.",
+          "of JavaScript to hyphenate. The server puts the soft hyphens in, so every browser gets the same places to break. Settling the rag in the browser adds about 5 kB.",
       },
     ],
   },
@@ -109,7 +109,7 @@ export const localhostHyphenationContent = {
       id: "live-editor",
       number: "A",
       nav: "Editor",
-      label: "Live editor",
+      label: "Editor",
       explanation:
         "Pick an example or write your own, and change the settings. The settings apply to the whole page, and the arrow sends your text to Sizes and Compare.",
     },
@@ -229,7 +229,9 @@ export default function Page() {
             { text: "typeset()", code: true },
             { text: " and " },
             { text: "processSegments()", code: true },
-            { text: ": plain functions from string to string." },
+            { text: ": plain functions on strings, and " },
+            { text: "bestBreaks()", code: true },
+            { text: ", the rag search, given the widths." },
           ],
         },
         {
@@ -248,11 +250,15 @@ export default function Page() {
           path: "skiptingar/client",
           where: "The browser",
           body: [
+            { text: "<SettledText>", code: true },
+            { text: " and " },
+            { text: "settle()", code: true },
+            { text: " to settle the rag, " },
             { text: "useHyphenate()", code: true },
             { text: " for text that only exists in the browser, and " },
             { text: "<CleanCopy />", code: true },
             {
-              text: ". The patterns load on first use, about 60 kB compressed; the rest is about 4 kB.",
+              text: ". The patterns load on first use, about 55 kB brotli; the rest is about 4.5 kB.",
             },
           ],
         },
@@ -262,7 +268,7 @@ export default function Page() {
       id: "roadmap",
       title: "Planned",
       intro:
-        "A draft of what comes before the first release and what can wait. Nothing here is promised yet.",
+        "What comes before the first release and what can wait. Nothing here is promised yet.",
       groups: [
         {
           id: "v1",
@@ -276,17 +282,17 @@ export default function Page() {
             {
               id: "report",
               title: "Report a wrong break",
-              body: "A prefilled GitHub issue from the break editor, and the exception list public, so anyone can see what has been fixed.",
+              body: "A prefilled GitHub issue from the break editor that holds the line to add to the exception list, and the list public, so anyone can see what has been fixed. Until a fix ships, the dictionary option takes your own words.",
             },
             {
               id: "exceptions",
-              title: "Fix the known bad breaks",
-              body: "Exceptions for the words the patterns get wrong, like fornald-arfrægð and stjórn-arvöld, found by checking common compounds.",
+              title: "Fix the remaining bad breaks",
+              body: "The linking-syllable rule fixed stjórnar-völd and fornaldar-frægð. Next are the words where the patterns disagree with the word list they were made from.",
             },
             {
               id: "first-paint",
               title: "Settle rag without a shift",
-              body: "Today the rag settles after the page loads, so the first paint moves a little. Hold the text until it is settled, or settle it before it shows.",
+              body: "Today the rag settles after the page loads, so the first paint can move a little. Hold the text until it is settled, or settle it before it shows.",
             },
             {
               id: "docs",
@@ -302,22 +308,12 @@ export default function Page() {
             {
               id: "markdown",
               title: "Markdown and HTML",
-              body: "A rehype plugin and a small CLI, for sites that are not built with React.",
+              body: "A rehype plugin and a small CLI that hyphenate and typeset, for sites that are not built with React. Settling the rag needs the real widths, so it stays in the browser, through settle().",
             },
             {
-              id: "frameworks",
-              title: "Other frameworks",
-              body: "Thin wrappers for Astro, Svelte and Vue around the plain functions.",
-            },
-            {
-              id: "justify",
-              title: "Justified text",
-              body: "Rules for justified columns, where the breaks matter even more: tighter limits on word spacing and on hyphens in a row.",
-            },
-            {
-              id: "learning",
-              title: "Exceptions that learn",
-              body: "Reported breaks checked and added to the list on a schedule, so the results get better with use.",
+              id: "rich-text",
+              title: "Settle text with markup",
+              body: "Measure links, emphasis and code inside a settled paragraph in their own fonts. Today settling measures plain text.",
             },
           ],
         },
@@ -344,11 +340,11 @@ export default function Page() {
       },
       browser: {
         label: "Browser",
-        hint: "hyphens: auto, with the browser’s own dictionary. Firefox has one for Icelandic; Chrome does not, and Safari does not appear to.",
+        hint: "hyphens: auto, with the browser’s own dictionary. Only Firefox has one for Icelandic; Chrome, Edge and Safari do not.",
       },
       skiptingar: {
         label: "Skiptingar",
-        hint: "Soft hyphens from the 2020 patterns, added on the server. Every browser breaks in the same places.",
+        hint: "Soft hyphens from the 2020 patterns, added on the server. Every browser gets the same places to break.",
       },
     },
     table: {
@@ -387,7 +383,7 @@ export default function Page() {
         },
       ],
       same: "(same)",
-      note: "The 2020 data fixes compound joints and adds legal one-letter breaks. The typographic preset drops the one-letter ones.",
+      note: "TeX here uses its usual limit of 2 letters before a break, the 2020 data its own limit of 1, so ó-lán and í-þrótta show only in the 2020 column. The joint in þjóðfélags-umræða is the 2020 data’s own fix. The typographic preset drops one-letter breaks.",
     },
   },
 
@@ -411,7 +407,7 @@ export default function Page() {
         },
         rules: {
           title: "Rules",
-          note: "The typographic rules keep the breaks with room on both sides. The exception list fixes the words the patterns get wrong.",
+          note: "The typographic rules keep the breaks with room on both sides and drop the one before a linking syllable. The exception list marks a few words by hand.",
         },
         html: {
           title: "HTML",
@@ -433,9 +429,9 @@ export default function Page() {
           {
             text: "This is Franklin Liang’s algorithm from 1983, the one TeX uses. There is no dictionary. {patterns} short letter patterns carry numbers between the letters, like ",
           },
-          { text: "af4lið.", code: true },
+          { text: ".af4lið.", code: true },
           {
-            text: " (the dot is the end of the word). An odd number allows a break, an even number forbids one, and the highest number at each spot wins. The patterns are the 2020 Icelandic list from the Árni Magnússon Institute (CC BY 4.0). It gets compound joints right: ",
+            text: " (the dots mark the start and end of the word). An odd number allows a break, an even number forbids one, and the highest number at each spot wins. The patterns are the 2020 Icelandic list from the Árni Magnússon Institute (CC BY 4.0). It gets compound joints right: ",
           },
           { text: "þjóð-fé-lags-um-ræða", sample: true },
           { text: ", where the older TeX patterns gave " },
@@ -450,13 +446,13 @@ export default function Page() {
           { text: "A hand-checked list in " },
           { text: "data/exceptions.txt", code: true },
           {
-            text: " (CC0) overrides the patterns for words they get wrong. A ",
+            text: " (CC0) overrides the patterns for the words on it: a few they break wrongly, and compounds marked for their joints. A ",
           },
           { text: "-", code: true },
           { text: " marks a break and a " },
           { text: "=", code: true },
           {
-            text: " marks a compound joint. In heading mode, a word on the list breaks only at its joints.",
+            text: " marks a compound joint. In heading mode a word breaks only at its joints, when one fits: listed ones, and two rules for the rest. A break before a linking syllable such as ar is dropped, so stjórnar-völd, not stjórn-ar-völd, and the break kept after it is a joint. So is a name ending such as -dóttir.",
           },
         ],
       },
@@ -469,10 +465,12 @@ export default function Page() {
             text: " is the default and keeps only the breaks that look good. ",
           },
           { text: "ritreglur", code: true },
-          { text: " allows every break the official spelling rules allow, such as " },
+          {
+            text: " allows every break the patterns allow, close to what the official spelling rules allow, such as ",
+          },
           { text: "ó-lán", sample: true },
           {
-            text: ", with 1 letter before and 2 after, in words of 4 or more letters (Skiptingar’s own limit). Typographic never breaks where Ritreglur forbids it.",
+            text: ", with 1 letter before and 2 after, in words of 4 or more letters (Skiptingar’s own limit). Typographic keeps only some of those breaks.",
           },
         ],
       },
@@ -486,7 +484,7 @@ export default function Page() {
           },
           { text: "<Hyphenate>", code: true },
           {
-            text: ". The browser gets plain HTML, so a page that only uses it ships 0 kB of hyphenation code, and the breaks are the same in every browser. The browser still picks which break to use on each line. CSS ",
+            text: ". The browser gets plain HTML, so a page that only uses it ships 0 kB of hyphenation code, and the places to break are the same in every browser. The browser still picks which break to use on each line. CSS ",
           },
           { text: "text-wrap: pretty", code: true },
           { text: " and " },
@@ -510,7 +508,7 @@ export default function Page() {
           { text: " and " },
           { text: "dr. Jón", sample: true },
           {
-            text: ", and straight quotes become Icelandic „…“. The text never changes length, so it can run across a whole JSX tree at once and pair quotes across inline elements such as ",
+            text: ", and straight quotes become Icelandic „…“. Apart from putting the text in NFC it never changes its length, so it can run across a whole JSX tree at once and pair quotes across inline elements such as ",
           },
           { text: "<strong>", code: true },
           { text: ". One rule, " },
@@ -519,7 +517,9 @@ export default function Page() {
           { text: "text-pretty", code: true },
           { text: " does that better where the browser supports it, so use " },
           { text: "lastWords", code: true },
-          { text: " only as a fallback for Firefox, which does not support " },
+          {
+            text: " only as a fallback for Firefox and Safari before 26, which do not support ",
+          },
           { text: "text-pretty", code: true },
           { text: "." },
         ],
@@ -536,7 +536,7 @@ export default function Page() {
             text: " removes the soft hyphens and no-break spaces from copied text. Text that only exists in the browser can use the lazy client entry, ",
           },
           { text: "useHyphenate", code: true },
-          { text: ", about 60 kB compressed, loaded on first use." },
+          { text: ", about 55 kB brotli, loaded on first use." },
         ],
       },
       {
@@ -544,14 +544,14 @@ export default function Page() {
         title: "Languages, names and numbers",
         body: [
           { text: "<Hyphenate>", code: true },
-          { text: " leaves text under a non-Icelandic " },
+          { text: " leaves text inside it under a non-Icelandic " },
           { text: "lang", code: true },
           {
             text: " alone, with no Icelandic hyphenation and no Icelandic quotes, and a nested ",
           },
           { text: 'lang="is"', code: true },
           {
-            text: " turns it back on. Input is turned into NFC first, so decomposed letters, like those in macOS file names, still hyphenate. All-caps words of 4 to 8 letters, such as UNESCO, never break. Place names and patronymics break at their joint in heading mode, as in ",
+            text: " turns it back on; a page in another language passes its own lang prop. Input is turned into NFC first, so decomposed letters, like those in macOS file names, still hyphenate. All-caps words of 4 to 8 letters, such as UNESCO, never break. In heading mode a capitalised name breaks at its ending’s joint when one fits, as in ",
           },
           { text: "Sigurðar-dóttir", sample: true },
           {
@@ -574,7 +574,7 @@ export default function Page() {
         {
           id: "pretty",
           property: "text-wrap: pretty",
-          what: "Stops a paragraph from ending on one short word, and evens out the ragged right edge.",
+          what: "Stops a paragraph from ending on one short word. Safari 26 and later also even out the ragged right edge; Chrome only adjusts the last few lines.",
           used: [
             {
               text: "The paragraphs in Samples, the steps on this page and the live editor’s body text.",
@@ -586,7 +586,7 @@ export default function Page() {
             },
             { text: "lastWords", code: true },
             {
-              text: " does part of the same job, but only for the last two words, so use it as a fallback for Firefox only.",
+              text: " does part of the same job, but only for the last two words, so use it as a fallback for Firefox and older Safari.",
             },
           ],
           withoutCaption: "text-wrap: wrap",
@@ -607,7 +607,7 @@ export default function Page() {
         {
           id: "hyphens",
           property: "hyphens: manual and auto",
-          what: "manual, the CSS default, breaks a word only at a soft hyphen, and those are the ones Skiptingar puts in. auto asks the browser’s own dictionary. Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in the Compare section.",
+          what: "manual, the CSS default, adds a hyphen only where there is a soft hyphen, and those are the ones Skiptingar puts in. auto asks the browser’s own dictionary. Only Firefox ships an Icelandic one; Chrome, Edge and Safari do not. Test it in the Compare section.",
           used: [
             {
               text: "Every hyphenated text on this page uses manual. The Browser column in ",
@@ -650,7 +650,7 @@ export default function Page() {
               text: " sorts æ next to a and ö with o, and á, é and í as plain a, e and i. Node, Bun, Firefox and Safari are fine. Format dates and numbers on the server, and for sorting in the browser use ",
             },
             { text: "cldr-is", href: "https://github.com/gudrodur/cldr-is" },
-            { text: "." },
+            { text: " (on GitHub, not on npm yet)." },
           ],
         },
         {
@@ -708,7 +708,7 @@ export default function Page() {
             { text: " and " },
             { text: "555 1234", sample: true },
             {
-              text: " are kept together by typeset(). Chrome otherwise breaks after the hyphen (tested in Chrome 154 on macOS).",
+              text: " are kept together by typeset(). Browsers otherwise break after the hyphen.",
             },
           ],
         },
@@ -757,10 +757,10 @@ export default function Page() {
       label: "Long paragraph",
       hint: [
         {
-          text: "A narrow column of saga prose. Compare the right edges, and the last line: ",
+          text: "A narrow column of saga prose. Compare the right edges, and the last line: with Settle rag on it is weighed too, so it is rarely one word or the tail of a broken one. With Settle rag off, ",
         },
         { text: "text-wrap: pretty", code: true },
-        { text: " keeps it from being one short word. " },
+        { text: " does part of that. " },
         { text: "Why, with and without", href: "#css-pairs" },
       ],
       text: samples.njall,
@@ -940,7 +940,7 @@ export default function Page() {
             href: "https://ritreglur.arnastofnun.is/#33.",
             body: [
               {
-                text: "The official rules for breaking Icelandic words between lines. The Ritreglur preset follows them; the typographic preset is stricter and never breaks where they forbid it.",
+                text: "The official rules for breaking Icelandic words between lines. The Ritreglur preset follows them through the patterns, which miss a few breaks and allow a few they forbid; the typographic preset is stricter.",
               },
             ],
           },
@@ -983,7 +983,7 @@ export default function Page() {
             href: "https://mnater.github.io/Hyphenopoly/",
             body: [
               {
-                text: "Hyphenation for many other languages, in the browser. Skiptingar leaves text under another ",
+                text: "Hyphenation for many languages, in the browser or Node. It has Icelandic too, from the older TeX patterns. Skiptingar leaves text under another ",
               },
               { text: "lang", code: true },
               { text: " alone, so the two can share a page." },
@@ -1091,7 +1091,7 @@ export default function Page() {
         id: "last-words",
         label: "Last two words",
         tag: "lastWords",
-        tip: "Puts a no-break space between the last two words of the text, so the last line is never a single word. Off by default, so this row turns it on. text-pretty does this better where the browser supports it, so use this rule only as a fallback for Firefox, which does not support it.",
+        tip: "Puts a no-break space between the last two words of the text, so the last line is never a single word. Off by default, so this row turns it on. text-pretty does this better where the browser supports it, so use this rule only as a fallback for Firefox and Safari before 26, which do not support it.",
         input: "Þau fóru saman til Akureyrar",
         options: { lastWords: true },
       },

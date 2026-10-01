@@ -145,7 +145,7 @@ export const localhostHyphenationClientContent = {
     initial: { mode: "body", rules: "typographic", typeset: true },
     mode: {
       label: "Mode",
-      tip: "Body breaks a word at every allowed spot. Heading is stricter: only long words break, with more letters kept on each side of a break, and a word on the exception list breaks only at its compound joints.",
+      tip: "Body breaks a word at every allowed spot. Heading is stricter: only long words break, with more letters kept on each side, and a word breaks only at its compound joints when one fits: those on the exception list, the break after a linking syllable (stjórnar-völd) and a name’s ending (Sigurðar-dóttir).",
       options: [
         { value: "body", label: "Body" },
         { value: "heading", label: "Heading" },
@@ -153,7 +153,7 @@ export const localhostHyphenationClientContent = {
     },
     rules: {
       label: "Rules",
-      tip: "Typographic keeps only breaks that look good: in body text, words of 6 or more letters with 2 letters before and 3 after the break (in a heading 12, 3 and 4). Ritreglur allows every break the official spelling rules allow: 1 letter before, 2 after. Words of 4+ letters (Skiptingar’s own limit).",
+      tip: "Typographic keeps only breaks that look good: in body text, words of 6 or more letters with 2 letters before and 3 after the break (in a heading 12, 3 and 4), and never just before a linking syllable (stjórnar-völd, not stjórn-ar-völd). Ritreglur allows every break the patterns allow, close to the official spelling rules: 1 letter before, 2 after. Words of 4+ letters (Skiptingar’s own limit).",
       options: [
         { value: "typographic", label: "Typographic" },
         { value: "ritreglur", label: "Ritreglur" },
@@ -174,11 +174,11 @@ export const localhostHyphenationClientContent = {
     },
     rag: {
       label: "Settle rag",
-      tip: "Looks at each line end the way a typesetter does. A short word like og, í or að left at the end, or a word that sticks out and leaves a hole in the edge, is tried on the next line, and the move is kept only if the whole paragraph’s edge gets better. It needs the real line breaks, so it runs in the browser. With Show breaks on, each word it moved has an amber space after it.",
+      tip: "Chooses every line break for the whole paragraph the way a typesetter would: lines full enough, no word jutting out or leaving a hole, few hyphens and no 3-letter pieces, a short word like og, í or að kept off a line’s end when that costs nothing elsewhere (a preference of this package, not an Icelandic rule), and a last line that is not one word. Titles are balanced. It needs the real line widths, so it runs in the browser. With Show breaks on, each space it glued has an amber fill.",
     },
     overhang: {
       label: "Overhang",
-      tip: "The cheat a typesetter makes by hand: a line’s last letter or mark may go a little past the edge, when that keeps a word on its line and makes the paragraph better. Never more than about one letter, less as the type gets bigger, and never at a hyphen. Works with Settle rag. With Show breaks on, the overhanging character is on an amber fill.",
+      tip: "The cheat a typesetter makes by hand: a line’s last letter or mark may go a little past the edge, when that keeps a word on its line and makes the paragraph better. At most about half an em at 16px, a smaller share of the size as the type grows, never more than the character itself, and never at a hyphen. Works with Settle rag. With Show breaks on, the overhanging character is on an amber fill.",
     },
     textWrap: {
       label: "text-wrap",

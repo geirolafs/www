@@ -12,7 +12,7 @@ const { typography } = localhostHyphenationContent;
 
 type TypographyFeatureProps = {
   label: string;
-  /** The `typeset()` option, or a name for the rule, shown as code. */
+  /** The `typeset()` option that turns the rule on or off, shown as code. */
   tag: string;
   /** What the rule does, in a line. */
   tip: string;
