@@ -1243,6 +1243,24 @@ html:has(.hy-shell) {
   view-timeline-name: --hy-hero;
 }
 
+/* The hero figure's marks (`hero-figure.tsx`): the browser's faults get a red
+   wave, the package's fixes a yellow highlighter band through the foot of the
+   letters, light enough that the text still reads as set. These classes mark
+   the notes in the margin; the text carries the same marks as CSS custom
+   highlights, so they change no layout. Those `::highlight()` rules live in
+   `HighlightStyles`: the build's CSS minifier does not know the pseudo-element
+   and drops any rule that names it. */
+.hy-problem-mark {
+  text-decoration: underline wavy var(--color-hy-signal);
+}
+
+.hy-fix-mark {
+  text-decoration: underline var(--color-hy-accent);
+  text-decoration-thickness: 0.4em;
+  text-underline-offset: -0.25em;
+  text-decoration-skip-ink: none;
+}
+
 @keyframes hy-logo-in {
   from {
     opacity: 0;
