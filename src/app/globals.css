@@ -7,9 +7,9 @@
 
    Two values deviate from the frames. Both are deliberate:
 
-   1. `--color-muted` is #737373, not the frame's #8c8c8c. #8c8c8c measures
+   1. `--color-muted` is #77726f, not the frame's #8c8c8c. #8c8c8c measures
       3.28:1 on the background and fails WCAG AA on the 20px work
-      descriptions, which are body copy. #737373 is the lightest grey that
+      descriptions, which are body copy. #77726f is the lightest grey that
       clears 4.5:1 on #fffcf3.
    2. Weights follow the Book/Regular rule in AGENTS.md. The frames apply it
       the other way round; the rule wins. Book for paragraphs, Regular for a
@@ -35,19 +35,21 @@
 @theme {
   /* ---- Colour ---------------------------------------------------------- */
   /* Eight values here and the stripe gradient in `:root`. That is the whole
-     palette. The two `hy-` values below belong to /localhost/hyphenation
+     palette. The greys are warm, leaning from the foreground's brown (dark)
+     to the background's cream (light), each at the luminance of the neutral
+     grey it replaced, so every contrast ratio below still holds. The two `hy-` values below belong to /localhost/hyphenation
      only. */
 
   --color-background: #fffcf3; /* a warm white */
   --color-foreground: #2c2523; /* 14.7:1 on the background */
-  --color-muted: #737373; /* 4.62:1 on the background — see note 1 above */
-  --color-border: #919191; /* 3.07:1 — borders need 3:1, text rules do not apply */
-  --color-border-strong: #8c8c8c; /* 3.28:1 — the section-label pill outline */
-  --color-surface-footer: #d8d8d8; /* foreground on it is 10.6:1 */
+  --color-muted: #77726f; /* 4.63:1 on the background — see note 1 above */
+  --color-border: #95908c; /* 3.08:1 — borders need 3:1, text rules do not apply */
+  --color-border-strong: #908b87; /* 3.29:1 — the section-label pill outline */
+  --color-surface-footer: #dbd8d2; /* foreground on it is 10.6:1 */
   --color-selection: #ffe577; /* the stripe's last stop; foreground 12:1, muted 3.78:1 */
   --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
-  --color-hy-track: #e5e5e5; /* /localhost/hyphenation: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
-  --color-hy-surface: #f5f5f5; /* /localhost/hyphenation: code blocks, a button's hover fill, a highlighted option */
+  --color-hy-track: #e7e5df; /* /localhost/hyphenation: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
+  --color-hy-surface: #f7f5ef; /* /localhost/hyphenation: code blocks, a button's hover fill, a highlighted option */
   /* /localhost/hyphenation: the two highlights. Signal is for what must be
      seen: a break, the current section. It is 3.18:1 on the background, so
      it marks and draws but is never small text. Accent is the quieter one, a
@@ -61,11 +63,11 @@
 
   /* /localhost/hyphenation: the one raised thing on the page, the settings
      dock that floats over the specimens. */
-  --shadow-hy-float: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.1);
+  --shadow-hy-float: 0 1px 2px rgb(44 37 35 / 0.07), 0 8px 24px rgb(44 37 35 / 0.11);
   /* /localhost/hyphenation: the hairline lift under a control (a field, a
      switch, the picked package manager), so it reads as something to press
      rather than a box drawn on the page. */
-  --shadow-hy-control: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-hy-control: 0 1px 2px rgb(44 37 35 / 0.06);
 
   /* ---- Font ------------------------------------------------------------ */
 
@@ -1067,13 +1069,13 @@ article a:active {
 .hy-code {
   --sh-keyword: var(--color-foreground);
   --sh-class: var(--color-foreground);
-  --sh-jsxliterals: #2b2b2b;
-  --sh-identifier: #2e2e2e;
-  --sh-property: #474747;
-  --sh-entity: #474747;
-  --sh-string: #595959;
-  --sh-sign: #6b6b6b;
-  --sh-comment: #6b6b6b;
+  --sh-jsxliterals: #2f2a28;
+  --sh-identifier: #322d2b;
+  --sh-property: #4b4644;
+  --sh-entity: #4b4644;
+  --sh-string: #5d5855;
+  --sh-sign: #6f6a67;
+  --sh-comment: #6f6a67;
   background: var(--color-hy-surface);
   color: var(--sh-identifier);
 }
