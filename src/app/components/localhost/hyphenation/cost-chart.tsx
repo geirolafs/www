@@ -18,8 +18,9 @@ const format = new Intl.NumberFormat("en", { maximumFractionDigits: 1 });
 /**
  * What each setup downloads, as an emphasis bar chart: Skiptingar's rows in
  * the accent, the alternatives in grey, one kB scale for all. Every row is
- * text first (name, value, what it does), so it reads as a list without the
- * bars, which are decoration (`aria-hidden`). Bars end square, like every
+ * text first (name, how it sets the result, what it covers, value), so it
+ * reads as a list without the bars, which are decoration (`aria-hidden`).
+ * The shaded row is the hover state. Bars end square, like every
  * box on the page; a setup that downloads nothing gets a hairline at zero.
  */
 export function CostChart() {
@@ -43,6 +44,11 @@ export function CostChart() {
                 <div className="flex flex-col">
                   <span className={cn(ITEM_TITLE_CLASS, !item.own && "font-book")}>
                     {item.label}
+                  </span>
+                  {/* How it sets the result, in one phrase pattern per job, so
+                      the rows can be compared by method as well as by size. */}
+                  <span className="font-book text-foreground text-hy-note">
+                    {item.method}
                   </span>
                   <span className={NOTE_CLASS}>{item.note}</span>
                 </div>
