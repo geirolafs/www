@@ -180,6 +180,10 @@ export const localhostHyphenationClientContent = {
       label: "Overhang",
       tip: "The cheat a typesetter makes by hand: a line’s last letter or mark may go a little past the edge, when that keeps a word on its line and makes the paragraph better. At most about half an em at 16px, a smaller share of the size as the type grows, never more than the character itself, and never at a hyphen. Works with Settle rag. With Show breaks on, the overhanging character is on an amber fill.",
     },
+    tighten: {
+      label: "Tighten",
+      tip: "A second cheat a typesetter makes by hand: a line may take a little less word space, at most 0.05 em per space, when that keeps a word on its line and makes the paragraph better. Letter space shrinks too, at most 0.01 em per letter, only on a line with too few spaces. It never loosens a line, and a line uses either this or the overhang, not both. Works with Settle rag. With Show breaks on, a tightened line is underlined in amber.",
+    },
     textWrap: {
       label: "text-wrap",
       tip: "The browser’s own line breaking, used when Settle rag is off: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off wraps each line greedily. With Settle rag on this does nothing: Settle rag chooses every break itself and balances titles. How it works shows each one with and without.",

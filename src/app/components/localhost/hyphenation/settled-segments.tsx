@@ -32,7 +32,8 @@ export function SettledSegments({
   const text = segments.map(segment => segment.text).join("");
   const plan = useRagPlan(ref, text, { enabled: settings.rag, ...ragOptions(settings) });
 
-  // Each segment takes the forbidden breaks and the hangs that fall inside it.
+  // Each segment takes the forbidden breaks and the hangs that fall inside it,
+  // and the part of each tightened line that does.
   let start = 0;
   const pieces = segments.map((segment, index) => {
     const from = start;
@@ -43,7 +44,14 @@ export function SettledSegments({
       plan.forbidden.filter(inside).map(at => at - from),
       plan.hangs
         .filter(hang => inside(hang.index))
-        .map(hang => ({ ...hang, index: hang.index - from }))
+        .map(hang => ({ ...hang, index: hang.index - from })),
+      plan.tightened
+        .filter(line => line.start < start && line.end > from)
+        .map(line => ({
+          ...line,
+          start: Math.max(line.start, from) - from,
+          end: Math.min(line.end, start) - from,
+        }))
     );
     return { id: index, lang: segment.lang, ...settled };
   });
@@ -57,10 +65,21 @@ export function SettledSegments({
       {pieces.map(piece =>
         piece.lang ? (
           <span key={piece.id} lang={piece.lang}>
-            <SettledContent hangs={piece.hangs} marks={false} text={piece.text} />
+            <SettledContent
+              hangs={piece.hangs}
+              marks={false}
+              text={piece.text}
+              tightened={piece.tightened}
+            />
           </span>
         ) : (
-          <SettledContent hangs={piece.hangs} key={piece.id} marks text={piece.text} />
+          <SettledContent
+            hangs={piece.hangs}
+            key={piece.id}
+            marks
+            text={piece.text}
+            tightened={piece.tightened}
+          />
         )
       )}
     </p>

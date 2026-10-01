@@ -75,6 +75,12 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
               tip={content.overhang.tip}
             />
             <Switch
+              checked={settings.tighten}
+              label={content.tighten.label}
+              onChange={value => setSetting("tighten", value)}
+              tip={content.tighten.tip}
+            />
+            <Switch
               checked={settings.pretty}
               // Settle rag picks every break itself, so `text-wrap` has
               // nothing left to do while it is on.
@@ -95,6 +101,7 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
             content.showBreaks.tip,
             content.rag.tip,
             content.overhang.tip,
+            content.tighten.tip,
             content.textWrap.tip,
           ]}
           tip={tip}

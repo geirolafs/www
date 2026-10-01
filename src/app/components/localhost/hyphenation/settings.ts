@@ -27,6 +27,12 @@ export type Settings = {
    * a word on its line and makes the paragraph better. Only with `rag` on.
    */
   overhang: boolean;
+  /**
+   * Let a line take a little less word space, and rarely a little less letter
+   * space, when that keeps a word on its line and makes the paragraph better.
+   * Only with `rag` on.
+   */
+  tighten: boolean;
 };
 
 /** What the page renders on the server, before anyone changes a setting. */
@@ -36,6 +42,7 @@ export const DEFAULT_SETTINGS: Settings = {
   pretty: true,
   rag: true,
   overhang: true,
+  tighten: true,
 };
 
 /**
@@ -60,14 +67,27 @@ export function jointsFor(settings: Pick<Settings, "rag">): "only" | "prefer" {
 const OVERHANG_EM = 0.5;
 
 /**
+ * How much a word space may shrink on a tightened line, and a letter only on a
+ * line with too few spaces for that, in em. Small: a typesetter tightens a
+ * line, never squeezes it.
+ */
+const TIGHTEN_EM = 0.05;
+const TIGHTEN_LETTERS_EM = 0.01;
+
+/**
  * The options the rag judgement takes from the settings. A title is
  * balanced: as few lines as greedy wrapping gives, made as even as possible.
  */
 export function ragOptions(
-  settings: Pick<Settings, "overhang">,
+  settings: Pick<Settings, "overhang" | "tighten">,
   title = false
-): { overhang: number; balance: boolean } {
-  return { overhang: settings.overhang ? OVERHANG_EM : 0, balance: title };
+): { overhang: number; tighten: number; tightenLetters: number; balance: boolean } {
+  return {
+    overhang: settings.overhang ? OVERHANG_EM : 0,
+    tighten: settings.tighten ? TIGHTEN_EM : 0,
+    tightenLetters: settings.tighten ? TIGHTEN_LETTERS_EM : 0,
+    balance: title,
+  };
 }
 
 /**

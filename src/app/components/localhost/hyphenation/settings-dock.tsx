@@ -93,6 +93,7 @@ export function SettingsDock() {
     [liveEditor.showBreaks.label, settings.showBreaks, true],
     [liveEditor.rag.label, settings.rag, true],
     [liveEditor.overhang.label, settings.overhang, true],
+    [liveEditor.tighten.label, settings.tighten, true],
     [liveEditor.textWrap.label, settings.pretty, !settings.rag],
   ] as const;
 

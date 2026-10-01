@@ -114,6 +114,7 @@ export function LiveBlock({
       <SettledContent
         hangs={settled.hangs}
         marks={settings.showBreaks}
+        tightened={settled.tightened}
         text={settled.text}
       />
     </Element>
