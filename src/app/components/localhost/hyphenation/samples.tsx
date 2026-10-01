@@ -2,7 +2,10 @@ import { initialOutput } from "@/app/components/localhost/hyphenation/initial-ou
 import { LiveBlock } from "@/app/components/localhost/hyphenation/live-text";
 import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { PAIR_BOX, Pair } from "@/app/components/localhost/hyphenation/pair";
-import type { Settings } from "@/app/components/localhost/hyphenation/settings";
+import {
+  PAGE_TYPESET,
+  type Settings,
+} from "@/app/components/localhost/hyphenation/settings";
 import { SettledSegments } from "@/app/components/localhost/hyphenation/settled-segments";
 import {
   LABEL_CLASS,
@@ -20,7 +23,10 @@ const WITHOUT = "hyphens-manual text-wrap";
 
 /** Hyphenated and typeset with the defaults, for the specimens that show their marks. */
 function processed(text: string): string {
-  const [output = text] = processSegments([text], { typeset: {}, hyphenate: {} });
+  const [output = text] = processSegments([text], {
+    typeset: PAGE_TYPESET,
+    hyphenate: {},
+  });
   return output;
 }
 
@@ -234,7 +240,7 @@ const NAME: Partial<Settings> = { mode: "heading", showBreaks: true };
 
 /**
  * Names in heading mode with their breaks always shown, each broken at the
- * joint before its ending. They follow the page's rules, so switching to
+ * joint before its last part. They follow the page's rules, so switching to
  * Ritreglur makes the shorter names break too.
  */
 export function Names() {

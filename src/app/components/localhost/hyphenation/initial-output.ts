@@ -1,8 +1,9 @@
 import {
   DEFAULT_SETTINGS,
+  PAGE_TYPESET,
   type Settings,
 } from "@/app/components/localhost/hyphenation/settings";
-import { processSegments, resolveTypeset } from "@/packages/skiptingar/src";
+import { processSegments } from "@/packages/skiptingar/src";
 
 /**
  * A text processed with the page's default settings, on the server, so the
@@ -12,7 +13,7 @@ import { processSegments, resolveTypeset } from "@/packages/skiptingar/src";
 export function initialOutput(text: string, fixed: Partial<Settings> = {}): string {
   const settings = { ...DEFAULT_SETTINGS, ...fixed };
   const [output = text] = processSegments([text], {
-    typeset: settings.typeset ? resolveTypeset(true) : false,
+    typeset: settings.typeset ? PAGE_TYPESET : false,
     hyphenate: { mode: settings.mode, rules: settings.rules },
   });
   return output;

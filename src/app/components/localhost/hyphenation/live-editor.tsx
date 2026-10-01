@@ -7,6 +7,7 @@ import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { usePlayground } from "@/app/components/localhost/hyphenation/playground";
 import {
   DEFAULT_SETTINGS,
+  PAGE_TYPESET,
   ragOptions,
   type Settings,
   wrapClass,
@@ -104,7 +105,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
     }
     return blocks.map(block => {
       const [output = block.text] = core.processSegments([block.text], {
-        typeset: settings.typeset ? core.resolveTypeset(true) : false,
+        typeset: settings.typeset ? PAGE_TYPESET : false,
         hyphenate: {
           mode: block.kind === "title" ? "heading" : settings.mode,
           rules: settings.rules,

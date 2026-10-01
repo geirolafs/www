@@ -6,6 +6,7 @@ import { firstParagraph } from "@/app/components/localhost/hyphenation/blocks";
 import { usePlayground } from "@/app/components/localhost/hyphenation/playground";
 import {
   DEFAULT_SETTINGS,
+  PAGE_TYPESET,
   ragOptions,
   type Settings,
   wrapClass,
@@ -57,7 +58,7 @@ function useLiveOutput({ text, initial, fixed }: LiveTextProps) {
   const processed = useHyphenate(source, {
     mode: settings.mode,
     rules: settings.rules,
-    typeset: settings.typeset,
+    typeset: settings.typeset ? PAGE_TYPESET : false,
   });
 
   // The server and the first client render have no core, so both show

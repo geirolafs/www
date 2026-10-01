@@ -12,7 +12,7 @@ const njallSample =
 
 const samples = {
   jonas:
-    "Ísland! farsældafrón og hagsælda hrímhvíta móðir! Hvar er þín fornaldarfrægð, frelsið og manndáðin best?",
+    "Ísland, farsældafrón og hagsælda, hrímhvíta móðir! Hvar er þín fornaldarfrægð, frelsið og manndáðin best?",
   njall: njallSample,
   constitution: {
     first: "Ísland er lýðveldi með þingbundinni stjórn.",
@@ -20,7 +20,7 @@ const samples = {
       "Alþingi og forseti Íslands fara saman með löggjafarvaldið. Forseti og önnur stjórnarvöld samkvæmt stjórnarskrá þessari og öðrum landslögum fara með framkvæmdarvaldið. Dómendur fara með dómsvaldið.",
   },
   credits: {
-    jonas: "Jónas Hallgrímsson, Ísland (Fjölnir 1835; texti eftir Ljóðmæli 1847)",
+    jonas: "Jónas Hallgrímsson, „Ísland“ (Fjölnir 1835), með nútímastafsetningu",
     njall: "Brennu-Njáls saga, 1. kafli",
     constitution: "Stjórnarskrá lýðveldisins Íslands, 1. og 2. gr.",
   },
@@ -48,7 +48,7 @@ export const localhostHyphenationContent = {
     title: "Skipt-ing-ar",
     lede: "Skiptingar hyphenates Icelandic text and evens ragged edges. It helps titles break at the right joint, and numbers, dates and names stay together.",
     /**
-     * Three facts, each a number and the sentence that reads on from it: what
+     * Four facts, each a number and the sentence that reads on from it: what
      * it is, and why it matters to someone setting text.
      */
     stats: [
@@ -87,14 +87,20 @@ export const localhostHyphenationContent = {
         { text: " by Indian Type Foundry (ITF Free Font License)." },
       ],
       [
-        { text: "Hyphenation patterns © " },
+        { text: "Hyphenation patterns © 2020 Kristján Rúnarsson, " },
         {
           text: "Árni Magnússon Institute for Icelandic Studies",
           href: "https://github.com/icelandic-lt/hyphenation-is",
         },
-        { text: ", CC BY 4.0" },
+        { text: ", built on version 1 (1985) by Baldur Jónsson and Magnús Gíslason. " },
+        { text: "CC BY 4.0", href: "https://creativecommons.org/licenses/by/4.0/" },
+        { text: "." },
       ],
-      [{ text: "skiptingar: MIT code, CC0 exception list" }],
+      [
+        { text: "Skiptingar © 2026 " },
+        { text: "Geir Ólafsson", href: "/" },
+        { text: ". MIT code, CC0 exception list." },
+      ],
     ],
   },
 
@@ -167,7 +173,7 @@ export const localhostHyphenationContent = {
       nav: "Related",
       label: "Related",
       explanation:
-        "Reading on setting text well, and tools that do the parts skiptingar leaves alone.",
+        "Reading on setting text well, and tools that do the parts Skiptingar leaves alone.",
     },
   },
 
@@ -318,7 +324,7 @@ export default function Page() {
       ],
     },
     requirements:
-      "No runtime dependencies. React 19 is needed only for skiptingar/react and skiptingar/client. MIT licence; the exception list is CC0.",
+      "No runtime dependencies. React 19 is needed only for skiptingar/react and skiptingar/client. MIT licence; the exception list is CC0; the hyphenation patterns are CC BY 4.0, so keep their credit.",
   },
 
   sizes: {
@@ -341,7 +347,7 @@ export default function Page() {
         hint: "hyphens: auto, with the browser’s own dictionary. Firefox has one for Icelandic; Chrome does not, and Safari does not appear to.",
       },
       skiptingar: {
-        label: "skiptingar",
+        label: "Skiptingar",
         hint: "Soft hyphens from the 2020 patterns, added on the server. Every browser breaks in the same places.",
       },
     },
@@ -425,7 +431,7 @@ export default function Page() {
         title: "Patterns",
         body: [
           {
-            text: "This is Franklin Liang’s algorithm from 1983, the one TeX uses. There is no dictionary. About {patterns} short letter patterns carry numbers between the letters, like ",
+            text: "This is Franklin Liang’s algorithm from 1983, the one TeX uses. There is no dictionary. {patterns} short letter patterns carry numbers between the letters, like ",
           },
           { text: "af4lið.", code: true },
           {
@@ -466,7 +472,7 @@ export default function Page() {
           { text: " allows every break the official spelling rules allow, such as " },
           { text: "ó-lán", sample: true },
           {
-            text: ", with 1 letter before and 2 after, in words of 4 or more letters (skiptingar’s own limit). Typographic never breaks where Ritreglur forbids it.",
+            text: ", with 1 letter before and 2 after, in words of 4 or more letters (Skiptingar’s own limit). Typographic never breaks where Ritreglur forbids it.",
           },
         ],
       },
@@ -558,7 +564,7 @@ export default function Page() {
       id: "css-pairs",
       title: "CSS it pairs with",
       intro:
-        "skiptingar only decides where a word may break. These properties decide how the browser uses those breaks. Each pair sets the same text at the same width, without and with the property. Drag the width: at some widths the two agree, at others they part.",
+        "Skiptingar only decides where a word may break. These properties decide how the browser uses those breaks. Each pair sets the same text at the same width, without and with the property. Drag the width: at some widths the two agree, at others they part.",
       without: "Without",
       with: "With",
       usedLabel: "Used here",
@@ -601,7 +607,7 @@ export default function Page() {
         {
           id: "hyphens",
           property: "hyphens: manual and auto",
-          what: "manual, the CSS default, breaks a word only at a soft hyphen, and those are the ones skiptingar puts in. auto asks the browser’s own dictionary. Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in the Compare section.",
+          what: "manual, the CSS default, breaks a word only at a soft hyphen, and those are the ones Skiptingar puts in. auto asks the browser’s own dictionary. Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in the Compare section.",
           used: [
             {
               text: "Every hyphenated text on this page uses manual. The Browser column in ",
@@ -610,7 +616,7 @@ export default function Page() {
             { text: " uses auto on purpose." },
           ],
           withoutCaption: "hyphens: auto",
-          withCaption: "hyphens: manual, with skiptingar",
+          withCaption: "hyphens: manual, with Skiptingar",
         },
         {
           id: "lang",
@@ -641,7 +647,7 @@ export default function Page() {
             },
             { text: 'Intl.Collator("is")', code: true },
             {
-              text: " sorts þ after z. Node, Bun, Firefox and Safari are fine. Format dates and numbers on the server, and for sorting in the browser use ",
+              text: " sorts æ next to a and ö with o, and á, é and í as plain a, e and i. Node, Bun, Firefox and Safari are fine. Format dates and numbers on the server, and for sorting in the browser use ",
             },
             { text: "cldr-is", href: "https://github.com/gudrodur/cldr-is" },
             { text: "." },
@@ -790,12 +796,12 @@ export default function Page() {
           description: "Heilbrigðisþjónusta um allt land.",
         },
         {
-          label: "Menntamálaráðuneytið",
-          description: "Skólamál og menningarmál.",
+          label: "Grunnskólakennarar",
+          description: "Kennsla og skólastarf.",
         },
         {
-          label: "Umhverfisstofnun",
-          description: "Náttúruvernd og loftslagsmál.",
+          label: "Náttúruverndarsvæði",
+          description: "Friðlönd og þjóðgarðar.",
         },
         {
           label: "Ferðaþjónustufyrirtæki",
@@ -803,7 +809,7 @@ export default function Page() {
         },
         {
           label: "Sveitarstjórnarkosningar",
-          description: "Kosið verður 16. maí 2026.",
+          description: "Kosið var 16. maí 2026.",
         },
         {
           label: "Hæstaréttarlögmaður",
@@ -815,7 +821,7 @@ export default function Page() {
       label: "Names and places",
       hint: [
         {
-          text: "Heading mode, with the page’s rules. Each · is a place the name may break: the joint before its ending, such as ",
+          text: "Heading mode, with the page’s rules. Each · is a place the name may break: the joint before its last part, such as ",
         },
         { text: "-dóttir", sample: true },
         { text: " or " },
@@ -849,7 +855,7 @@ export default function Page() {
       middle: " og tilvitnunin ",
       quote: '"straight quotes"',
       after:
-        ' haldast óbreytt, en íslensku orðin brotna og "gæsalappirnar" verða íslenskar.',
+        ' haldast óbreytt, en íslensku orðunum er skipt milli lína og "gæsalappirnar" verða íslenskar.',
     },
     acronyms: {
       label: "Acronyms",
@@ -858,7 +864,7 @@ export default function Page() {
           text: "All-caps words of 4 to 8 letters never break. Longer ones still do. The · marks show where each word may break.",
         },
       ],
-      text: "UNESCO og NATO haldast heil, en KEFLAVÍKURFLUGVÖLLUR brotnar.",
+      text: "UNESCO og NATO haldast óskipt, en KEFLAVÍKURFLUGVÖLLUR skiptist.",
     },
   },
 
@@ -923,7 +929,7 @@ export default function Page() {
             href: "https://tug.org/docs/liang/",
             body: [
               {
-                text: "The thesis behind the patterns skiptingar runs, and the reason it needs no dictionary.",
+                text: "The thesis behind the patterns Skiptingar runs, and the reason it needs no dictionary.",
               },
             ],
           },
@@ -948,7 +954,7 @@ export default function Page() {
             id: "hanging-punctuation",
             title: "hanging-punctuation",
             source: "MDN",
-            href: "https://developer.mozilla.org/en-US/docs/Web/CSS/hanging-punctuation",
+            href: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/hanging-punctuation",
             body: [
               {
                 text: "Hangs an opening „ outside the text’s edge, so a line that starts with a quote still lines up. Few browsers support it, and the rest ignore it, so it is safe to add.",
@@ -967,7 +973,7 @@ export default function Page() {
               { text: "quotes", code: true },
               { text: " and " },
               { text: "hyphenate", code: true },
-              { text: " and let skiptingar do those for Icelandic." },
+              { text: " and let Skiptingar do those for Icelandic." },
             ],
           },
           {
@@ -977,7 +983,7 @@ export default function Page() {
             href: "https://mnater.github.io/Hyphenopoly/",
             body: [
               {
-                text: "Hyphenation for many other languages, in the browser. skiptingar leaves text under another ",
+                text: "Hyphenation for many other languages, in the browser. Skiptingar leaves text under another ",
               },
               { text: "lang", code: true },
               { text: " alone, so the two can share a page." },
@@ -987,7 +993,7 @@ export default function Page() {
             id: "ylhyra",
             title: "Icelandic hyphenation",
             source: "Ylhýra",
-            href: "http://hyphenation.ylhyra.is/",
+            href: "https://hyphenation.ylhyra.is/",
             body: [
               {
                 text: "A neural model that finds compound joints. A second opinion when you check a break before adding it to the exception list.",
@@ -1035,7 +1041,7 @@ export default function Page() {
         label: "Ordinal",
         tag: "ordinals",
         tip: "Keeps a number with a full stop, like 1. or 30., on the same line as the lowercase word after it.",
-        input: "Hún lenti í 1. sæti á 2. hæð.",
+        input: "Hún lenti í 1. sæti í 2. umferð.",
       },
       {
         id: "prefixes",
@@ -1070,7 +1076,7 @@ export default function Page() {
         label: "Dashes",
         tag: "dashes",
         tip: "Swaps the hyphen in a number range, and a spaced hyphen, for an en dash. Off by default, so this row turns it on.",
-        input: "Árin 1990-2000 var fjallið - og lognið - hljótt.",
+        input: "Árin 1990-2000 var veturinn - og þá sérstaklega febrúar - óvenju mildur.",
         options: { dashes: true },
       },
       {

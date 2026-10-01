@@ -39,6 +39,12 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 /**
+ * The typeset rules the Typeset setting turns on: the defaults plus en dashes,
+ * so "1990-2010" in an example is set as Ritreglur §26.2.1 asks.
+ */
+export const PAGE_TYPESET = { dashes: true } as const;
+
+/**
  * How far a line may overhang the edge, in em at 16px text: about one
  * letter. Bigger type gets a smaller share of its size.
  */
