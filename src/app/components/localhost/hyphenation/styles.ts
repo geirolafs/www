@@ -4,10 +4,11 @@
  */
 
 /**
- * A small all-caps label; the tracking comes with `text-label`. Geist has no
- * `case` feature, so none is asked for.
+ * A caption in sentence case: Without, With, a column head, a code block's
+ * name. Small, but medium weight in the text colour, so it names what follows
+ * without capitals or tracking. A quieter caption adds `text-muted`.
  */
-export const LABEL_CLASS = "font-medium text-label text-muted uppercase";
+export const LABEL_CLASS = "font-medium text-foreground text-hy-caption";
 
 /*
  * The type levels under a section's header, largest first. The header itself
@@ -15,13 +16,20 @@ export const LABEL_CLASS = "font-medium text-label text-muted uppercase";
  */
 
 /** A part inside a section, such as "CSS it pairs with": the serif, a step down from the title. */
-export const SUBTITLE_CLASS = "font-hy-title font-bold text-foreground text-hy-lede";
+export const SUBTITLE_CLASS =
+  "text-balance font-hy-title font-bold text-foreground text-hy-lede";
 
-/** The name of one item in a list: a step, a CSS property, a note, a link. */
-export const ITEM_TITLE_CLASS = "font-medium text-foreground text-hy-body";
+/**
+ * The name of one item in a list: a step, a CSS property, a note, a link. The
+ * size of its body, set apart by weight and colour.
+ */
+export const ITEM_TITLE_CLASS = "text-balance font-medium text-foreground text-hy-copy";
 
-/** The explanation under an item, at the description's size. */
-export const BODY_CLASS = "text-pretty font-book text-hy-body text-muted";
+/** The explanation under an item, a step below the section's description. */
+export const BODY_CLASS = "text-pretty font-book text-hy-copy text-muted";
+
+/** A part's introduction under its subtitle, at the description's size. */
+export const INTRO_CLASS = "text-pretty font-book text-hy-body text-muted";
 
 /** Small running text: hints under a specimen, notes, captions, credits. */
 export const NOTE_CLASS = "text-pretty font-book text-hy-note text-muted";

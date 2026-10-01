@@ -42,6 +42,10 @@ export const THEME_SCALES = {
     "group",
     "project",
     "paragraph",
+    // /localhost/hyphenation's vertical rhythm.
+    "hysection",
+    "hyhead",
+    "hyblock",
   ],
   radius: ["pill"],
 } as const;

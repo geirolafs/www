@@ -142,7 +142,7 @@ export function LongParagraph() {
 export function LawText() {
   const { articles } = content.law;
   const article = "flex flex-col gap-2xs";
-  const number = cn(LABEL_CLASS, "tabular-nums");
+  const number = cn(LABEL_CLASS, "text-muted tabular-nums");
   const text = "font-book text-foreground text-prose";
 
   return (

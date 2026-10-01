@@ -14,8 +14,18 @@ const { shell, sections, colophon, hero } = localhostHyphenationContent;
  * columns are the site's. The outermost element carries the three fonts and sets
  * Geist; titles opt in to Bespoke Serif. The root layout already renders the
  * `main`, so this is a plain `div`.
+ *
+ * The hero comes first and the bar after it, so the page opens on the name
+ * alone; the bar sticks once it reaches the top. It is a direct child of the
+ * shell, so it stays stuck for the rest of the page.
  */
-export function Shell({ children }: { children: ReactNode }) {
+export function Shell({
+  hero: heroBand,
+  children,
+}: {
+  hero: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <div
       className={cn(
@@ -27,14 +37,23 @@ export function Shell({ children }: { children: ReactNode }) {
       // The page name in the top bar links here.
       id="top"
     >
-      {/* A white bar, one `group` (72px) tall, that stays at the top; the
-          sections clear it with `project` (the bar plus 24px). The page name
-          sits in columns 1–4 and only shows once the hero title has scrolled
-          under the bar (`hy-logo`, in globals.css). The links run over
-          columns 5–12, the content column of every section. On a phone the
-          name takes 3 of the 8 columns and the letters 5: eight 24px targets
-          from 360px up, 20px below that (`SectionNav`). */}
+      {heroBand}
+
+      {/* A white bar, one `group` (72px) tall, that sticks at the top once
+          it reaches it; the sections clear it with `project` (the bar plus
+          24px). The page name sits in columns 1–4 and only shows once the bar
+          has stuck (`hy-logo`, in globals.css). The links run over columns
+          5–12, the content column of every section. On a phone the name
+          takes 3 of the 8 columns and the letters 5: nine 24px targets from
+          400px up, 20px below that (`SectionNav`). */}
       <header className="page-grid sticky top-0 z-20 h-group items-end bg-background pb-sm">
+        {/* The rule under the bar runs across the columns only, like a
+            section's. Absolutely placed in the grid, so its box spans the
+            columns; with no end row it reaches the bar's bottom edge. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 col-span-full row-start-1 border-border border-b"
+        />
         <a
           className={cn(
             "hy-logo col-span-3 lg:col-span-4",
@@ -60,7 +79,7 @@ export function Shell({ children }: { children: ReactNode }) {
       {children}
 
       <footer className="page-grid">
-        <div className="col-span-full flex flex-col gap-2xs border-border border-t py-xl font-book text-hy-note text-muted">
+        <div className="col-span-full flex flex-col gap-2xs text-pretty border-border border-t py-xl font-book text-hy-note text-muted">
           <h2 className="sr-only">{colophon.label}</h2>
           {colophon.lines.map(parts => (
             <p key={parts.map(part => part.text).join("")}>

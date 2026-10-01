@@ -30,6 +30,11 @@ type SectionProps = {
   /** One line under the title: what the specimen shows. */
   explanation?: string;
   layout: SectionLayout;
+  /**
+   * Leave the top rule out but keep its space: the first section sits right
+   * under the bar, whose own rule already divides it from the hero.
+   */
+  hideRule?: boolean;
   children: ReactNode;
 };
 
@@ -43,6 +48,7 @@ export function Section({
   label,
   explanation,
   layout,
+  hideRule,
   children,
 }: SectionProps) {
   const titleId = `${id}-title`;
@@ -51,10 +57,12 @@ export function Section({
     <section
       aria-labelledby={titleId}
       className={cn(
-        "page-grid scroll-mt-project pb-project",
-        // `free` sets its text box and its controls a step apart, so its rows
-        // are closer; the rule's margin keeps the header 96px below the rule.
-        layout === "free" ? "gap-y-md" : "gap-y-xl"
+        "page-grid scroll-mt-project pb-hysection",
+        // The rule sits closer to its own header than to the section above,
+        // so it reads as this section's top. `free` sets its text box and its
+        // controls a step apart, so its rows are closer; the rule's margin
+        // makes up the rest of the space above the header.
+        layout === "free" ? "gap-y-md" : "gap-y-hyhead"
       )}
       id={id}
     >
@@ -62,8 +70,9 @@ export function Section({
       <div
         aria-hidden="true"
         className={cn(
-          "col-span-full border-border border-t",
-          layout === "free" ? "mb-group" : "mb-xl"
+          "col-span-full border-t",
+          hideRule ? "border-transparent" : "border-border",
+          layout === "free" && "mb-[calc(var(--spacing-hyhead)-var(--spacing-md))]"
         )}
       />
       <header
@@ -94,7 +103,7 @@ export function Section({
       ) : (
         <div
           className={cn(
-            "col-span-full flex min-w-0 flex-col gap-y-project",
+            "col-span-full flex min-w-0 flex-col gap-y-hyblock",
             layout === "side" && "lg:col-span-8",
             layout === "wide" && "lg:grid lg:grid-cols-subgrid"
           )}
@@ -116,10 +125,10 @@ type SpecimenProps = {
 /** One specimen inside a section, with its `h3` caption above it. */
 export function Specimen({ label, hint, className, children }: SpecimenProps) {
   return (
-    <div className={cn("flex min-w-0 flex-col gap-sm", className)}>
-      <div className="flex flex-col gap-2xs">
+    <div className={cn("flex min-w-0 flex-col gap-md", className)}>
+      <div className="flex flex-col gap-1">
         <h3 className={LABEL_CLASS}>{label}</h3>
-        {hint ? <p className={cn(NOTE_CLASS, "max-w-2xl")}>{hint}</p> : null}
+        {hint ? <p className={cn(NOTE_CLASS, "max-w-measure")}>{hint}</p> : null}
       </div>
       {children}
     </div>

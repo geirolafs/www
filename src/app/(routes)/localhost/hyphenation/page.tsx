@@ -5,6 +5,7 @@ import { Compare } from "@/app/components/localhost/hyphenation/compare";
 import { Hero } from "@/app/components/localhost/hyphenation/hero";
 import { HowItWorks } from "@/app/components/localhost/hyphenation/how-it-works";
 import { initialOutput } from "@/app/components/localhost/hyphenation/initial-output";
+import { Install } from "@/app/components/localhost/hyphenation/install";
 import { LiveEditor } from "@/app/components/localhost/hyphenation/live-editor";
 import { PlaygroundProvider } from "@/app/components/localhost/hyphenation/playground";
 import { Related } from "@/app/components/localhost/hyphenation/related";
@@ -61,13 +62,12 @@ export default function Page() {
   );
 
   return (
-    <Shell>
+    <Shell hero={<Hero />}>
       {/* Copying hyphenated text puts clean text on the clipboard. */}
       <CleanCopy />
-      <Hero />
 
       <PlaygroundProvider>
-        <Section {...sections.liveEditor} layout="free">
+        <Section {...sections.liveEditor} hideRule layout="free">
           <LiveEditor initialOutputs={initialOutputs} />
         </Section>
 
@@ -81,6 +81,10 @@ export default function Page() {
 
         <Section {...sections.howItWorks} layout="wide">
           <HowItWorks />
+        </Section>
+
+        <Section {...sections.install} layout="side">
+          <Install />
         </Section>
 
         <Section {...sections.samples} layout="side">

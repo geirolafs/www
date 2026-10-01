@@ -18,11 +18,11 @@ const { related } = localhostHyphenationContent;
  */
 export function Related() {
   return (
-    <div className="flex flex-col gap-xl">
+    <div className="flex flex-col gap-hyblock">
       {related.groups.map(group => (
         <section
           aria-labelledby={`related-${group.id}`}
-          className="flex flex-col gap-xs"
+          className="flex flex-col gap-sm"
           key={group.id}
         >
           <h3 className={LABEL_CLASS} id={`related-${group.id}`}>
@@ -31,7 +31,7 @@ export function Related() {
           <ul className="flex flex-col">
             {group.items.map(item => (
               <li
-                className="flex flex-col gap-2xs border-border border-t py-sm md:grid md:grid-cols-3 md:gap-x-md"
+                className="flex flex-col gap-xs border-border border-t py-md md:grid md:grid-cols-3 md:gap-x-md"
                 key={item.id}
               >
                 <div className="flex flex-col">

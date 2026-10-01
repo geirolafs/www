@@ -25,9 +25,9 @@ function Side({
   return (
     // Clipped at its own edge: text that runs out of the box without the
     // package shows past the dashed line, but never widens the page.
-    <figure className="flex min-w-0 flex-1 flex-col gap-2xs overflow-x-clip">
+    <figure className="flex min-w-0 flex-1 flex-col gap-xs overflow-x-clip">
       <figcaption className="flex flex-wrap items-baseline gap-x-xs">
-        <span className={cn(LABEL_CLASS, "text-foreground")}>{label}</span>
+        <span className={LABEL_CLASS}>{label}</span>
         <span className="font-book text-hy-note text-muted">{caption}</span>
       </figcaption>
       {children}
@@ -66,7 +66,13 @@ export function Pair({
 }: PairProps) {
   return (
     <Measure initial={initial} max={max} min={min}>
-      <div className={cn("flex flex-col gap-md", !stack && "md:flex-row")}>
+      <div
+        className={cn(
+          "flex flex-col gap-xl md:gap-md",
+          !stack && "md:flex-row",
+          stack && "md:gap-xl"
+        )}
+      >
         <Side caption={pair.withoutCaption} label={pair.without}>
           {without}
         </Side>

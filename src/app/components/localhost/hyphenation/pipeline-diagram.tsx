@@ -99,7 +99,7 @@ function Stage({ number, title, note, where, last, children }: StageProps) {
           <span className="text-muted tabular-nums">{number}</span>
           {title}
         </h4>
-        <span className={cn(LABEL_CLASS, "lg:hidden")}>{where}</span>
+        <span className={cn(LABEL_CLASS, "text-muted lg:hidden")}>{where}</span>
       </div>
       <div className="flex min-h-20 items-center">{children}</div>
       <p className={cn(NOTE_CLASS, "mt-auto")}>{note}</p>
@@ -142,10 +142,15 @@ export function PipelineDiagram() {
       <figcaption className={LABEL_CLASS}>{diagram.label}</figcaption>
       {/* The bracket: four stages on the server, one in the browser. */}
       <div aria-hidden="true" className="hidden gap-md lg:grid lg:grid-cols-5">
-        <span className={cn(LABEL_CLASS, "col-span-4 border-border border-t pt-2xs")}>
+        <span
+          className={cn(
+            LABEL_CLASS,
+            "col-span-4 border-border border-t pt-2xs text-muted"
+          )}
+        >
           {diagram.server}
         </span>
-        <span className={cn(LABEL_CLASS, "border-border border-t pt-2xs")}>
+        <span className={cn(LABEL_CLASS, "border-border border-t pt-2xs text-muted")}>
           {diagram.browser}
         </span>
       </div>

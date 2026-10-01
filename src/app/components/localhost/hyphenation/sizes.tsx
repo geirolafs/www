@@ -26,9 +26,9 @@ export function Sizes() {
 
   return (
     <Measure className="col-span-full" initial={320} max={480} min={200}>
-      <div className="flex flex-col gap-y-xl lg:grid lg:grid-cols-3 lg:gap-x-md">
+      <div className="flex flex-col gap-y-hyhead lg:grid lg:grid-cols-3 lg:gap-x-md">
         {sizes.items.map(item => (
-          <figure className="flex min-w-0 flex-col gap-xs" key={item.id}>
+          <figure className="flex min-w-0 flex-col gap-sm" key={item.id}>
             <figcaption className={LABEL_CLASS}>{item.label}</figcaption>
             <LiveBlock
               className={cn(

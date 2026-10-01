@@ -57,9 +57,6 @@ export const localhostHyphenationClientContent = {
   examples,
 
   tips: {
-    /** The accessible name of an "i" button: what it explains. */
-    help: (name: string) => `About ${name}`,
-    mark: "i",
     softHyphen:
       "A soft hyphen (U+00AD) is an invisible character. It shows a hyphen only when the line breaks right there.",
     noBreakSpace:
@@ -93,7 +90,7 @@ export const localhostHyphenationClientContent = {
     },
     rules: {
       label: "Rules",
-      tip: "Typographic keeps only breaks that look good: in body text, words of 6 or more letters with 2 letters before and 3 after the break (in a heading 12, 3 and 4). Ritreglur allows every break the official spelling rules allow: 1 letter before, 2 after. Words of 4+ letters (skiptingar's own limit).",
+      tip: "Typographic keeps only breaks that look good: in body text, words of 6 or more letters with 2 letters before and 3 after the break (in a heading 12, 3 and 4). Ritreglur allows every break the official spelling rules allow: 1 letter before, 2 after. Words of 4+ letters (skiptingar’s own limit).",
       options: [
         { value: "typographic", label: "Typographic" },
         { value: "ritreglur", label: "Ritreglur" },
@@ -102,6 +99,8 @@ export const localhostHyphenationClientContent = {
     options: {
       label: "Options",
     },
+    /** Under the settings, until one is pointed at, focused or tapped. */
+    hint: "Point at a setting, or tap it, to read what it does.",
     typeset: {
       label: "Typeset",
       tip: "Swaps some spaces for no-break spaces, in 1.000 kr. and 30. september for example, and straight quotes for Icelandic quotes. It never changes the length of the text.",
@@ -112,11 +111,11 @@ export const localhostHyphenationClientContent = {
     },
     rag: {
       label: "Settle rag",
-      tip: "Looks at each line end the way a typesetter does. A short word like og, í or að left at the end, or a word that sticks out and leaves a hole in the edge, is tried on the next line, and the move is kept only if the whole paragraph's edge gets better. It needs the real line breaks, so it runs in the browser. With Show breaks on, each word it moved has an amber space after it.",
+      tip: "Looks at each line end the way a typesetter does. A short word like og, í or að left at the end, or a word that sticks out and leaves a hole in the edge, is tried on the next line, and the move is kept only if the whole paragraph’s edge gets better. It needs the real line breaks, so it runs in the browser. With Show breaks on, each word it moved has an amber space after it.",
     },
     overhang: {
       label: "Overhang",
-      tip: "The cheat a typesetter makes by hand: a line's last letter or mark may go a little past the edge, when that keeps a word on its line and makes the paragraph better. Never more than about one letter, less as the type gets bigger, and never at a hyphen. Works with Settle rag. With Show breaks on, the overhanging character is on an amber fill.",
+      tip: "The cheat a typesetter makes by hand: a line’s last letter or mark may go a little past the edge, when that keeps a word on its line and makes the paragraph better. Never more than about one letter, less as the type gets bigger, and never at a hyphen. Works with Settle rag. With Show breaks on, the overhanging character is on an amber fill.",
     },
     textWrap: {
       label: "text-wrap",
@@ -139,6 +138,11 @@ export const localhostHyphenationClientContent = {
   },
 
   /** The copy button on a code block. */
+  install: {
+    /** The accessible name of the package-manager choice. */
+    managerLabel: "Package manager",
+  },
+
   copyCode: {
     states: {
       idle: "Copy",

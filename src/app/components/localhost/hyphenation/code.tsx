@@ -44,8 +44,9 @@ export function highlightCode(code: string): string {
 
 /**
  * Code inside a sentence: a chip in Geist Mono, in the same
- * greys as the code blocks (`.hy-code` in globals.css). `translate="no"`, so
- * a translator leaves it alone.
+ * greys as the code blocks (`.hy-code` in globals.css). It never breaks
+ * inside, since `<CleanCopy />` split over two lines reads as two things.
+ * `translate="no"`, so a translator leaves it alone.
  */
 export function InlineCode({
   children,
@@ -56,7 +57,7 @@ export function InlineCode({
 }) {
   return (
     <code
-      className={cn("hy-code hy-inline-code", className)}
+      className={cn("hy-code hy-inline-code whitespace-nowrap", className)}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: the HTML is escaped here or by sugar-high, from the page's own copy.
       dangerouslySetInnerHTML={{ __html: highlightCode(children) }}
       translate="no"

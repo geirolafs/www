@@ -4,6 +4,7 @@ import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { RichText } from "@/app/components/localhost/hyphenation/rich-text";
 import {
   BODY_CLASS,
+  INTRO_CLASS,
   ITEM_TITLE_CLASS,
   LABEL_CLASS,
   NOTE_CLASS,
@@ -43,10 +44,10 @@ function Side({
   children: ReactNode;
 }) {
   return (
-    <figure className="flex min-w-0 flex-1 flex-col gap-2xs overflow-x-clip">
-      <figcaption className="flex flex-col items-start gap-2xs">
-        <span className={cn(LABEL_CLASS, "text-foreground")}>{label}</span>
-        <InlineCode className="text-label">{caption}</InlineCode>
+    <figure className="flex min-w-0 flex-1 flex-col gap-xs overflow-x-clip">
+      <figcaption className="flex flex-wrap items-baseline gap-x-xs gap-y-1">
+        <span className={LABEL_CLASS}>{label}</span>
+        <InlineCode className="text-hy-caption">{caption}</InlineCode>
       </figcaption>
       {children}
     </figure>
@@ -62,7 +63,7 @@ function Pair({ row }: { row: Row }) {
   }
 
   const pair = (without: ReactNode, withProperty: ReactNode) => (
-    <div className="flex flex-col gap-md md:flex-row">
+    <div className="flex flex-col gap-xl md:flex-row md:gap-md">
       <Side caption={row.withoutCaption} label={css.without}>
         {without}
       </Side>
@@ -133,35 +134,43 @@ function Pair({ row }: { row: Row }) {
  */
 export function CssPairs() {
   return (
-    <div className="flex flex-col gap-md">
-      <div className="flex flex-col gap-2xs">
+    <div className="flex flex-col gap-xl">
+      <div className="flex flex-col gap-xs">
         <h3 className={cn(SUBTITLE_CLASS, "scroll-mt-project")} id={css.id}>
           {css.title}
         </h3>
-        <p className={cn(BODY_CLASS, "max-w-3xl")}>{css.intro}</p>
+        <p className={cn(INTRO_CLASS, "max-w-measure")}>{css.intro}</p>
       </div>
 
       <div className="flex flex-col">
         {css.rows.map(row => (
           <section
             aria-labelledby={`${css.id}-${row.id}`}
-            className="flex flex-col gap-sm border-border border-t py-sm"
+            className="flex flex-col gap-md border-border border-t pt-md pb-xl"
             key={row.id}
           >
-            <h4 className={ITEM_TITLE_CLASS} id={`${css.id}-${row.id}`}>
-              <InlineCode>{row.property}</InlineCode>
-            </h4>
-            <p className={cn(BODY_CLASS, "max-w-3xl")}>{row.what}</p>
-            <p className={cn(NOTE_CLASS, "max-w-3xl")}>
-              <span className={LABEL_CLASS}>{css.usedLabel}</span>{" "}
-              <RichText parts={row.used} />
-            </p>
-            {"support" in row ? (
-              <p className={cn(NOTE_CLASS, "max-w-3xl")}>
-                <span className={LABEL_CLASS}>{css.supportLabel}</span>{" "}
-                <RichText parts={row.support} />
-              </p>
-            ) : null}
+            <div className="flex flex-col gap-xs">
+              <h4 className={ITEM_TITLE_CLASS} id={`${css.id}-${row.id}`}>
+                <InlineCode>{row.property}</InlineCode>
+              </h4>
+              <p className={cn(BODY_CLASS, "max-w-measure")}>{row.what}</p>
+            </div>
+            <dl className="flex max-w-measure flex-col gap-xs">
+              <div>
+                <dt className={LABEL_CLASS}>{css.usedLabel}</dt>
+                <dd className={NOTE_CLASS}>
+                  <RichText parts={row.used} />
+                </dd>
+              </div>
+              {"support" in row ? (
+                <div>
+                  <dt className={LABEL_CLASS}>{css.supportLabel}</dt>
+                  <dd className={NOTE_CLASS}>
+                    <RichText parts={row.support} />
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
             {"snippet" in row ? (
               <CodeBlock code={row.snippet} label={css.snippetLabel} />
             ) : null}

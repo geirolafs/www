@@ -6,6 +6,7 @@ import { type Part, RichText } from "@/app/components/localhost/hyphenation/rich
 import { Specimen } from "@/app/components/localhost/hyphenation/section";
 import {
   BODY_CLASS,
+  INTRO_CLASS,
   ITEM_TITLE_CLASS,
   SUBTITLE_CLASS,
   TITLE_CLASS,
@@ -31,17 +32,17 @@ function Platform() {
   const { platform } = content;
 
   return (
-    <div className="flex flex-col gap-md">
-      <div className="flex flex-col gap-2xs">
+    <div className="flex flex-col gap-xl">
+      <div className="flex flex-col gap-xs">
         <h3 className={cn(SUBTITLE_CLASS, "scroll-mt-project")} id={platform.id}>
           {platform.title}
         </h3>
-        <p className={cn(BODY_CLASS, "max-w-3xl")}>{platform.intro}</p>
+        <p className={cn(INTRO_CLASS, "max-w-measure")}>{platform.intro}</p>
       </div>
       <ul className="flex flex-col">
         {platform.items.map(item => (
           <li
-            className="flex flex-col gap-2xs border-border border-t py-sm md:grid md:grid-cols-3 md:gap-x-md"
+            className="flex flex-col gap-1 border-border border-t py-md md:grid md:grid-cols-3 md:gap-x-md"
             key={item.id}
           >
             <p className={ITEM_TITLE_CLASS}>{item.term}</p>
@@ -69,19 +70,19 @@ export function HowItWorks() {
     <>
       <PipelineDiagram />
 
-      <div className="col-span-full flex min-w-0 flex-col gap-xl lg:col-span-8 lg:col-start-5">
+      <div className="col-span-full flex min-w-0 flex-col gap-hyblock lg:col-span-8 lg:col-start-5">
         <ol className="flex flex-col">
           {content.steps.map((step, index) => (
             <li
               // 2rem for the step number: no spacing token is that wide.
-              className="grid grid-cols-[2rem_1fr] gap-x-xs border-border border-t py-sm"
+              className="grid grid-cols-[2rem_1fr] gap-x-xs border-border border-t py-md"
               key={step.id}
             >
               {/* Tabular figures keep the step numbers the same width. */}
-              <span className="font-medium text-hy-body text-muted tabular-nums">
+              <span className="font-medium text-hy-copy text-muted tabular-nums">
                 {index + 1}
               </span>
-              <div className="flex min-w-0 flex-col gap-2xs">
+              <div className="flex min-w-0 max-w-measure flex-col gap-1">
                 <h3 className={ITEM_TITLE_CLASS}>{step.title}</h3>
                 <p className={BODY_CLASS}>
                   <RichText parts={withCounts(step.body)} />

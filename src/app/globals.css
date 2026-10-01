@@ -176,19 +176,34 @@
   --text-hy-body--letter-spacing: 0.01em;
 
   /* Hyphenation playground — only /localhost/hyphenation. The nav links, 16,
-     static. */
+     static and untracked: Geist is spaced for this size, and nine names have
+     to fit in columns 5–12 from 1440px up. */
   --text-hy-nav: 1rem;
   --text-hy-nav--line-height: 1.25;
-  --text-hy-nav--letter-spacing: 0.04em;
+  --text-hy-nav--letter-spacing: 0;
 
   /* Hyphenation playground — only /localhost/hyphenation. Control labels and
      buttons (radios, switches, Copy), 14, static. */
+  /* Hyphenation playground — only /localhost/hyphenation. Running text under
+     a section's header: the body of a step, a note or a link, 15 → 17. A
+     step below the description, so a list reads as quieter than its intro. */
+  --text-hy-copy: clamp(0.9375rem, 0.8933rem + 0.1878vw, 1.0625rem);
+  --text-hy-copy--line-height: 1.55;
+  --text-hy-copy--letter-spacing: 0.005em;
+
   /* Hyphenation playground — only /localhost/hyphenation. Small running
-     text: hints under a specimen, notes, captions, credits. 15, untracked,
-     with room between lines, since it is read, not scanned. */
-  --text-hy-note: 0.9375rem;
-  --text-hy-note--line-height: 1.5;
+     text: hints under a specimen, notes, credits. 14, untracked, with room
+     between lines, since it is read, not scanned. */
+  --text-hy-note: 0.875rem;
+  --text-hy-note--line-height: 1.55;
   --text-hy-note--letter-spacing: 0.005em;
+
+  /* Hyphenation playground — only /localhost/hyphenation. A caption in
+     sentence case: Without, With, a column head, a code block's name. 13,
+     set apart by weight, not capitals or tracking. */
+  --text-hy-caption: 0.8125rem;
+  --text-hy-caption--line-height: 1.45;
+  --text-hy-caption--letter-spacing: 0.005em;
   --text-hy-control: 0.875rem;
   --text-hy-control--line-height: 1.4286;
   --text-hy-control--letter-spacing: 0.02em;
@@ -198,12 +213,6 @@
   --text-hy-editor: 1.25rem;
   --text-hy-editor--line-height: 1.4;
   --text-hy-editor--letter-spacing: -0.01em;
-
-  /* Hyphenation playground — only /localhost/hyphenation. The "i" inside the
-     help button's 12px circle, 9, static. */
-  --text-hy-mark: 0.5625rem;
-  --text-hy-mark--line-height: 1;
-  --text-hy-mark--letter-spacing: 0;
 
   /* The introduction's paragraphs run looser than the name, 38 → 48. The role
      line has no variant of its own: in both frames it sits exactly one display
@@ -227,6 +236,22 @@
     2.3121vw,
     var(--spacing-group)
   ); /* 48 → 72 */
+
+  /* Hyphenation playground — only /localhost/hyphenation. Its vertical
+     rhythm, fluid 375 → 1440, looser than the site's so the page reads
+     calmly. Single words, since Tailwind drops hyphenated spacing keys (see
+     `--pill-inset` below). `hysection`: from a section's last specimen to the
+     next rule, 144 → 288, so each section stands on its own. `hyhead`: from the rule to the header, and from the
+     header to the specimen, 48 → 72. `hyblock`: between specimens and
+     between the parts of a section, 72 → 120. */
+  --spacing-hysection: clamp(9rem, 5.831rem + 13.5211vw, 18rem);
+  --spacing-hyhead: clamp(3rem, 2.4718rem + 2.2535vw, 4.5rem);
+  --spacing-hyblock: clamp(4.5rem, 3.4437rem + 4.507vw, 7.5rem);
+
+  /* Hyphenation playground — only /localhost/hyphenation. The longest line
+     of running English: 34em is about 65–70 characters of Geist at any
+     size, where `max-w-prose` (65ch, counted in zeros) runs to about 85. */
+  --container-measure: 34em;
 
   /* ---- Layout ---------------------------------------------------------- */
 
@@ -1012,15 +1037,18 @@ article a:active {
   }
 }
 
-/* /localhost/hyphenation: the page name in the top bar stays hidden while the
-   hero title is on screen, and fades in over the last 50px of scroll before
-   the title has gone under the bar. The bar is `--spacing-group` tall, so the
-   title's view timeline starts there. `timeline-scope` on the shell lets the
-   bar, which comes before the hero, read the hero's timeline. `visibility`
+/* /localhost/hyphenation: the bar comes right after the hero and sticks once
+   it reaches the top. Its page name stays hidden until then: it fades in over
+   the last 50px of scroll before the hero's bottom edge, which is the bar's
+   top, leaves the screen. `timeline-scope` on the shell lets the bar, a
+   sibling of the hero, read the hero's timeline. `visibility`
    animates with it, so the hidden name takes no keyboard focus. Without
    scroll-driven animations (Firefox for now) the name is always shown. */
 .hy-shell {
   timeline-scope: --hy-hero;
+  /* Only the weights and styles the fonts really have: no faked bold or
+     slanted roman if a weight is missing. */
+  font-synthesis: none;
 }
 
 /* /localhost/hyphenation: code, light and in greys. `.hy-code` is any code
@@ -1040,6 +1068,13 @@ article a:active {
   --sh-comment: #6b6b6b;
   background: var(--color-hy-surface);
   color: var(--sh-identifier);
+}
+
+/* Tailwind's base styles give `code`, `pre`, `kbd` and `samp` the system
+   monospace stack directly, so a `code` inside a Geist Mono `pre` would not
+   inherit it. All code on the page is Geist Mono. */
+.hy-code :where(code, pre, kbd, samp) {
+  font-family: var(--font-geist-mono-face), ui-monospace, monospace;
 }
 
 .hy-code .sh__token--keyword,
@@ -1109,9 +1144,8 @@ html:has(.hy-shell) {
   scroll-behavior: auto;
 }
 
-.hy-hero-title {
+.hy-hero {
   view-timeline-name: --hy-hero;
-  view-timeline-inset: var(--spacing-group) 0;
 }
 
 @keyframes hy-logo-in {

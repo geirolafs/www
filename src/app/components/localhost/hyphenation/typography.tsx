@@ -15,12 +15,12 @@ const { typography } = localhostHyphenationContent;
  */
 export function Typography() {
   return (
-    <div className="col-span-full flex flex-col gap-y-sm lg:grid lg:grid-cols-subgrid">
+    <div className="col-span-full flex flex-col lg:grid lg:grid-cols-subgrid">
       {/* The column captions, once, over Off and On. Each row also carries
           them, hidden from `lg` up, for a phone and a screen reader. */}
       <div
         aria-hidden="true"
-        className="hidden lg:col-span-full lg:grid lg:grid-cols-subgrid"
+        className="hidden lg:col-span-full lg:grid lg:grid-cols-subgrid lg:pb-sm"
       >
         <span className={cn(LABEL_CLASS, "lg:col-span-4 lg:col-start-5")}>
           {typography.off}

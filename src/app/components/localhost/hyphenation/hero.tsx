@@ -20,12 +20,12 @@ const COUNTS = {
  */
 export function Hero() {
   return (
-    <section className="@container page-grid pt-group pb-xl">
+    <section className="hy-hero @container page-grid pt-project pb-hysection">
       {/* The hyphens are part of the picture, so a screen reader gets the word.
-          `hy-hero-title` names the view timeline the top bar's page name
-          fades in on (globals.css). */}
+          `hy-hero` on the section names the view timeline the bar's page
+          name fades in on (globals.css). */}
       <h1
-        className="hy-hero-title col-span-full -ml-[0.05em] whitespace-nowrap font-hy-text font-semibold text-foreground text-hy-hero [font-feature-settings:'ss01']"
+        className="col-span-full -ml-[0.05em] whitespace-nowrap font-hy-text font-semibold text-foreground text-hy-hero [font-feature-settings:'ss01']"
         lang="is"
       >
         <span className="sr-only">{hero.name}</span>

@@ -9,10 +9,7 @@ import type {
 } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { FOCUS_CLASS } from "@/app/components/localhost/hyphenation/styles";
-import { localhostHyphenationClientContent } from "@/lib/content/localhost-hyphenation-client";
 import { cn } from "@/lib/utils";
-
-const { tips } = localhostHyphenationClientContent;
 
 /**
  * Tooltips on the platform, with no positioning code of our own:
@@ -161,7 +158,7 @@ function Panel({
       // A dynamic value: it names this tip's own trigger.
       style={{ positionAnchor: anchorName }}
     >
-      <span className="block w-max max-w-[16rem] whitespace-normal bg-foreground px-xs py-2xs text-left font-book text-background text-hy-note normal-case">
+      <span className="block w-max max-w-[16rem] whitespace-normal text-pretty bg-foreground px-xs py-2xs text-left font-book text-background text-hy-note normal-case">
         {children}
       </span>
     </span>
@@ -179,7 +176,8 @@ type TipProps = {
 
 /**
  * A term with a tooltip. The term itself is the trigger: a button with a
- * dotted underline.
+ * dotted underline in the lightest grey, a hint that there is more without
+ * a mark of its own. It darkens on hover.
  */
 export function Tip({ tip, children, className }: TipProps) {
   const { id, anchorName, panelRef, rootProps, triggerProps } = useTip();
@@ -188,47 +186,13 @@ export function Tip({ tip, children, className }: TipProps) {
     <span className="relative inline-block" {...rootProps}>
       <button
         className={cn(
-          "cursor-help text-left underline decoration-muted decoration-dotted underline-offset-4 hover:decoration-foreground",
+          "cursor-help text-left underline decoration-border decoration-dotted underline-offset-4 hover:decoration-foreground",
           FOCUS_CLASS,
           className
         )}
         {...triggerProps}
       >
         {children}
-      </button>
-      <Panel anchorName={anchorName} id={id} panelRef={panelRef}>
-        {tip}
-      </Panel>
-    </span>
-  );
-}
-
-/**
- * A small "i" for a control whose label is not a button itself. `name` is
- * what the tip is about; it becomes the button's accessible name. It is
- * quiet on purpose: a thin grey ring around a grey "i", which turns dark on
- * hover and focus. The button is a 24px hit area around the 12px ring, so a
- * thumb can still find it.
- */
-export function HelpTip({ tip, name }: { tip: string; name: string }) {
-  const { id, anchorName, panelRef, rootProps, triggerProps } = useTip();
-
-  return (
-    <span className="relative inline-block" {...rootProps}>
-      <button
-        aria-label={tips.help(name)}
-        className={cn(
-          "group flex size-6 cursor-help items-center justify-center",
-          FOCUS_CLASS
-        )}
-        {...triggerProps}
-      >
-        <span
-          aria-hidden="true"
-          className="flex size-3 items-center justify-center rounded-full border border-border font-semibold text-hy-mark text-muted group-hover:border-foreground group-hover:text-foreground group-focus-visible:border-foreground group-focus-visible:text-foreground"
-        >
-          {tips.mark}
-        </span>
       </button>
       <Panel anchorName={anchorName} id={id} panelRef={panelRef}>
         {tip}

@@ -69,7 +69,7 @@ export const localhostHyphenationContent = {
           "short words like og and í that settling the rag keeps off line ends, judged line by line as a typesetter would, along with holes, jutting lines and short hyphen pieces. The list and the judgement get better with use.",
       },
       {
-        value: "0 kB",
+        value: "0 kB",
         description:
           "of hyphenation code on a normal page. The server puts the soft hyphens in, so every browser breaks the lines in the same places.",
       },
@@ -131,9 +131,17 @@ export const localhostHyphenationContent = {
       explanation:
         "From a word to a well-set line. The server does the work, so a normal page downloads nothing extra.",
     },
+    install: {
+      id: "install",
+      number: "E",
+      nav: "Install",
+      label: "Install",
+      explanation:
+        "One package with three entry points. The server does the work, so most pages need only the first two.",
+    },
     samples: {
       id: "samples",
-      number: "E",
+      number: "F",
       nav: "Samples",
       label: "Samples",
       explanation:
@@ -141,26 +149,176 @@ export const localhostHyphenationContent = {
     },
     typography: {
       id: "typography",
-      number: "F",
+      number: "G",
       nav: "Typography",
       label: "Typography",
       explanation: `Each rule swaps a plain space or quote for a better one. Off shows the text as written. On shows the typeset text, with every no-break space and non-breaking hyphen on an amber fill.`,
     },
     breakEditor: {
       id: "break-editor",
-      number: "G",
+      number: "H",
       nav: "Report",
       label: "Report a wrong break",
       explanation: "Fix the breaks, copy the line, add it to data/exceptions.txt.",
     },
     related: {
       id: "related",
-      number: "H",
+      number: "I",
       nav: "Related",
       label: "Related",
       explanation:
         "Reading on setting text well, and tools that do the parts skiptingar leaves alone.",
     },
+  },
+
+  install: {
+    status:
+      "Not published yet. The name is reserved on npm at version 0.0.0, which holds no code. This is how installing will work.",
+    commandLabel: "Install",
+    managers: [
+      { id: "bun", label: "bun", command: "bun add skiptingar" },
+      { id: "npm", label: "npm", command: "npm install skiptingar" },
+      { id: "pnpm", label: "pnpm", command: "pnpm add skiptingar" },
+      { id: "yarn", label: "yarn", command: "yarn add skiptingar" },
+    ],
+    quickStart: {
+      id: "first-page",
+      title: "A first page",
+      intro: [
+        { text: "Wrap the text in " },
+        { text: "<Hyphenate>", code: true },
+        { text: " where the page renders on the server, and add " },
+        { text: "<CleanCopy />", code: true },
+        { text: " once, so text copied from the page has no soft hyphens in it." },
+      ],
+      label: "app/page.tsx",
+      source: `import { Hyphenate } from "skiptingar/react";
+import { CleanCopy } from "skiptingar/client";
+
+export default function Page() {
+  return (
+    <main lang="is">
+      <CleanCopy />
+      <Hyphenate>
+        <h1>Sveitarstjórnarkosningar á landsbyggðinni</h1>
+        <p>Verð 1.000 kr. frá 30. september.</p>
+      </Hyphenate>
+    </main>
+  );
+}`,
+    },
+    entries: {
+      id: "entry-points",
+      title: "Entry points",
+      intro:
+        "Import only what the page needs. The first two run on the server and send nothing to the browser.",
+      items: [
+        {
+          id: "core",
+          path: "skiptingar",
+          where: "Anywhere: Node, the edge, a build step",
+          body: [
+            { text: "hyphenate()", code: true },
+            { text: ", " },
+            { text: "typeset()", code: true },
+            { text: " and " },
+            { text: "processSegments()", code: true },
+            { text: ": plain functions from string to string." },
+          ],
+        },
+        {
+          id: "react",
+          path: "skiptingar/react",
+          where: "React Server Components",
+          body: [
+            { text: "<Hyphenate>", code: true },
+            { text: " and " },
+            { text: "<Typeset>", code: true },
+            { text: ", which change only the text in the JSX you give them." },
+          ],
+        },
+        {
+          id: "client",
+          path: "skiptingar/client",
+          where: "The browser",
+          body: [
+            { text: "useHyphenate()", code: true },
+            { text: " for text that only exists in the browser, and " },
+            { text: "<CleanCopy />", code: true },
+            {
+              text: ". The patterns load on first use, about 60 kB compressed; the rest is about 4 kB.",
+            },
+          ],
+        },
+      ],
+    },
+    roadmap: {
+      id: "roadmap",
+      title: "Planned",
+      intro:
+        "A draft of what comes before the first release and what can wait. Nothing here is promised yet.",
+      groups: [
+        {
+          id: "v1",
+          label: "Beta and v1",
+          items: [
+            {
+              id: "publish",
+              title: "On npm",
+              body: "The three entry points as one ESM package with its types, no runtime dependencies and a changelog.",
+            },
+            {
+              id: "report",
+              title: "Report a wrong break",
+              body: "A prefilled GitHub issue from the break editor, and the exception list public, so anyone can see what has been fixed.",
+            },
+            {
+              id: "exceptions",
+              title: "Fix the known bad breaks",
+              body: "Exceptions for the words the patterns get wrong, like fornald-arfrægð and stjórn-arvöld, found by checking common compounds.",
+            },
+            {
+              id: "first-paint",
+              title: "Settle rag without a shift",
+              body: "Today the rag settles after the page loads, so the first paint moves a little. Hold the text until it is settled, or settle it before it shows.",
+            },
+            {
+              id: "docs",
+              title: "This page as the documentation",
+              body: "Every option shown live, with the API reference beside it.",
+            },
+          ],
+        },
+        {
+          id: "later",
+          label: "Later",
+          items: [
+            {
+              id: "markdown",
+              title: "Markdown and HTML",
+              body: "A rehype plugin and a small CLI, for sites that are not built with React.",
+            },
+            {
+              id: "frameworks",
+              title: "Other frameworks",
+              body: "Thin wrappers for Astro, Svelte and Vue around the plain functions.",
+            },
+            {
+              id: "justify",
+              title: "Justified text",
+              body: "Rules for justified columns, where the breaks matter even more: tighter limits on word spacing and on hyphens in a row.",
+            },
+            {
+              id: "learning",
+              title: "Exceptions that learn",
+              body: "Reported breaks checked and added to the list on a schedule, so the results get better with use.",
+            },
+          ],
+        },
+      ],
+    },
+    requirements:
+      "No runtime dependencies. React 19 is needed only for skiptingar/react and skiptingar/client. MIT licence; the exception list is CC0.",
   },
 
   sizes: {
@@ -176,16 +334,15 @@ export const localhostHyphenationContent = {
     columns: {
       none: {
         label: "None",
-        tip: "No hyphenation at all. The browser breaks only at spaces, so long words stick out or leave gaps.",
+        hint: "Breaks only at spaces, so long words stick out or leave gaps.",
       },
       browser: {
         label: "Browser",
-        tip: "The browser's own hyphenation, from the CSS rule hyphens: auto. It needs a dictionary for the language. Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in this column.",
-        hint: "Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in your browser.",
+        hint: "hyphens: auto, with the browser’s own dictionary. Firefox has one for Icelandic; Chrome does not, and Safari does not appear to.",
       },
       skiptingar: {
         label: "skiptingar",
-        tip: "Soft hyphens added on the server from the 2020 patterns. Every browser breaks in the same places.",
+        hint: "Soft hyphens from the 2020 patterns, added on the server. Every browser breaks in the same places.",
       },
     },
     table: {
@@ -268,7 +425,7 @@ export const localhostHyphenationContent = {
         title: "Patterns",
         body: [
           {
-            text: "This is Franklin Liang's algorithm from 1983, the one TeX uses. There is no dictionary. About {patterns} short letter patterns carry numbers between the letters, like ",
+            text: "This is Franklin Liang’s algorithm from 1983, the one TeX uses. There is no dictionary. About {patterns} short letter patterns carry numbers between the letters, like ",
           },
           { text: "af4lið.", code: true },
           {
@@ -309,7 +466,7 @@ export const localhostHyphenationContent = {
           { text: " allows every break the official spelling rules allow, such as " },
           { text: "ó-lán", sample: true },
           {
-            text: ", with 1 letter before and 2 after, in words of 4 or more letters (skiptingar's own limit). Typographic never breaks where Ritreglur forbids it.",
+            text: ", with 1 letter before and 2 after, in words of 4 or more letters (skiptingar’s own limit). Typographic never breaks where Ritreglur forbids it.",
           },
         ],
       },
@@ -323,7 +480,7 @@ export const localhostHyphenationContent = {
           },
           { text: "<Hyphenate>", code: true },
           {
-            text: ". The browser gets plain HTML, so a page that only uses it ships 0 kB of hyphenation code, and the breaks are the same in every browser. The browser still picks which break to use on each line. CSS ",
+            text: ". The browser gets plain HTML, so a page that only uses it ships 0 kB of hyphenation code, and the breaks are the same in every browser. The browser still picks which break to use on each line. CSS ",
           },
           { text: "text-wrap: pretty", code: true },
           { text: " and " },
@@ -373,7 +530,7 @@ export const localhostHyphenationContent = {
             text: " removes the soft hyphens and no-break spaces from copied text. Text that only exists in the browser can use the lazy client entry, ",
           },
           { text: "useHyphenate", code: true },
-          { text: ", about 70 kB compressed, loaded on first use." },
+          { text: ", about 60 kB compressed, loaded on first use." },
         ],
       },
       {
@@ -414,7 +571,7 @@ export const localhostHyphenationContent = {
           what: "Stops a paragraph from ending on one short word, and evens out the ragged right edge.",
           used: [
             {
-              text: "The paragraphs in Samples, the steps on this page and the live editor's body text.",
+              text: "The paragraphs in Samples, the steps on this page and the live editor’s body text.",
             },
           ],
           support: [
@@ -444,7 +601,7 @@ export const localhostHyphenationContent = {
         {
           id: "hyphens",
           property: "hyphens: manual and auto",
-          what: "manual, the CSS default, breaks a word only at a soft hyphen, and those are the ones skiptingar puts in. auto asks the browser's own dictionary. Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in the Compare section.",
+          what: "manual, the CSS default, breaks a word only at a soft hyphen, and those are the ones skiptingar puts in. auto asks the browser’s own dictionary. Firefox ships an Icelandic hyphenation dictionary. Chrome does not. Safari does not appear to. Test it in the Compare section.",
           used: [
             {
               text: "Every hyphenated text on this page uses manual. The Browser column in ",
@@ -658,7 +815,7 @@ export const localhostHyphenationContent = {
       label: "Names and places",
       hint: [
         {
-          text: "Heading mode, with the page's rules. Each · is a place the name may break: the joint before its ending, such as ",
+          text: "Heading mode, with the page’s rules. Each · is a place the name may break: the joint before its ending, such as ",
         },
         { text: "-dóttir", sample: true },
         { text: " or " },
@@ -733,7 +890,7 @@ export const localhostHyphenationContent = {
             href: "https://developer.chrome.com/blog/css-text-wrap-pretty",
             body: [
               {
-                text: "Chrome's take on the same property. It keeps a paragraph from ending on one word, and near the end it adjusts hyphenation and earlier lines to make room. That is why its effect shows at some widths and not at others.",
+                text: "Chrome’s take on the same property. It keeps a paragraph from ending on one word, and near the end it adjusts hyphenation and earlier lines to make room. That is why its effect shows at some widths and not at others.",
               },
             ],
           },
@@ -751,7 +908,7 @@ export const localhostHyphenationContent = {
           {
             id: "butterick",
             title: "Hyphenation",
-            source: "Butterick's Practical Typography",
+            source: "Butterick’s Practical Typography",
             href: "https://practicaltypography.com/hyphenation.html",
             body: [
               {
@@ -794,7 +951,7 @@ export const localhostHyphenationContent = {
             href: "https://developer.mozilla.org/en-US/docs/Web/CSS/hanging-punctuation",
             body: [
               {
-                text: "Hangs an opening „ outside the text's edge, so a line that starts with a quote still lines up. Few browsers support it, and the rest ignore it, so it is safe to add.",
+                text: "Hangs an opening „ outside the text’s edge, so a line that starts with a quote still lines up. Few browsers support it, and the rest ignore it, so it is safe to add.",
               },
             ],
           },
@@ -905,7 +1062,7 @@ export const localhostHyphenationContent = {
         id: "quotes",
         label: "Quotes",
         tag: "quotes",
-        tip: "Straight double quotes become Icelandic „…“. A paired 'word' becomes ‚word‘, the mark for a word's meaning (Ritreglur §28.2). A quote inside a quote uses „…“ again: type it that way (§28.1).",
+        tip: "Straight double quotes become Icelandic „…“. A paired 'word' becomes ‚word‘, the mark for a word’s meaning (Ritreglur §28.2). A quote inside a quote uses „…“ again: type it that way (§28.1).",
         input: "Hann sagði \"komdu heim\" og orðið fákur merkir 'hestur'.",
       },
       {

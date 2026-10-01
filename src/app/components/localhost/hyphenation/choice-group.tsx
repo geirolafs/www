@@ -1,44 +1,137 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { useId } from "react";
+import type { ReactNode, PointerEvent as ReactPointerEvent } from "react";
+import { createContext, useCallback, useContext, useId, useState } from "react";
 import {
   FOCUS_CLASS,
   GROUP_LABEL_CLASS,
 } from "@/app/components/localhost/hyphenation/styles";
-import { HelpTip } from "@/app/components/localhost/hyphenation/tip";
 import { cn } from "@/lib/utils";
 
 type Option<T extends string> = { readonly value: T; readonly label: string };
+
+type HintSource = "hover" | "focus" | "tap";
+
+type HintContextValue = (source: HintSource, tip: string | null) => void;
+
+const HintContext = createContext<HintContextValue | null>(null);
+
+/**
+ * What a setting does, without a mark on every label: the controls inside
+ * report the one under the pointer, the one with keyboard focus and the last
+ * one tapped, and `useHints` returns the tip to show in one place. Hover wins
+ * over focus, and focus over a tap, so the line follows what you are doing.
+ */
+export function useHints() {
+  const [hints, setHints] = useState<Record<HintSource, string | null>>({
+    hover: null,
+    focus: null,
+    tap: null,
+  });
+  const report = useCallback<HintContextValue>((source, tip) => {
+    setHints(current =>
+      current[source] === tip ? current : { ...current, [source]: tip }
+    );
+  }, []);
+  const tip = hints.hover ?? hints.focus ?? hints.tap;
+  return { tip, HintProvider: HintContext.Provider, report };
+}
+
+/**
+ * Props that report a control's tip while it is pointed at, focused from the
+ * keyboard or tapped. Focus counts only with a focus ring (`:focus-visible`),
+ * so a mouse click does not leave its tip behind once the pointer moves on. A
+ * touch has no hover, so a tap shows the tip until the next tap elsewhere.
+ * `describedBy` points the control at its tip for a screen reader, which reads
+ * it from a hidden copy, not from the visible line.
+ */
+function useHint(tip: string | undefined) {
+  const report = useContext(HintContext);
+  const id = useId();
+  if (!(tip && report)) {
+    return { describedBy: undefined, description: null, handlers: {} };
+  }
+  const handlers = {
+    onPointerEnter: (event: ReactPointerEvent) => {
+      if (event.pointerType === "mouse") {
+        report("hover", tip);
+      }
+    },
+    onPointerLeave: (event: ReactPointerEvent) => {
+      if (event.pointerType === "mouse") {
+        report("hover", null);
+      }
+    },
+    onPointerDown: (event: ReactPointerEvent) => {
+      if (event.pointerType !== "mouse") {
+        report("tap", tip);
+      }
+    },
+    onFocus: (event: { target: Element }) => {
+      report("focus", event.target.matches(":focus-visible") ? tip : null);
+    },
+    onBlur: () => report("focus", null),
+  };
+  const description = (
+    <span className="sr-only" id={id}>
+      {tip}
+    </span>
+  );
+  return { describedBy: id, description, handlers };
+}
+
+/**
+ * The line that shows the tip of the setting in use, or a quiet invitation
+ * when none is. It is decoration for sighted readers: each control already
+ * carries its tip with `aria-describedby`.
+ */
+export function HintLine({
+  tip,
+  placeholder,
+  className,
+}: {
+  tip: string | null;
+  placeholder: string;
+  className?: string;
+}) {
+  return (
+    <p
+      aria-hidden="true"
+      className={cn("text-pretty font-book text-hy-note text-muted", className)}
+    >
+      {tip ?? placeholder}
+    </p>
+  );
+}
 
 type ControlGroupProps = {
   label: string;
   /** Leave the visible label out when the surrounding text already names it. */
   hideLabel?: boolean;
-  /** What the group means. Adds an "i" button after the label. */
+  /** What the group means, shown in the panel's hint line. */
   tip?: string;
   children: ReactNode;
 };
 
 /**
  * A labelled group of controls, stacked. The `fieldset` and its `legend` name
- * the group for a screen reader; the visible label is drawn separately so the
- * tip button can sit beside it.
+ * the group for a screen reader, and its tip describes it.
  */
 export function ControlGroup({ label, hideLabel, tip, children }: ControlGroupProps) {
+  const { describedBy, description, handlers } = useHint(tip);
+
   return (
-    <fieldset className="flex flex-col gap-2xs">
+    <fieldset
+      aria-describedby={describedBy}
+      className="flex flex-col gap-2xs"
+      {...handlers}
+    >
       <legend className="sr-only">{label}</legend>
+      {description}
       {hideLabel ? null : (
-        // The space under the row, not the label, so the label and the "i"
-        // share one centre line. The "i" is a 24px hit area around a 12px
-        // dot, so a 2px gap puts the dot 8px after the word.
-        <div className="flex min-h-6 items-center gap-0.5 pb-1.5">
-          <span aria-hidden="true" className={GROUP_LABEL_CLASS}>
-            {label}
-          </span>
-          {tip ? <HelpTip name={label} tip={tip} /> : null}
-        </div>
+        <span aria-hidden="true" className={cn(GROUP_LABEL_CLASS, "pb-1.5")}>
+          {label}
+        </span>
       )}
       {children}
     </fieldset>
@@ -108,7 +201,7 @@ export function ChoiceGroup<T extends string>({
 
 type SwitchProps = {
   label: string;
-  /** What the setting does. Adds an "i" button after the label. */
+  /** What the setting does, shown in the panel's hint line. */
   tip?: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -116,10 +209,14 @@ type SwitchProps = {
 
 /** One on/off setting. */
 export function Switch({ label, tip, checked, onChange }: SwitchProps) {
+  const { describedBy, description, handlers } = useHint(tip);
+
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="flex" {...handlers}>
+      {description}
       <label className={cn(ROW_LABEL_CLASS, "py-2xs")}>
         <input
+          aria-describedby={describedBy}
           checked={checked}
           className={SWITCH_INPUT}
           onChange={event => onChange(event.target.checked)}
@@ -129,7 +226,6 @@ export function Switch({ label, tip, checked, onChange }: SwitchProps) {
         />
         <span>{label}</span>
       </label>
-      {tip ? <HelpTip name={label} tip={tip} /> : null}
     </div>
   );
 }

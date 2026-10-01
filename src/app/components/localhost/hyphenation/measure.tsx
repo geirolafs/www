@@ -33,7 +33,7 @@ export function Measure({
   const [width, setWidth] = useState(initial);
 
   return (
-    <div className={cn("flex min-w-0 flex-col gap-xs", className)}>
+    <div className={cn("flex min-w-0 flex-col gap-sm", className)}>
       {/* No visible label or readout: the box moving is the feedback. A
           screen reader gets the name and the width in px. */}
       <input

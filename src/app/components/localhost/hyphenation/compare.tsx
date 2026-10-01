@@ -7,7 +7,6 @@ import {
 } from "@/app/components/localhost/hyphenation/live-text";
 import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { LABEL_CLASS, NOTE_CLASS } from "@/app/components/localhost/hyphenation/styles";
-import { Tip } from "@/app/components/localhost/hyphenation/tip";
 import { localhostHyphenationContent } from "@/lib/content/localhost-hyphenation";
 import { cn } from "@/lib/utils";
 
@@ -22,13 +21,11 @@ const COLUMN_CLASS =
 
 function Column({
   label,
-  tip,
   hint,
   children,
 }: {
   label: string;
-  tip: string;
-  hint?: string;
+  hint: string;
   children: ReactNode;
 }) {
   return (
@@ -37,12 +34,10 @@ function Column({
     // hint makes one caption taller.
     // Clipped at its own edge, so a word that runs out of a box without the
     // package never widens the page.
-    <figure className="flex min-w-0 flex-col gap-2xs overflow-x-clip lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:items-start">
-      <figcaption className="max-w-56">
-        <Tip className={cn(LABEL_CLASS, "text-foreground")} tip={tip}>
-          {label}
-        </Tip>
-        {hint ? <span className={cn(NOTE_CLASS, "block")}>{hint}</span> : null}
+    <figure className="flex min-w-0 flex-col gap-sm overflow-x-clip lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:items-start">
+      <figcaption className="flex max-w-64 flex-col gap-1">
+        <span className={LABEL_CLASS}>{label}</span>
+        <span className={NOTE_CLASS}>{hint}</span>
       </figcaption>
       {children}
     </figure>
@@ -62,22 +57,18 @@ export function Compare() {
   return (
     <>
       <Measure className="col-span-full" initial={220} max={420} min={140}>
-        <div className="flex flex-col gap-y-md lg:grid lg:grid-cols-3 lg:grid-rows-[auto_auto] lg:gap-x-md">
-          <Column label={columns.none.label} tip={columns.none.tip}>
+        <div className="flex flex-col gap-y-xl lg:grid lg:grid-cols-3 lg:grid-rows-[auto_auto] lg:gap-x-md">
+          <Column hint={columns.none.hint} label={columns.none.label}>
             <p className={cn(COLUMN_CLASS, "hyphens-manual text-wrap")} lang="is">
               <PageParagraph />
             </p>
           </Column>
-          <Column
-            hint={columns.browser.hint}
-            label={columns.browser.label}
-            tip={columns.browser.tip}
-          >
+          <Column hint={columns.browser.hint} label={columns.browser.label}>
             <p className={cn(COLUMN_CLASS, "hyphens-auto text-wrap")} lang="is">
               <PageParagraph />
             </p>
           </Column>
-          <Column label={columns.skiptingar.label} tip={columns.skiptingar.tip}>
+          <Column hint={columns.skiptingar.hint} label={columns.skiptingar.label}>
             <LiveBlock className={COLUMN_CLASS} initial={initial} />
           </Column>
         </div>
@@ -85,21 +76,21 @@ export function Compare() {
 
       {/* `min-w-0`: a grid item is as wide as its content by default, so the
           table would widen the page on a phone instead of scrolling. */}
-      <div className="col-span-full flex min-w-0 flex-col gap-sm">
+      <div className="col-span-full flex min-w-0 flex-col gap-sm lg:col-span-8">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-hy-note">
-            <caption className={cn(LABEL_CLASS, "pb-xs text-left text-foreground")}>
+            <caption className={cn(LABEL_CLASS, "pb-sm text-left")}>
               {table.caption}
             </caption>
             <thead>
               <tr>
-                <th className={cn(LABEL_CLASS, "py-2xs pr-md")} scope="col">
+                <th className={cn(LABEL_CLASS, "py-xs pr-md text-muted")} scope="col">
                   {table.headers.word}
                 </th>
-                <th className={cn(LABEL_CLASS, "py-2xs pr-md")} scope="col">
+                <th className={cn(LABEL_CLASS, "py-xs pr-md text-muted")} scope="col">
                   {table.headers.tex}
                 </th>
-                <th className={cn(LABEL_CLASS, "py-2xs")} scope="col">
+                <th className={cn(LABEL_CLASS, "py-xs text-muted")} scope="col">
                   {table.headers.current}
                 </th>
               </tr>
@@ -108,21 +99,21 @@ export function Compare() {
               {table.rows.map(row => (
                 <tr className="border-border border-t" key={row.word}>
                   <th
-                    className="wrap-anywhere py-2xs pr-md align-top font-medium text-foreground"
+                    className="wrap-anywhere py-xs pr-md align-top font-medium text-foreground"
                     lang="is"
                     scope="row"
                   >
                     {row.word}
                   </th>
                   <td
-                    className="wrap-anywhere py-2xs pr-md align-top font-book text-foreground"
+                    className="wrap-anywhere py-xs pr-md align-top font-book text-foreground"
                     lang="is"
                   >
                     {row.tex}
                   </td>
                   {/* "(same)" is English, so only a real result gets `lang="is"`. */}
                   <td
-                    className="wrap-anywhere py-2xs align-top font-book text-foreground"
+                    className="wrap-anywhere py-xs align-top font-book text-foreground"
                     lang={row.current ? "is" : undefined}
                   >
                     {row.current ?? table.same}
