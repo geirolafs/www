@@ -3,6 +3,7 @@
 import type { RefObject } from "react";
 import { useRef } from "react";
 import { firstParagraph } from "@/app/components/localhost/hyphenation/blocks";
+import { useMarkOverlay } from "@/app/components/localhost/hyphenation/mark-overlay";
 import { usePlayground } from "@/app/components/localhost/hyphenation/playground";
 import {
   DEFAULT_SETTINGS,
@@ -88,8 +89,9 @@ type LiveBlockProps = LiveTextProps & {
  * The live text in its own element, with the `text-wrap` the page settings
  * ask for. The element is Icelandic and breaks only at the soft hyphens.
  * With Settle rag on, it measures its own lines and sets the breaks a
- * typesetter would (`useSettledRag`), balancing a title; Show breaks puts an
- * amber fill on each space it glued.
+ * typesetter would (`useSettledRag`), balancing a title. Show breaks draws
+ * its marks in an overlay after the element (`useMarkOverlay`), not in it, so
+ * the text wraps the same with them on.
  */
 export function LiveBlock({
   as: Element = "p",
@@ -104,20 +106,28 @@ export function LiveBlock({
     ...ragOptions(settings, title),
   });
 
+  const overlay = useMarkOverlay(
+    ref,
+    settings.showBreaks,
+    `${settled.text}|${JSON.stringify(settled.hangs)}|${JSON.stringify(settled.tightened)}`
+  );
+
   return (
-    <Element
-      className={cn("hyphens-manual", wrapClass(settings, title), className)}
-      lang="is"
-      // A union of element types; each one takes an HTMLElement ref.
-      ref={ref as RefObject<never>}
-    >
-      <SettledContent
-        hangs={settled.hangs}
-        marks={settings.showBreaks}
-        tightened={settled.tightened}
-        text={settled.text}
-      />
-    </Element>
+    <>
+      <Element
+        className={cn("hyphens-manual", wrapClass(settings, title), className)}
+        lang="is"
+        // A union of element types; each one takes an HTMLElement ref.
+        ref={ref as RefObject<never>}
+      >
+        <SettledContent
+          hangs={settled.hangs}
+          tightened={settled.tightened}
+          text={settled.text}
+        />
+      </Element>
+      {overlay}
+    </>
   );
 }
 

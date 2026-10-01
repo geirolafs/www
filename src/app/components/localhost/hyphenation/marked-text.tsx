@@ -29,41 +29,24 @@ function pieces(text: string): Piece[] {
  * non-breaking hyphen as itself on an amber fill (`hy-accent`: glue, quieter
  * than a break). The fill is the mark; no symbol is needed.
  *
- * `exact` keeps the layout exactly as without marks, for settled text whose
- * line breaks were planned without them: the soft hyphen stays in the text,
- * and its dot is positioned out of the flow at the break and takes no width.
- * Otherwise the dot takes the soft hyphen's place with room of its own, so a
- * specimen reads clearly, and a `<wbr />` after it keeps the break. Either
- * way the dot is hidden from assistive tech and from selection, so copying
- * gives the plain word.
+ * The dot takes the soft hyphen's place with room of its own, so a specimen
+ * reads clearly, and a `<wbr />` after it keeps the break. It is hidden from
+ * assistive tech and from selection, so copying gives the plain word. Settled
+ * text, whose line breaks are planned from the plain text, does not use this:
+ * its marks are an overlay (`useMarkOverlay`).
  *
  * It has no state or effects, so a server page and a client component can both
  * render it.
  */
-export function MarkedText({ text, exact = false }: { text: string; exact?: boolean }) {
+export function MarkedText({ text }: { text: string }) {
   return pieces(text).map(piece => {
-    if (piece.text === SOFT_HYPHEN && !exact) {
+    if (piece.text === SOFT_HYPHEN) {
       return (
         <span key={piece.id}>
           <span aria-hidden="true" className="select-none font-bold text-hy-signal">
             {marks.softHyphen}
           </span>
           <wbr />
-        </span>
-      );
-    }
-    if (piece.text === SOFT_HYPHEN) {
-      return (
-        <span key={piece.id}>
-          <span className="relative">
-            <span
-              aria-hidden="true"
-              className="absolute left-0 -translate-x-1/2 select-none font-bold text-hy-signal"
-            >
-              {marks.softHyphen}
-            </span>
-          </span>
-          {SOFT_HYPHEN}
         </span>
       );
     }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-import { MarkedText } from "@/app/components/localhost/hyphenation/marked-text";
+import { useMarkOverlay } from "@/app/components/localhost/hyphenation/mark-overlay";
 import { SettledContent } from "@/app/components/localhost/hyphenation/settled-content";
 import { Stage } from "@/app/components/localhost/hyphenation/stage";
 import { LABEL_CLASS } from "@/app/components/localhost/hyphenation/styles";
@@ -370,20 +370,46 @@ function WeighCard({ hyphenated, copy }: { hyphenated: string; copy: Copy }) {
   );
 }
 
+/**
+ * Card 1: the hyphenated text with its soft hyphens marked. The marks are an
+ * overlay, so the lines are the browser's own greedy lines, the "Line by
+ * line" edge in card 3.
+ */
+function BreakCard({ hyphenated }: { hyphenated: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const overlay = useMarkOverlay(ref, true, hyphenated);
+
+  return (
+    <>
+      <p className={PARAGRAPH} lang="is" ref={ref}>
+        {hyphenated}
+      </p>
+      {overlay}
+    </>
+  );
+}
+
 /** Card 4: the settled text, with each forbidden break drawn as glue. */
 function GlueCard({ hyphenated }: { hyphenated: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const settled = useSettledRag(ref, hyphenated, NO_OVERHANG);
+  const overlay = useMarkOverlay(
+    ref,
+    true,
+    `${settled.text}|${JSON.stringify(settled.hangs)}|${JSON.stringify(settled.tightened)}`
+  );
 
   return (
-    <p className={PARAGRAPH} lang="is" ref={ref}>
-      <SettledContent
-        hangs={settled.hangs}
-        marks
-        text={settled.text}
-        tightened={settled.tightened}
-      />
-    </p>
+    <>
+      <p className={PARAGRAPH} lang="is" ref={ref}>
+        <SettledContent
+          hangs={settled.hangs}
+          text={settled.text}
+          tightened={settled.tightened}
+        />
+      </p>
+      {overlay}
+    </>
   );
 }
 
@@ -421,11 +447,7 @@ export function RagDiagram({ hyphenated, copy }: { hyphenated: string; copy: Cop
           title={stages.breaks.title}
           where={copy.server}
         >
-          {/* Exact marks: the dots take no room, so these are the browser's own
-              greedy lines, the "Line by line" edge in card 3. */}
-          <p className={PARAGRAPH} lang="is">
-            <MarkedText exact text={hyphenated} />
-          </p>
+          <BreakCard hyphenated={hyphenated} />
         </Stage>
         <Stage
           note={stages.measure.note}

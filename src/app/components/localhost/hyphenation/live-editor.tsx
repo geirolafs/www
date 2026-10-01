@@ -3,6 +3,7 @@
 import { useMemo, useRef } from "react";
 import { parseBlocks } from "@/app/components/localhost/hyphenation/blocks";
 import { Composer } from "@/app/components/localhost/hyphenation/composer";
+import { useMarkOverlay } from "@/app/components/localhost/hyphenation/mark-overlay";
 import { Measure } from "@/app/components/localhost/hyphenation/measure";
 import { usePlayground } from "@/app/components/localhost/hyphenation/playground";
 import {
@@ -56,22 +57,32 @@ function EditorBlock({
     ...ragOptions(settings, heading),
   });
 
+  // Show breaks draws its marks after the paragraph, not in it: the rag was
+  // planned for the text alone, and a mark inside the line can change its width.
+  const overlay = useMarkOverlay(
+    ref,
+    settings.showBreaks,
+    `${settled.text}|${JSON.stringify(settled.hangs)}|${JSON.stringify(settled.tightened)}`
+  );
+
   return (
-    <p
-      className={cn(
-        "hyphens-manual",
-        heading ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
-        wrapClass(settings, heading)
-      )}
-      ref={ref}
-    >
-      <SettledContent
-        hangs={settled.hangs}
-        marks={settings.showBreaks}
-        tightened={settled.tightened}
-        text={settled.text}
-      />
-    </p>
+    <>
+      <p
+        className={cn(
+          "hyphens-manual",
+          heading ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
+          wrapClass(settings, heading)
+        )}
+        ref={ref}
+      >
+        <SettledContent
+          hangs={settled.hangs}
+          tightened={settled.tightened}
+          text={settled.text}
+        />
+      </p>
+      {overlay}
+    </>
   );
 }
 
