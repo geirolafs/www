@@ -54,3 +54,31 @@ export const BespokeSerif = localFont({
   display: "swap",
   variable: "--font-bespoke-serif-face",
 });
+
+/**
+ * ABC Areal, the text and code face of the fluid-typography pages
+ * (/localhost/skiptingar, /localhost/settle-rag). By Dinamo, under a
+ * commercial licence: it is self-hosted on this site and the file never goes
+ * in the public repo. Like Bespoke Serif it is gitignored and comes from the
+ * private fonts repo (`scripts/fetch-licensed-fonts.ts`), used as shipped.
+ *
+ * One variable file does both jobs. Its axes are `wght` 400–700, `slnt`
+ * −12–0 (the italic, so no italic file is declared), `MONO` 0–100 (0 is the
+ * proportional text face, 100 is the monospace) and `DRKM` 0–1 (a grade for
+ * light text on a dark ground). Code gets `"MONO" 100` from the
+ * `font-hy-mono` token (see `globals.css`). It has `tnum`, `pnum`, `case`,
+ * `zero` and `ss01`–`ss11`; note that `ss01` swaps the `a` for an alternate.
+ * It has U+00A0 and the Icelandic quotes, but not U+2011 or U+2060; the
+ * browser draws those from a fallback font.
+ */
+export const ArealSuperfamily = localFont({
+  src: [
+    {
+      path: "./local-fonts/licensed/ABCArealSuperfamilyVariable.woff2",
+      weight: "400 700",
+      style: "normal",
+    },
+  ],
+  display: "swap",
+  variable: "--font-areal-face",
+});

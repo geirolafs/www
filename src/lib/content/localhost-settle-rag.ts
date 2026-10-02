@@ -32,8 +32,8 @@ export const localhostSettleRagContent = {
     lines: [
       [
         { text: "Set in " },
-        { text: "Geist and Geist Mono", href: "https://vercel.com/font" },
-        { text: " by Vercel (SIL Open Font License) and " },
+        { text: "ABC Areal", href: "https://abcdinamo.com/typefaces/areal" },
+        { text: " by Dinamo and " },
         { text: "Bespoke Serif", href: "https://www.fontshare.com/fonts/bespoke-serif" },
         { text: " by Indian Type Foundry (ITF Free Font License)." },
       ],

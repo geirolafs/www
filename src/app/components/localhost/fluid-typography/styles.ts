@@ -38,8 +38,9 @@ export const NOTE_CLASS = "text-pretty font-book text-hy-note text-muted";
 export const GROUP_LABEL_CLASS = "font-medium text-foreground text-hy-control";
 
 /**
- * Code and exception lines, in Geist Mono: every character has its own width
- * and look, so an `l`, an `I` and a `1` cannot be mistaken for one another.
+ * Code and exception lines, in the `font-hy-mono` face (ABC Areal with its
+ * `MONO` axis at 100 on these pages): every character has its own width and
+ * look, so an `l`, an `I` and a `1` cannot be mistaken for one another.
  */
 export const CODE_CLASS = "font-hy-mono";
 

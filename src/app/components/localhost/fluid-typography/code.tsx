@@ -4,7 +4,7 @@ import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles"
 import { cn } from "@/lib/utils";
 
 /**
- * Code inside a sentence: a chip in Geist Mono, in the same greys as the
+ * Code inside a sentence: a chip in the mono face, in the same greys as the
  * code blocks (`.hy-code` in globals.css). It never breaks inside, since
  * `<CleanCopy />` split over two lines reads as two things. `translate="no"`,
  * so a translator leaves it alone. Not highlighted: only `CodeBlock` carries

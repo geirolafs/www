@@ -42,6 +42,10 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
   scale and `font-hy-text` / `font-hy-title` / `font-hy-mono` families. The
   two rules above don't apply there: it uses Geist's weight range (100–900)
   on purpose.
+- **Exception: `/localhost/skiptingar` and `/localhost/settle-rag`.** The same
+  hy scale and families, but text and code are set in ABC Areal (Dinamo), one
+  variable file: `MONO` 0 for text, 100 for code (`.hy-areal` in globals.css
+  sets the role variables). Weights 400–700 only.
 - **`/localhost/*` experiments stand alone.** No site header, footer or back
   link; titles have no site suffix (`localhost/layout.tsx`). The `/localhost`
   index itself keeps the site look.
@@ -52,8 +56,9 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
 ## Never
 
 - Commit a font file from `src/app/styles/local-fonts/licensed/`. Bespoke
-  Serif is under the ITF Free Font License: self-hosting is allowed, but
-  sharing the file through a public repository is not. (Geist and Geist Mono,
+  Serif is under the ITF Free Font License, and ABC Areal under a commercial
+  Dinamo licence: self-hosting is allowed, but sharing the files through a
+  public repository is not. (Geist and Geist Mono,
   OFL, are not committed files either: `next/font/google` fetches them at
   build.) It comes from the private fonts repo at build time (`bun run fonts`, needs
   `FONTS_TOKEN_SKIPTIR` in CI). Don't subset or convert it either — the

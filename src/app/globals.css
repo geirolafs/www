@@ -348,8 +348,9 @@
   }
 }
 
-/* Geist (text), Bespoke Serif (titles) and Geist Mono (code), only on
-   /localhost/hyphenation (see `styles/fonts-licensed.ts`). Named by role, so a
+/* Geist (text), Bespoke Serif (titles) and Geist Mono (code) on
+   /localhost/hyphenation; ABC Areal on the fluid-typography pages (see
+   `styles/fonts-licensed.ts`). Named by role, so a
    font change is one line here. `inline` so `font-hy-text`, `font-hy-title`
    and `font-hy-mono` write the next/font variables into the element's own
    `font-family`. In the plain `@theme` block the tokens would
@@ -357,9 +358,23 @@
    playground's wrapper has them), so the value would be invalid and fall back
    to Same Univers. */
 @theme inline {
-  --font-hy-text: var(--font-geist-face), ui-sans-serif, system-ui, sans-serif;
+  --font-hy-text:
+    var(--font-hy-text-face, var(--font-geist-face)), ui-sans-serif, system-ui, sans-serif;
   --font-hy-title: var(--font-bespoke-serif-face), ui-serif, Georgia, serif;
-  --font-hy-mono: var(--font-geist-mono-face), ui-monospace, monospace;
+  --font-hy-mono:
+    var(--font-hy-mono-face, var(--font-geist-mono-face)), ui-monospace, monospace;
+  --font-hy-mono--font-variation-settings: var(--font-hy-mono-axes, normal);
+}
+
+/* The role faces are set per page. A shell that sets none gets Geist and
+   Geist Mono (/localhost/hyphenation). `.hy-areal` is the fluid-typography
+   shell: ABC Areal for text, and for code the same file with its `MONO` axis
+   at 100. `--font-hy-mono-axes` is read by `font-hy-mono` and the code rules
+   below; unset, it is `normal`, so Geist Mono is untouched. */
+.hy-areal {
+  --font-hy-text-face: var(--font-areal-face);
+  --font-hy-mono-face: var(--font-areal-face);
+  --font-hy-mono-axes: "MONO" 100;
 }
 
 /* ==========================================================================
@@ -1081,10 +1096,12 @@ article a:active {
 }
 
 /* Tailwind's base styles give `code`, `pre`, `kbd` and `samp` the system
-   monospace stack directly, so a `code` inside a Geist Mono `pre` would not
-   inherit it. All code on the page is Geist Mono. */
+   monospace stack directly, so a `code` inside a `font-hy-mono` `pre` would
+   not inherit it. All code on the page is in the mono role face. */
 .hy-code :where(code, pre, kbd, samp) {
-  font-family: var(--font-geist-mono-face), ui-monospace, monospace;
+  font-family:
+    var(--font-hy-mono-face, var(--font-geist-mono-face)), ui-monospace, monospace;
+  font-variation-settings: var(--font-hy-mono-axes, normal);
 }
 
 .hy-code .sh__token--keyword,
@@ -1097,7 +1114,9 @@ article a:active {
    step smaller, as monospace runs large. */
 .hy-inline-code {
   padding: 0.1em 0.35em;
-  font-family: var(--font-geist-mono-face), ui-monospace, monospace;
+  font-family:
+    var(--font-hy-mono-face, var(--font-geist-mono-face)), ui-monospace, monospace;
+  font-variation-settings: var(--font-hy-mono-axes, normal);
   font-size: 0.875em;
   box-decoration-break: clone;
 }

@@ -148,7 +148,7 @@ export const localhostSkiptingarContent = {
               },
               { text: "typeset()", code: true },
               {
-                text: " puts U+2011 in kennitala and phone numbers. Many fonts have no U+2011. Geist and Bespoke Serif, the faces on this page, lack it. The browser draws that hyphen from a fallback font.",
+                text: " puts U+2011 in kennitala and phone numbers. Many fonts have no U+2011. ABC Areal and Bespoke Serif, the faces on this page, lack it. The browser draws that hyphen from a fallback font.",
               },
             ],
           },
@@ -216,8 +216,8 @@ export const localhostSkiptingarContent = {
     lines: [
       [
         { text: "Set in " },
-        { text: "Geist and Geist Mono", href: "https://vercel.com/font" },
-        { text: " by Vercel (SIL Open Font License) and " },
+        { text: "ABC Areal", href: "https://abcdinamo.com/typefaces/areal" },
+        { text: " by Dinamo and " },
         { text: "Bespoke Serif", href: "https://www.fontshare.com/fonts/bespoke-serif" },
         { text: " by Indian Type Foundry (ITF Free Font License)." },
       ],

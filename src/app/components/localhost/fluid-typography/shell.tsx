@@ -5,7 +5,7 @@ import {
 } from "@/app/components/localhost/fluid-typography/rich-text";
 import { SectionNav } from "@/app/components/localhost/fluid-typography/section-nav";
 import { FOCUS_CLASS } from "@/app/components/localhost/fluid-typography/styles";
-import { BespokeSerif, GeistMono, GeistSans } from "@/app/styles/fonts-licensed";
+import { ArealSuperfamily, BespokeSerif } from "@/app/styles/fonts-licensed";
 import { cn } from "@/lib/utils";
 
 type ShellProps = {
@@ -26,8 +26,10 @@ type ShellProps = {
 /**
  * The frame of a fluid-typography page, which is a page of its own and shares
  * nothing with the rest of the site but its grid: every band is a `page-grid`,
- * so the columns are the site's. The outermost element carries the three fonts
- * and sets Geist; titles opt in to Bespoke Serif. The root layout already
+ * so the columns are the site's. The outermost element carries the two fonts
+ * and sets ABC Areal; titles opt in to Bespoke Serif. `hy-areal` points the
+ * text and code roles at Areal (code is its `MONO` axis; see `globals.css`),
+ * so `font-hy-text` and `font-hy-mono` follow the page. The root layout already
  * renders the `main`, so this is a plain `div`. The copy comes in as props, so
  * one frame serves every page.
  *
@@ -48,10 +50,9 @@ export function Shell({
   return (
     <div
       className={cn(
-        GeistSans.variable,
-        GeistMono.variable,
+        ArealSuperfamily.variable,
         BespokeSerif.variable,
-        "hy-shell flex min-h-dvh flex-col bg-background font-book font-hy-text text-foreground"
+        "hy-shell hy-areal flex min-h-dvh flex-col bg-background font-book font-hy-text text-foreground"
       )}
       // The page name in the top bar links here.
       id="top"
@@ -76,7 +77,7 @@ export function Shell({
         <a
           className={cn(
             "hy-logo col-span-3 lg:col-span-4",
-            "font-hy-text font-semibold text-foreground text-hy-logo [font-feature-settings:'ss01']",
+            "font-hy-text font-semibold text-foreground text-hy-logo",
             FOCUS_CLASS
           )}
           href="#top"
