@@ -60,6 +60,9 @@
      the background. `hy-signal` (3.18:1) is for marks and lines, which need 3:1. */
   --color-hy-signal-ink: #d42424;
   --color-hy-accent: #ffff23;
+  /* The colour of a fix, the pair to `hy-signal`'s fault: the glyphs the
+     package changes in the hero's figures (Skiptingar). A mark, not body text. */
+  --color-hy-fix: #0099ff;
 
   /* /localhost/hyphenation: the one raised thing on the page, the settings
      dock that floats over the specimens. */
@@ -395,10 +398,12 @@
      everything else, at whatever weight it needs. */
   font-variation-settings: "MONO" 0;
   /* Areal's stylistic sets: on are Alt y (ss04), Alt G (ss05), Alt R (ss06),
-     Alt i j I l 1 (ss08) and Alt Ampersand (ss09). The rest stay off. An
-     element that sets its own `font-feature-settings` drops all of these, so
-     use the `font-variant-*` utilities (`tabular-nums`) instead. */
-  font-feature-settings: "ss04", "ss05", "ss06", "ss08", "ss09";
+     Alt i j I l 1 (ss08) and Alt Ampersand (ss09). The rest stay off. Slashed
+     zero (zero) is on too; Bespoke Serif has no `zero`, so the titles keep
+     their plain zero. An element that sets its own `font-feature-settings`
+     drops all of these, so use the `font-variant-*` utilities
+     (`tabular-nums`) instead. */
+  font-feature-settings: "ss04", "ss05", "ss06", "ss08", "ss09", "zero";
 }
 
 /* ==========================================================================

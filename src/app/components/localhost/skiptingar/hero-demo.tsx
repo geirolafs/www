@@ -29,6 +29,13 @@ const TAG_CLASS = "font-medium text-hy-caption text-muted";
 const RULED =
   "bg-[repeating-linear-gradient(to_bottom,transparent_0_0.92em,color-mix(in_srgb,var(--color-foreground)_14%,transparent)_0.92em_calc(0.92em+1px),transparent_calc(0.92em+1px)_1.1em)]";
 
+/**
+ * What the package fixes is set in blue (`hy-fix`), the glyph itself. The
+ * browser draws the hyphen at a soft hyphen in the colour of the element
+ * holding it, so the hyphens the package adds come out blue too.
+ */
+const FIX = "text-hy-fix";
+
 /** Red hatching past the measure, where the browser's line runs out of room. */
 const HATCH =
   "after:absolute after:inset-y-0 after:left-full after:w-screen after:bg-[repeating-linear-gradient(135deg,color-mix(in_srgb,var(--color-hy-signal)_45%,transparent)_0_1px,transparent_1px_7px)]";
@@ -59,18 +66,18 @@ function processed(row: Row): string[] {
 }
 
 /**
- * The text with each soft hyphen in a yellow span. The browser draws the
+ * The text with each soft hyphen in a blue span. The browser draws the
  * hyphen at a soft hyphen it breaks at in the style of the element holding
- * the soft hyphen, so the hyphens the package adds come out highlighted, with
+ * the soft hyphen, so the hyphens the package adds come out blue, with
  * no measuring. A soft hyphen the browser does not use draws nothing.
  */
-function highlightHyphens(text: string, key: number) {
+function colourHyphens(text: string, key: number) {
   return text.split(SOFT_HYPHEN).flatMap((piece, index) =>
     index === 0
       ? [piece]
       : [
           // biome-ignore lint/suspicious/noArrayIndexKey: the pieces are fixed copy and never reorder
-          <span className="bg-hy-accent" key={`${key}-${index}`}>
+          <span className={FIX} key={`${key}-${index}`}>
             {SOFT_HYPHEN}
           </span>,
           piece,
@@ -79,17 +86,17 @@ function highlightHyphens(text: string, key: number) {
 }
 
 /**
- * The parts; a `mark`ed one in red on the browser's side, highlighted yellow
- * on the package's, where the hyphens it adds are highlighted too.
+ * The parts; a `mark`ed one in red on the browser's side, blue on the
+ * package's, where the hyphens it adds are blue too.
  */
 function Parts({ row, kind }: { row: Row; kind: Kind }) {
   const texts = kind === "with" ? processed(row) : row.parts.map(part => part.text);
   return row.parts.map((part, index) => {
     const raw = texts[index] ?? part.text;
-    const text = kind === "with" ? highlightHyphens(raw, index) : raw;
+    const text = kind === "with" ? colourHyphens(raw, index) : raw;
     return "mark" in part && part.mark ? (
       <span
-        className={kind === "with" ? "bg-hy-accent" : "text-hy-signal"}
+        className={kind === "with" ? FIX : "text-hy-signal"}
         // biome-ignore lint/suspicious/noArrayIndexKey: the parts are fixed copy and never reorder
         key={index}
       >
@@ -135,19 +142,19 @@ function Dimension({ row }: { row: Row }) {
  * red, the ground past it is hatched red, and what runs past it is red: the
  * sample is set twice in the same cell, one copy clipped at the rule and a red
  * copy clipped to what lies past it. On the package's side each hyphen the
- * browser drew at a soft hyphen gets a yellow highlight (`highlightHyphens`).
+ * browser drew at a soft hyphen is blue (`colourHyphens`).
  */
 function Panel({ row, kind }: { row: Row; kind: Kind }) {
   const fault = kind === "without" && "overflow" in row && row.overflow;
+  const bare = "bare" in row && row.bare;
   const text = <Parts kind={kind} row={row} />;
   const sample = (
     <p
       className={cn(
         "relative grid w-max max-w-full [hyphenate-character:'-']",
-        "before:absolute before:-inset-y-2xs before:right-0 before:border-r",
-        fault
-          ? cn("before:border-hy-signal", HATCH)
-          : "before:border-foreground/50 before:border-dashed",
+        !bare && "before:absolute before:-inset-y-2xs before:right-0 before:border-r",
+        fault && cn("before:border-hy-signal", HATCH),
+        !(fault || bare) && "before:border-foreground/50 before:border-dashed",
         kind === "with" ? "hyphens-manual" : "hyphens-auto"
       )}
       lang="is"
@@ -183,7 +190,7 @@ function Panel({ row, kind }: { row: Row; kind: Kind }) {
  * What the package fixes, under the lede, drawn as figures in a technical
  * manual. Each figure is one problem: the measure as a dimension line, then
  * the same text set at that measure on a ruled sheet, by the browser alone and
- * with Skiptingar, and a one-line numbered caption. Red is the fault, yellow
+ * with Skiptingar, and a one-line numbered caption. Red is the fault, blue
  * the fix. The title is set as the facts' title is (`HeroStats`).
  *
  * Below `lg` the figures stack under the title. From `lg` each figure's four
@@ -200,7 +207,7 @@ export function HeroDemo() {
       className="col-span-full mt-hyhead grid grid-cols-subgrid gap-y-hyblock border-foreground border-t pt-xl lg:gap-y-md"
     >
       <h2
-        className="col-span-6 col-start-2 font-hy-text font-medium text-[2.5rem] text-foreground leading-(--text-hy-hero-stat) lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
+        className="col-span-6 col-start-2 text-balance font-hy-title font-medium text-foreground text-hy-section lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
         id="hero-fixes"
       >
         {demo.title}
@@ -213,7 +220,13 @@ export function HeroDemo() {
           )}
           key={row.id}
         >
-          <Dimension row={row} />
+          {/* A bare figure keeps the row, empty, so its parts stay on the
+              rows the figure beside it uses. */}
+          {"bare" in row && row.bare ? (
+            <div aria-hidden="true" />
+          ) : (
+            <Dimension row={row} />
+          )}
           <Panel kind="without" row={row} />
           <Panel kind="with" row={row} />
           <figcaption className="text-pretty font-book text-hy-note text-muted">

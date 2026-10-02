@@ -52,10 +52,11 @@ export const localhostSkiptingarContent = {
      * The problems as numbered figures, drawn like a technical manual: each
      * one set twice at the same narrow measure, as the browser sets it alone
      * and with Skiptingar, over ruled lines, with the measure drawn as a
-     * dimension above. Red is the fault and yellow the fix; a `mark`ed part is
+     * dimension above. Red is the fault and blue the fix; a `mark`ed part is
      * coloured on both sides. `measure` is the text the line is as wide as, so
      * the problem shows in any font. `overflow` hatches what runs past the
-     * measure. One short caption each.
+     * measure. One short caption each. `bare` leaves the measure undrawn
+     * (no dimension line, no edge rule) where the problem is not about width.
      */
     demo: {
       title: "What it fixes",
@@ -87,6 +88,7 @@ export const localhostSkiptingarContent = {
           ],
           // The wider of the two settings, so both fit on one line.
           measure: "„Söguleg niðurstaða“",
+          bare: true,
           caption: "Straight quotes stay straight. Skiptingar sets Icelandic ones.",
         },
         {
@@ -97,6 +99,7 @@ export const localhostSkiptingarContent = {
           parts: [{ text: "Árin 1990" }, { text: "-", mark: true }, { text: "2010" }],
           // The wider of the two settings, so both fit on one line.
           measure: "Árin 1990–2010",
+          bare: true,
           caption: "A hyphen stands in for the dash. Skiptingar sets an en dash.",
         },
       ],
@@ -104,20 +107,40 @@ export const localhostSkiptingarContent = {
     /** The label beside the facts: what the package is built from. */
     statsTitle: "What it is",
     /**
-     * Two facts, each a number and the sentence that reads on from it: what
-     * it is, and why it matters to someone setting text.
+     * Four facts, one for each layer, in the layers' order, set as the
+     * figures above are but not numbered: a subtitle naming what is counted,
+     * the number on a baseline rule, and a one-line caption.
      */
     stats: [
       {
         // The number itself is read from the package, on the server.
         count: "patterns",
-        description:
-          "Letter patterns from the 2020 Árni Magnússon list mark where a word may break. They need no word list, so new and rare compounds break too.",
+        label: "Letter patterns",
+        caption:
+          "From the 2020 Árni Magnússon list. No word list, so new compounds break too.",
       },
       {
-        value: "0 kB",
-        description:
-          "JavaScript to hyphenate or typeset on a server-rendered page. The server puts in the soft hyphens and the no-break spaces, so every browser gets the same breaks.",
+        // Measured over all 218.308 words of the list the 2020 patterns were
+        // trained on (icelandic-lt/hyphenation-is, hyph_is_list.txt): 416.492
+        // breaks under `rules: "ritreglur"`, 294.460 under "typographic".
+        // Counted per word in the list, not per word in running text.
+        value: "29%",
+        label: "Fewer breaks",
+        caption:
+          "Better breaks drop 122.032 of the 416.492 breaks Ritreglur allows in the 2020 list.",
+      },
+      {
+        // The number itself is read from the package, on the server.
+        count: "rules",
+        label: "Locale rules",
+        // The rule names are read from the package too and set under it.
+        caption: "Each rule can be turned off on its own.",
+      },
+      {
+        value: "0 kB",
+        label: "JavaScript in the browser",
+        caption:
+          "The server puts in the soft hyphens and no-break spaces. Every browser gets the same breaks.",
       },
     ],
   },
