@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { marked } from "@/app/components/localhost/fluid-typography/hero";
 import {
   type Part,
   RichText,
@@ -84,7 +85,7 @@ export function Shell({
           lang={lang}
         >
           <span className="sr-only">{name}</span>
-          <span aria-hidden="true">{title}</span>
+          <span aria-hidden="true">{marked(title)}</span>
         </a>
         <SectionNav
           label={navLabel}

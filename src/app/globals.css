@@ -150,10 +150,11 @@
   --text-hy-hero--letter-spacing: -0.065em;
 
   /* Hyphenation playground — only /localhost/hyphenation. The page name in
-     the top bar, Geist SemiBold, 20 → 24. */
+     the top bar, Geist SemiBold, 20 → 24: the hero's title made small, with
+     the hero's tracking. */
   --text-hy-logo: clamp(1.25rem, 1.162rem + 0.376vw, 1.5rem);
   --text-hy-logo--line-height: 1.25;
-  --text-hy-logo--letter-spacing: -0.0175em;
+  --text-hy-logo--letter-spacing: -0.065em;
 
   /* Hyphenation playground — only /localhost/hyphenation. The hero's one
      sentence under the name, Bespoke Serif Regular, 28 → 68. */
