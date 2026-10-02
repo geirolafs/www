@@ -1,6 +1,10 @@
 "use client";
 
 import { useMemo, useRef } from "react";
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { NO_BREAK_SPACE, SOFT_HYPHEN, useHyphenateAll } from "skiptingar/client";
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+
 import { Measure } from "@/app/components/localhost/fluid-typography/measure";
 import {
   EDITOR_CLASS,
@@ -20,10 +24,6 @@ import {
 import { SettingsPanel } from "@/app/components/localhost/skiptingar/settings-panel";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
 import { cn } from "@/lib/utils";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { NO_BREAK_SPACE, SOFT_HYPHEN } from "@/packages/skiptingar/src/characters";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { useHyphenateAll } from "@/packages/skiptingar/src/client/use-hyphenate";
 
 const { liveEditor: content, tips } = localhostSkiptingarClientContent;
 

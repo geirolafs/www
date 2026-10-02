@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Hyphenate } from "skiptingar/react";
 import { CodeBlock, InlineCode } from "@/app/components/localhost/fluid-typography/code";
 import { Measure } from "@/app/components/localhost/fluid-typography/measure";
 import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
@@ -13,7 +14,6 @@ import {
 } from "@/app/components/localhost/fluid-typography/styles";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { Hyphenate } from "@/packages/skiptingar/src/react";
 
 const { howItWorks, compare } = localhostSkiptingarContent;
 const { css } = howItWorks;

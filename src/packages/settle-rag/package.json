@@ -32,6 +32,9 @@
     "size": "bun run scripts/size.ts",
     "bench": "bun run scripts/bench.ts"
   },
+  "devDependencies": {
+    "skiptingar": "^0.1.1"
+  },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"

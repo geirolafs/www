@@ -1,4 +1,4 @@
-import { handleSkiptingarRequest } from "@/packages/skiptingar/src";
+import { handleSkiptingarRequest } from "skiptingar";
 
 /**
  * The page's hyphenation endpoint: the Try it editor and the live specimens

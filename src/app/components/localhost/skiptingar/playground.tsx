@@ -2,13 +2,13 @@
 
 import type { ReactNode } from "react";
 import { createContext, use, useMemo, useState } from "react";
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { configureSkiptingar } from "skiptingar/client";
 import {
   DEFAULT_SETTINGS,
   type Settings,
 } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { configureSkiptingar } from "@/packages/skiptingar/src/client/remote";
 
 const { liveEditor: content } = localhostSkiptingarClientContent;
 

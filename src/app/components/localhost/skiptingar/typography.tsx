@@ -1,9 +1,9 @@
+import { typeset } from "skiptingar";
 import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { TypographyFeature } from "@/app/components/localhost/skiptingar/typography-feature";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { typeset } from "@/packages/skiptingar/src";
 
 const { noBreak } = localhostSkiptingarContent;
 

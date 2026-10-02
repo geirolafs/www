@@ -1,3 +1,4 @@
+import { hyphenate } from "skiptingar";
 import { Measure } from "@/app/components/localhost/fluid-typography/measure";
 import { PAIR_BOX, Pair } from "@/app/components/localhost/fluid-typography/pair";
 import { TITLE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
@@ -6,7 +7,6 @@ import { LiveBlock } from "@/app/components/localhost/skiptingar/live-text";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { hyphenate } from "@/packages/skiptingar/src";
 
 const { samplesSection: content } = localhostSkiptingarContent;
 

@@ -1,3 +1,5 @@
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { processSegments, SOFT_HYPHEN } from "skiptingar";
 import {
   SECTION_TITLE_CLASS,
   TITLE_CLASS,
@@ -5,9 +7,6 @@ import {
 import { PAGE_TYPESET } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { processSegments } from "@/packages/skiptingar/src";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { SOFT_HYPHEN } from "@/packages/skiptingar/src/characters";
 
 const { demo } = localhostSkiptingarContent.hero;
 

@@ -1,14 +1,9 @@
+import { hyphenate, patternPoints, SOFT_HYPHEN, typeset } from "skiptingar";
 import { Stage } from "@/app/components/localhost/fluid-typography/stage";
 import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import {
-  hyphenate,
-  patternPoints,
-  SOFT_HYPHEN,
-  typeset,
-} from "@/packages/skiptingar/src";
 
 const { diagram } = localhostSkiptingarContent.howItWorks;
 const { word, line, stages } = diagram;

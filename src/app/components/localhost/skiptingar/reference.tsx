@@ -1,3 +1,4 @@
+import tests from "skiptingar/tests.json";
 import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
 import {
   BODY_CLASS,
@@ -7,7 +8,6 @@ import {
 import { NUMBER } from "@/app/components/localhost/skiptingar/format";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import tests from "@/packages/skiptingar/tests.json";
 
 const { reference } = localhostSkiptingarContent;
 

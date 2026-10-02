@@ -1,3 +1,4 @@
+import { hyphenate, PATTERN_COUNT } from "skiptingar";
 import { CodeBlock } from "@/app/components/localhost/fluid-typography/code";
 import {
   type Part,
@@ -15,7 +16,6 @@ import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { PipelineDiagram } from "@/app/components/localhost/skiptingar/pipeline-diagram";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { hyphenate, PATTERN_COUNT } from "@/packages/skiptingar/src";
 
 const { howItWorks: content } = localhostSkiptingarContent;
 

@@ -2,6 +2,8 @@
 
 import type { RefObject } from "react";
 import { useRef } from "react";
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { useHyphenateAll } from "skiptingar/client";
 import { firstParagraph } from "@/app/components/localhost/skiptingar/blocks";
 import { useMarkOverlay } from "@/app/components/localhost/skiptingar/mark-overlay";
 import { usePlayground } from "@/app/components/localhost/skiptingar/playground";
@@ -13,8 +15,6 @@ import {
 } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
 import { cn } from "@/lib/utils";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { useHyphenateAll } from "@/packages/skiptingar/src/client/use-hyphenate";
 
 const { liveEditor } = localhostSkiptingarClientContent;
 

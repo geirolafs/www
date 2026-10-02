@@ -1,13 +1,9 @@
+import { LOCALE_RULE_COUNT, LOCALE_RULES, PATTERN_COUNT } from "skiptingar";
 import { InlineCode } from "@/app/components/localhost/fluid-typography/code";
 import { SECTION_TITLE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { NUMBER } from "@/app/components/localhost/skiptingar/format";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import {
-  LOCALE_RULE_COUNT,
-  LOCALE_RULES,
-  PATTERN_COUNT,
-} from "@/packages/skiptingar/src";
 
 const { stats, statsTitle } = localhostSkiptingarContent.hero;
 

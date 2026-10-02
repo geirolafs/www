@@ -1,8 +1,8 @@
+import { processSegments } from "skiptingar";
 import {
   DEFAULT_SETTINGS,
   outputOptions,
 } from "@/app/components/localhost/skiptingar/settings";
-import { processSegments } from "@/packages/skiptingar/src";
 
 /**
  * A text processed with the page's default settings, on the server, so the

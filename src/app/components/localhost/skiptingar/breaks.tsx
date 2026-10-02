@@ -1,3 +1,4 @@
+import { hyphenate } from "skiptingar";
 import {
   type Part,
   RichText,
@@ -10,7 +11,6 @@ import {
 } from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
-import { hyphenate } from "@/packages/skiptingar/src";
 
 const { breaksSection: content } = localhostSkiptingarContent;
 

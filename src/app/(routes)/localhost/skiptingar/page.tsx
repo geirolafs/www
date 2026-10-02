@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { CleanCopy } from "skiptingar/client";
 import { Hero } from "@/app/components/localhost/fluid-typography/hero";
 import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
 import { Section, Specimen } from "@/app/components/localhost/fluid-typography/section";
@@ -25,8 +27,6 @@ import { Sizes } from "@/app/components/localhost/skiptingar/sizes";
 import { Typography } from "@/app/components/localhost/skiptingar/typography";
 import { subsites } from "@/lib/config/subsites";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { CleanCopy } from "@/packages/skiptingar/src/client/clean-copy";
 
 const {
   page: pageContent,

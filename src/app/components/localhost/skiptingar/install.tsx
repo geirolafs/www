@@ -43,15 +43,14 @@ function Part({
 /**
  * How to install the package and start: a first page, the three entry points,
  * what each setup costs a browser, and what is planned before and after v1.
- * The package is not on npm yet, and the first line says so: this is how it
- * will work. There is no install command to copy until it is published.
+ * The first line says which version is on npm and that the API may still
+ * change before 1.0.
  */
 export function Install() {
   const { quickStart, entries, cost, roadmap } = install;
 
   return (
     <>
-      {/* No install command: the npm package is a placeholder with no code. */}
       <p className={cn(NOTE_CLASS, "max-w-measure")}>{install.status}</p>
 
       <Part

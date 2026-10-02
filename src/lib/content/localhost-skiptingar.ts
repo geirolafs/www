@@ -3,8 +3,7 @@
  * typography. The Icelandic texts are the samples; the English strings are the
  * page's own labels. The copy that client components read (the Try it editor,
  * the width slider) is defined in `localhost-skiptingar-client.ts`. The install
- * commands show with a status line that says the npm package is a placeholder
- * with no code yet.
+ * commands show with a status line that gives the version on npm.
  *
  * The page presents version 1 as three layers, all on the server and on by
  * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
@@ -20,8 +19,8 @@
  * roadmap item.
  */
 
+import sizes from "skiptingar/sizes.json";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
-import sizes from "@/packages/skiptingar/sizes.json";
 
 /** A size from `bun run size` (sizes.json), in kB brotli, unit kept with the number. */
 const kB = (setup: keyof typeof sizes) => `${sizes[setup].brotli}\u00a0kB`;
@@ -253,8 +252,8 @@ export const localhostSkiptingarContent = {
             body: [
               { text: "The code, the tests and these scripts are in " },
               {
-                text: "geirolafs/www on GitHub",
-                href: "https://github.com/geirolafs/www/tree/master/src/packages/skiptingar",
+                text: "geirolafs/skiptingar on GitHub",
+                href: "https://github.com/geirolafs/skiptingar",
               },
               { text: "." },
             ],
@@ -355,8 +354,7 @@ export const localhostSkiptingarContent = {
 
   install: {
     ...localhostSkiptingarClientContent.install,
-    status:
-      "Not published yet. The name is reserved on npm at version 0.0.0, which has no code. Installing will work like this.",
+    status: "Version 0.1.0 is on npm. The API may still change before 1.0.",
     commandLabel: "Install",
     managers: [
       { id: "bun", label: "bun", command: "bun add skiptingar" },
@@ -986,7 +984,7 @@ export default function Page() {
 
   /**
    * Section B, Where Icelandic breaks: the core only. Every rule is checked
-   * against `src/packages/skiptingar/src/hyphenate.ts` under its defaults (the
+   * against `hyphenate()` from the `skiptingar` package under its defaults (the
    * 2020 patterns and the Ritreglur minimums). The example words are set by
    * the package when the page renders, so no break position is typed here: an
    * `options` object is passed to `hyphenate()` as it stands.
