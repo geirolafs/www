@@ -50,10 +50,6 @@ export const metadata: Metadata = {
   // The page lives on its own host; without this it inherits the root
   // layout's canonical, which points at the home page.
   alternates: { canonical: subsites.skiptingar.origin },
-  robots: {
-    index: false,
-    follow: false,
-  },
 };
 
 /**
