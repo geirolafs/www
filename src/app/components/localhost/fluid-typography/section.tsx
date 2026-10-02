@@ -23,7 +23,7 @@ export type SectionLayout = "side" | "wide" | "free";
 type SectionProps = {
   /** The anchor the top bar links to. */
   id: string;
-  /** The section's letter in the page, like `a`, set in lower case. */
+  /** The section's letter in the page, like `a`. It shows as `A·`. */
   number: string;
   label: string;
   /** One line under the title: what the specimen shows. */
@@ -38,8 +38,11 @@ type SectionProps = {
 };
 
 /**
- * A lettered section of the playground on the site's `page-grid`. The title
- * is the section's `h2`; specimens inside it caption themselves with `h3`.
+ * A lettered section of the playground on the site's `page-grid`. The header
+ * is three rows 36px apart: the letter as `B·` in Areal Bold, the title (the
+ * section's `h2`) in Bespoke Serif Medium at the intro's size, and the
+ * explanation in Areal at body size, muted. Specimens inside the section
+ * caption themselves with `h3`.
  */
 export function Section({
   id,
@@ -76,7 +79,7 @@ export function Section({
       />
       <header
         className={cn(
-          "col-span-full flex min-w-0 flex-col gap-xs lg:col-span-4",
+          "col-span-full flex min-w-0 flex-col gap-row lg:col-span-4",
           layout === "side" && "lg:sticky lg:top-project lg:self-start",
           // A `free` specimen places its parts on explicit rows, and the grid
           // places those before any auto-placed item, so the header needs a
@@ -84,17 +87,19 @@ export function Section({
           layout === "free" && "lg:col-start-1 lg:row-start-2"
         )}
       >
-        <p aria-hidden="true" className="font-semibold text-hy-label text-muted">
-          {number}
+        <p aria-hidden="true" className="font-bold text-foreground text-hy-body">
+          {number.toUpperCase()}·
         </p>
         <h2
-          className="text-balance font-bold font-hy-text text-foreground text-hy-title [font-variation-settings:'MONO'_50]"
+          className="text-balance font-hy-title font-medium text-foreground text-hy-section"
           id={titleId}
         >
           {label}
         </h2>
         {explanation ? (
-          <p className="text-pretty font-book text-hy-body text-muted">{explanation}</p>
+          <p className="text-pretty font-book text-hy-body text-muted tracking-[-0.0125em]">
+            {explanation}
+          </p>
         ) : null}
       </header>
       {layout === "free" ? (

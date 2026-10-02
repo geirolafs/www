@@ -67,7 +67,8 @@ export const BespokeSerif = localFont({
  * proportional text face, 100 is the monospace) and `DRKM` 0–1 (a grade for
  * light text on a dark ground). Code gets `"MONO" 100` from the
  * `font-hy-mono` token (see `globals.css`). It has `tnum`, `pnum`, `case`,
- * `zero` and `ss01`–`ss11`; note that `ss01` swaps the `a` for an alternate.
+ * `zero` and `ss01`–`ss11`. The page turns on ss04, ss05, ss06, ss08 and
+ * ss09 on `.hy-areal` (see `globals.css`); the rest stay off.
  * It has U+00A0 and the Icelandic quotes, but not U+2011 or U+2060; the
  * browser draws those from a fallback font.
  */

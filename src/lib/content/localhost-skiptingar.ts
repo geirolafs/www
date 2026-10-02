@@ -6,15 +6,16 @@
  * command is left out on purpose, as the npm package is a placeholder with no
  * code yet.
  *
- * The page presents version 1 as three layers, all on by default and shown
- * and explained: hyphenation (the 2020 letter patterns and the Ritreglur
- * minimums, put in as soft hyphens on the server, plus the new, experimental
- * typographic rules, which decide which breaks to keep), typeset (no-break
- * spaces, Icelandic quotes and dashes, also on the server) and CSS text-wrap
- * (pretty for body text, balance for titles; the reader's own CSS). The
- * typographic rules, typeset and the CSS can be turned off. Keep the names
- * apart: "typographic rules" is the hyphenation preset, "Typeset" is spaces,
- * quotes and dashes. Copy must not claim more than that. The later, more
+ * The page presents version 1 as three layers, all on the server and on by
+ * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
+ * in as soft hyphens), better breaks (the experimental `rules: "typographic"`
+ * preset, which decides which breaks to keep) and locale details (no-break
+ * spaces, Icelandic quotes and dashes; `typeset()` in the API). CSS text-wrap
+ * (pretty for body text, balance for titles) is not a layer: it is the
+ * reader's own CSS, which the page recommends pairing with the layers. Better
+ * breaks, locale details and the CSS can be turned off. Keep the names apart:
+ * "better breaks" decides breaks, "locale details" swaps characters. Copy must
+ * not claim more than that. The later, more
  * opinionated layer is named in one place only: the "More opinionated breaks"
  * roadmap item.
  */
@@ -37,7 +38,7 @@ export const localhostSkiptingarContent = {
   page: {
     title: "Skiptingar: Icelandic text, set well",
     description:
-      "Icelandic hyphenation, Typeset and CSS text-wrap for the web, made on the server.",
+      "Icelandic hyphenation and locale details for the web, made on the server, to pair with CSS text-wrap.",
   },
 
   hero: {
@@ -45,32 +46,60 @@ export const localhostSkiptingarContent = {
     name: "Skiptingar",
     title: "Skipt-ing-ar",
     tagline: "Icelandic text, set well.",
-    lede: "Hyphenation on the server with typographic rules, Typeset + CSS text-wrap. The browser runs no code and copied text comes out clean.",
+    lede: "Letter patterns, better breaks and locale details, all on the server. Pair them with CSS text-wrap. The browser runs no code and copied text comes out clean.",
 
     /**
-     * One title and paragraph, as the browser sets it alone and with the
-     * package, drawn as a figure: each side's notes sit in its margin, on the
-     * line they point at. A note shows only when the layout bears it out.
+     * The problems as numbered figures, drawn like a technical manual: each
+     * one set twice at the same narrow measure, as the browser sets it alone
+     * and with Skiptingar, over ruled lines, with the measure drawn as a
+     * dimension above. Red is the fault and yellow the fix; a `mark`ed part is
+     * coloured on both sides. `measure` is the text the line is as wide as, so
+     * the problem shows in any font. `overflow` hatches what runs past the
+     * measure. One short caption each.
      */
     demo: {
-      label: "The same text in the same narrow column",
-      without: {
-        label: "The browser alone",
-        notes: {
-          overflow: "Runs past the edge",
-          quotes: "Straight quotes",
+      title: "What it fixes",
+      without: "Browser",
+      with: "Skiptingar",
+      figureLabel: "Fig.",
+      rows: [
+        {
+          id: "long-words",
+          parts: [{ text: "Kjörsókn í Hrafnafjarðarbyggð" }],
+          // A little wider than "Kjörsókn í", so "í Hrafna-" fits on the
+          // package's second line: "í" stays with the word after it.
+          measure: "Kjörsókn í H",
+          overflow: true,
+          caption: "A long word runs past the measure. Skiptingar breaks it.",
         },
-      },
-      with: {
-        label: "With Skiptingar",
-        notes: {
-          split: "Breaks inside the word",
-          glue: "Stays on one line",
-          quotes: "Icelandic quotes",
+        {
+          id: "units",
+          parts: [{ text: "Verð " }, { text: "1.000", mark: true }, { text: " kr." }],
+          measure: "Verð 1.000 k",
+          caption: "The unit drops to a line of its own. Skiptingar keeps it.",
         },
-      },
-      title: "Kjörsókn í Hrafnafjarðarbyggð aldrei meiri í sveitarstjórnarkosningum",
-      text: 'Kjörsókn í sveitarstjórnarkosningunum 16. maí 2026 var sú mesta sem mælst hefur í Hrafnafjarðarbyggð, 91,4%. "Þetta er söguleg niðurstaða," sagði dr. Guðrún Sigurðardóttir, formaður yfirkjörstjórnar, kl. 14.30 daginn eftir.',
+        {
+          id: "quotes",
+          parts: [
+            { text: '"', mark: true },
+            { text: "Söguleg niðurstaða" },
+            { text: '"', mark: true },
+          ],
+          // The wider of the two settings, so both fit on one line.
+          measure: "„Söguleg niðurstaða“",
+          caption: "Straight quotes stay straight. Skiptingar sets Icelandic ones.",
+        },
+        {
+          // A hyphen does not break before a digit (UAX #14), so the
+          // browser's only fault is the glyph. The package's en dash could
+          // break, so it adds a word joiner after it.
+          id: "ranges",
+          parts: [{ text: "Árin 1990" }, { text: "-", mark: true }, { text: "2010" }],
+          // The wider of the two settings, so both fit on one line.
+          measure: "Árin 1990–2010",
+          caption: "A hyphen stands in for the dash. Skiptingar sets an en dash.",
+        },
+      ],
     },
     /** The label beside the facts: what the package is built from. */
     statsTitle: "What it is",
@@ -137,7 +166,7 @@ export const localhostSkiptingarContent = {
             term: "Browsers and Node",
             body: [
               {
-                text: "The Typeset rules use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 support it earlier, so Safari sets the limit. The client entry has the same limit. On the server there is no browser limit, and you need Node 18 or newer.",
+                text: "The locale details use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 support it earlier, so Safari sets the limit. The client entry has the same limit. On the server there is no browser limit, and you need Node 18 or newer.",
               },
             ],
           },
@@ -192,7 +221,7 @@ export const localhostSkiptingarContent = {
             body: [
               { text: "bun run bench", code: true },
               {
-                text: " times the core with made-up character widths and leaves out the browser’s own measuring. It hyphenates a text of 20.000 words and runs Typeset on it. Each case repeats for about 300 ms, and the script reports the mean. It prints the results but saves none, so this page shows no speed figures.",
+                text: " times the core with made-up character widths and leaves out the browser’s own measuring. It hyphenates a text of 20.000 words and adds the locale details. Each case repeats for about 300 ms, and the script reports the mean. It prints the results but saves none, so this page shows no speed figures.",
               },
             ],
           },
@@ -251,7 +280,7 @@ export const localhostSkiptingarContent = {
       nav: "Breaks",
       label: "Where Icelandic breaks",
       explanation:
-        "The patterns say where a word may break. The Ritreglur minimums and the typographic rules keep only the breaks that read well.",
+        "The letter patterns say where a word may break, within the Ritreglur minimums. Better breaks then keep only the breaks that read well.",
     },
     noBreaks: {
       id: "no-breaks",
@@ -259,7 +288,7 @@ export const localhostSkiptingarContent = {
       nav: "No breaks",
       label: "Where Icelandic doesn’t break",
       explanation:
-        "Good line breaking also means knowing where not to break. Typeset keeps these words together with no-break spaces.",
+        "Good line breaking also means knowing where not to break. Locale details keep these words together with no-break spaces.",
     },
     punctuation: {
       id: "punctuation",
@@ -267,7 +296,7 @@ export const localhostSkiptingarContent = {
       nav: "Punctuation",
       label: "Icelandic punctuation",
       explanation:
-        "Icelandic quotes and dashes, shown before and after. Typeset does these too.",
+        "Icelandic quotes and dashes, shown before and after. Locale details do these too.",
     },
     interfaces: {
       id: "interfaces",
@@ -290,7 +319,7 @@ export const localhostSkiptingarContent = {
       nav: "How",
       label: "How it works",
       explanation:
-        "A word goes through the patterns, the Ritreglur minimums, the typographic rules and Typeset. The browser then sets the lines.",
+        "Three layers on the server: letter patterns, better breaks and locale details. We recommend pairing them with CSS text-wrap, so the browser sets the lines well.",
     },
     install: {
       id: "install",
@@ -328,11 +357,11 @@ export const localhostSkiptingarContent = {
         { text: "Wrap the text in " },
         { text: "<Hyphenate>", code: true },
         {
-          text: " where the page renders on the server. It hyphenates and runs Typeset. Pass ",
+          text: " where the page renders on the server. It adds all three layers. Pass ",
         },
         { text: "typeset={false}", code: true },
         {
-          text: " to hyphenate only. text-wrap is your CSS: here Tailwind’s text-balance for the title and text-pretty for the paragraph. Add ",
+          text: " to leave out the locale details. Pair it with CSS text-wrap: here Tailwind’s text-balance for the title and text-pretty for the paragraph. Add ",
         },
         { text: "<CleanCopy />", code: true },
         { text: " once, so copied text has no soft hyphens." },
@@ -374,7 +403,7 @@ export default function Page() {
             },
             { text: "hyphenate()", code: true },
             {
-              text: ' takes a rules option (the typographic rules by default, "ritreglur" for the official minimums only), options for the limits and the hyphen character, and a dictionary of your own words.',
+              text: ' takes a rules option ("typographic" for better breaks, the default, or "ritreglur" for the official minimums only), options for the limits and the hyphen character, and a dictionary of your own words.',
             },
           ],
         },
@@ -384,10 +413,10 @@ export default function Page() {
           where: "React Server Components",
           body: [
             { text: "<Hyphenate>", code: true },
-            { text: " (hyphenates and runs Typeset) and " },
+            { text: " (all three layers) and " },
             { text: "<Typeset>", code: true },
             {
-              text: " (Typeset only). They change only the text in the JSX you give them.",
+              text: " (locale details only). They change only the text in the JSX you give them.",
             },
           ],
         },
@@ -463,7 +492,7 @@ export default function Page() {
         },
         {
           id: "typeset",
-          label: "Typeset",
+          label: "Locale details",
           items: [
             {
               id: "sk-typeset",
@@ -520,7 +549,7 @@ export default function Page() {
             {
               id: "opinionated",
               title: "More opinionated breaks",
-              body: "The first version follows the official spelling rules and adds the typographic rules. Later: a list of words with corrected breaks, a skip for all-caps acronyms such as UNESCO, and a heading mode that breaks a title where its compounds join.",
+              body: "The first version follows the official spelling rules and adds better breaks. Later: a list of words with corrected breaks, a skip for all-caps acronyms such as UNESCO, and a heading mode that breaks a title where its compounds join.",
             },
             {
               id: "smaller-patterns",
@@ -556,7 +585,7 @@ export default function Page() {
       },
       skiptingar: {
         label: "Skiptingar",
-        hint: "Soft hyphens from the 2020 patterns and the typographic rules, put in on the server. Every browser gets the same breaks.",
+        hint: "Soft hyphens from the letter patterns and better breaks, put in on the server. Every browser gets the same breaks.",
       },
     },
     table: {
@@ -618,7 +647,7 @@ export default function Page() {
           note: "Any Icelandic word. No word list is needed.",
         },
         patterns: {
-          title: "Patterns",
+          title: "Letter patterns",
           note: "Each gap between letters takes the highest digit of any pattern that covers it.",
         },
         rules: {
@@ -626,20 +655,20 @@ export default function Page() {
           note: "The Ritreglur minimums need room on both sides: at least 1 letter before a break and 2 after, in words of 4 letters or more.",
         },
         typographic: {
-          title: "Typographic",
-          note: "New. It drops breaks that read badly, here the one inside fjarð-ar.",
+          title: "Better breaks",
+          note: "It drops breaks that read badly, here the one inside fjarð-ar.",
         },
         typeset: {
-          title: "Typeset",
+          title: "Locale details",
           note: "Spaces become no-break spaces and straight quotes become Icelandic quotes, here in another phrase.",
         },
         html: {
           title: "HTML",
-          note: "An invisible soft hyphen at each break, and the no-break spaces from Typeset.",
+          note: "An invisible soft hyphen at each break, and the no-break spaces from the locale details.",
         },
         line: {
           title: "Line",
-          note: "The browser picks the break that fits and draws the hyphen only there. CSS text-wrap, pretty for body text and balance for titles, shapes the choice.",
+          note: "The browser picks the break that fits and draws the hyphen only there. CSS text-wrap, which we recommend, shapes the choice: pretty for body text, balance for titles.",
         },
       },
       softHyphen: "&shy;",
@@ -648,7 +677,7 @@ export default function Page() {
     steps: [
       {
         id: "patterns",
-        title: "Patterns",
+        title: "Letter patterns",
         body: [
           {
             text: "This is Franklin Liang’s algorithm from 1983, the one TeX uses. It needs no word list. {patterns} short letter patterns carry numbers between the letters, like ",
@@ -660,15 +689,8 @@ export default function Page() {
           { text: "þjóð-fé-lags-um-ræða", sample: true },
           { text: ", where the older TeX patterns gave " },
           { text: "þjóð-fé-lagsum-ræða", sample: true },
-          { text: "." },
-        ],
-      },
-      {
-        id: "limits",
-        title: "Ritreglur minimums",
-        body: [
           {
-            text: "The official spelling rules (Ritreglur) ask for room on both sides of a break: at least 1 letter before it and 2 after. Skiptingar adds its own limit: a word needs 4 or more letters. These minimums alone still allow breaks that read badly, such as ",
+            text: ". The official spelling rules (Ritreglur) then ask for room on both sides of a break: at least 1 letter before it and 2 after. Skiptingar adds its own limit: a word needs 4 or more letters. These minimums alone still allow breaks that read badly, such as ",
           },
           { text: "ó-lán", sample: true },
           {
@@ -678,10 +700,10 @@ export default function Page() {
       },
       {
         id: "typographic",
-        title: "Typographic rules (on by default)",
+        title: "Better breaks (on by default)",
         body: [
           {
-            text: "The typographic rules keep only some of the legal breaks. Body words need 6 or more letters, with 2 before a break and 3 after, so ",
+            text: "Better breaks keep only some of the legal breaks. Body words need 6 or more letters, with 2 before a break and 3 after, so ",
           },
           { text: "ólán", sample: true },
           {
@@ -695,14 +717,14 @@ export default function Page() {
       },
       {
         id: "typeset",
-        title: "Typeset (on by default)",
+        title: "Locale details (on by default)",
         body: [
           {
-            text: "Typeset is on by default in the components and the hooks. Pass ",
+            text: "Locale details are on by default in the components and the hooks. Pass ",
           },
           { text: "typeset={false}", code: true },
           {
-            text: " to hyphenate only. Hyphenation does not depend on it. Typeset swaps characters one for one: spaces become no-break spaces in ",
+            text: " to hyphenate only. Hyphenation does not depend on them. Locale details swap characters one for one: spaces become no-break spaces in ",
           },
           { text: "1.000 kr.", sample: true },
           { text: ", " },
@@ -712,7 +734,7 @@ export default function Page() {
           { text: " and " },
           { text: "dr. Jón", sample: true },
           {
-            text: ", and straight quotes become Icelandic „…“. The optional dashes rule is the one exception: it also adds an invisible word joiner after an en dash in a range. So Typeset can run across a whole JSX tree and pair quotes across inline elements such as ",
+            text: ", and straight quotes become Icelandic „…“. The optional dashes rule is the one exception: it also adds an invisible word joiner after an en dash in a range. So the locale details can run across a whole JSX tree and pair quotes across inline elements such as ",
           },
           { text: "<strong>", code: true },
           { text: "." },
@@ -734,10 +756,10 @@ export default function Page() {
       },
       {
         id: "wrapping",
-        title: "text-wrap (CSS, on by default here)",
+        title: "CSS text-wrap (recommended)",
         body: [
           {
-            text: "Soft hyphens only say where a line may break. CSS ",
+            text: "Soft hyphens only say where a line may break. We recommend pairing the three layers with CSS ",
           },
           { text: "text-wrap: pretty", code: true },
           { text: " for body text and " },
@@ -752,7 +774,7 @@ export default function Page() {
         title: "Why on the server",
         body: [
           {
-            text: "Hyphenation and Typeset both run while the page renders, so the browser gets plain HTML. That means 0 kB of JavaScript for either on a server-rendered page, the same breaks in every browser, and no flash while text is processed. ",
+            text: "All three layers run while the page renders, so the browser gets plain HTML. That means 0 kB of JavaScript for any of them on a server-rendered page, the same breaks in every browser, and no flash while text is processed. ",
           },
           { text: "<CleanCopy />", code: true },
           {
@@ -765,7 +787,7 @@ export default function Page() {
         title: "Safety",
         body: [
           {
-            text: "Hyphenation and Typeset never touch URLs, email addresses or domains. Running either one twice gives the same result.",
+            text: "The three layers never touch URLs, email addresses or domains. Running any of them twice gives the same result.",
           },
         ],
       },
@@ -777,7 +799,7 @@ export default function Page() {
           { text: " leaves text alone inside a non-Icelandic " },
           { text: "lang", code: true },
           {
-            text: ": no Icelandic hyphenation and no Typeset. A nested ",
+            text: ": no Icelandic hyphenation and no locale details. A nested ",
           },
           { text: 'lang="is"', code: true },
           {
@@ -808,7 +830,7 @@ export default function Page() {
           ],
           support: [
             {
-              text: "Chrome 117+ and Safari 26+ support it. Firefox does not and falls back to normal wrapping. The Typeset rule ",
+              text: "Chrome 117+ and Safari 26+ support it. Firefox does not and falls back to normal wrapping. The locale details rule ",
             },
             { text: "lastWords", code: true },
             {
@@ -959,32 +981,23 @@ export default function Page() {
       steps: [
         {
           id: "patterns",
-          title: "Patterns",
+          title: "Letter patterns",
           body: [
             {
-              text: "The 2020 letter patterns from the Árni Magnússon Institute mark where a word may break. They work on syllables, not on where a compound’s parts meet, so a break can fall inside a part.",
-            },
-          ],
-        },
-        {
-          id: "minimums",
-          title: "Ritreglur minimums",
-          body: [
-            {
-              text: "The official spelling rules (Ritreglur) then remove breaks with too little room: at least 1 letter before a break and 2 after, in words of 4 letters or more. The 4 is Skiptingar’s own choice.",
+              text: "The 2020 letter patterns from the Árni Magnússon Institute mark where a word may break. They work on syllables, not on where a compound’s parts meet, so a break can fall inside a part. The official spelling rules (Ritreglur) then remove breaks with too little room: at least 1 letter before a break and 2 after, in words of 4 letters or more. The 4 is Skiptingar’s own choice.",
             },
           ],
         },
         {
           id: "typographic",
-          title: "Typographic rules (on by default)",
+          title: "Better breaks (on by default)",
           body: [
             {
-              text: "The typographic rules then drop legal breaks that read badly. They are new and under development, so they may change and give odd results. Turn them off in Try it, or with ",
+              text: "Better breaks then drop legal breaks that read badly. They are new and under development, so they may change and give odd results. Turn them off in Try it, or with ",
             },
             { text: 'rules: "ritreglur"', code: true },
             {
-              text: ", for the official minimums only. These rules control which breaks to keep. Typeset is a separate layer for spaces, quotes and dashes.",
+              text: ", for the official minimums only. Better breaks control which breaks to keep. Locale details are a separate layer for spaces, quotes and dashes.",
             },
           ],
         },
@@ -1003,7 +1016,7 @@ export default function Page() {
       label: "Examples",
       hint: [
         {
-          text: "The package sets each example; none is typed by hand. Each shows the same word with the typographic rules off (Ritreglur only) and on (the default).",
+          text: "The package sets each example; none is typed by hand. Each shows the same word with better breaks off (Ritreglur only) and on (the default).",
         },
       ],
       items: [
@@ -1136,7 +1149,7 @@ export default function Page() {
             { text: " and " },
             { text: "555 1234", sample: true },
             {
-              text: " stay together with Typeset. Browsers otherwise break after the hyphen.",
+              text: " stay together with the locale details. Browsers otherwise break after the hyphen.",
             },
           ],
         },

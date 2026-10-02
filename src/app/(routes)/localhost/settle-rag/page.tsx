@@ -40,8 +40,9 @@ export default function Page() {
       colophon={colophon}
       hero={
         <Hero
-          // Measured at 1440px so "Settle Rag" fills its box as "Skipt-ing-ar" does (99.5%).
-          fit={4.375}
+          // Measured at 1440px so "Settle Rag" fills its box as "Skipt-ing-ar" does (99.5%),
+          // then scaled 4.6% for Areal's stylistic sets (`.hy-areal`, globals.css).
+          fit={4.575}
           lede={hero.lede}
           name={hero.name}
           tagline={hero.tagline}

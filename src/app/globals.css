@@ -136,10 +136,13 @@
      from the width of its container (`cqi`), so the word fills the grid edge
      to edge at every screen width. Its parent must be an `@container`. At
      this tracking the ink of the word (from the S's left edge to the r's
-     right edge, measured in Chrome) is 5.025 × the font size wide; the
-     divisor below is that ratio. The S starts 0.05em in from its box, so the
-     title pulls itself left by that much (`hero.tsx`). */
-  --text-hy-hero: calc(100cqi / 5.025);
+     right edge, measured in Chrome) is 5.543 × the font size wide; the
+     divisor below is that ratio. It depends on Areal's stylistic sets: when
+     ss08's alternate i went on (and ss01's a off), the word grew 10.3%, from
+     5.025. Change the sets on `.hy-areal` and this number must change too.
+     The S starts 0.05em in from its box, so the title pulls itself left by
+     that much (`hero.tsx`). */
+  --text-hy-hero: calc(100cqi / 5.543);
   --text-hy-hero--line-height: 1;
   --text-hy-hero--letter-spacing: -0.065em;
 
@@ -154,6 +157,12 @@
   --text-hy-intro: clamp(1.75rem, 0.87rem + 3.756vw, 4.25rem);
   --text-hy-intro--line-height: 1.31;
   --text-hy-intro--letter-spacing: -0.049em;
+
+  /* Fluid-typography pages. Section titles: Bespoke Serif Medium at the
+     intro's size, set tight, since a title wraps to two or three lines. 28 → 68. */
+  --text-hy-section: clamp(1.75rem, 0.87rem + 3.756vw, 4.25rem);
+  --text-hy-section--line-height: 1.088;
+  --text-hy-section--letter-spacing: -0.049em;
 
   /* Hyphenation playground — only /localhost/hyphenation. Section titles and
      large specimens, 28 → 44. */
@@ -172,6 +181,12 @@
   --text-hy-stat: clamp(3.5rem, 2.312rem + 5.07vw, 6.875rem);
   --text-hy-stat--line-height: 1;
   --text-hy-stat--letter-spacing: -0.008em;
+
+  /* Fluid-typography pages. The skiptingar hero facts' big numbers, larger
+     than `hy-stat` so the two facts read as a graphic: 72 → 136. */
+  --text-hy-hero-stat: clamp(4.5rem, 3.04rem + 6.23vw, 8.5rem);
+  --text-hy-hero-stat--line-height: 1;
+  --text-hy-hero-stat--letter-spacing: -0.01em;
 
   /* Hyphenation playground — only /localhost/hyphenation. Small Geist labels:
      stat names and section numbers, 16, static. */
@@ -375,20 +390,15 @@
   --font-hy-text-face: var(--font-areal-face);
   --font-hy-mono-face: var(--font-areal-face);
   --font-hy-mono-axes: "MONO" 100;
+  /* Two steps on Areal's `MONO` axis, never between: 100 for code only (inline
+     code and the code components, through `--font-hy-mono-axes`), 0 for
+     everything else, at whatever weight it needs. */
   font-variation-settings: "MONO" 0;
-}
-
-/* Three steps on Areal's `MONO` axis: 0 for reading text (above), 100 for
-   code (`--font-hy-mono-axes`), and 50, semi-mono, for labels, UI and small
-   text. The small sizes are the UI's sizes, so the step follows the size
-   class and no component has to opt in. Code set at a small size keeps 100. */
-.hy-areal
-:is(.text-hy-nav, .text-hy-label, .text-hy-note, .text-hy-caption, .text-hy-control):not(
-  .font-hy-mono,
-  .hy-inline-code,
-  .hy-code
-) {
-  font-variation-settings: "MONO" 50;
+  /* Areal's stylistic sets: on are Alt y (ss04), Alt G (ss05), Alt R (ss06),
+     Alt i j I l 1 (ss08) and Alt Ampersand (ss09). The rest stay off. An
+     element that sets its own `font-feature-settings` drops all of these, so
+     use the `font-variant-*` utilities (`tabular-nums`) instead. */
+  font-feature-settings: "ss04", "ss05", "ss06", "ss08", "ss09";
 }
 
 /* ==========================================================================
@@ -1297,7 +1307,7 @@ html:has(.hy-shell) {
   background-blend-mode: multiply;
 }
 
-/* The hero figure's marks (`hero-figure.tsx`): the browser's faults get a red
+/* The hero figure's marks (`hyphenation/hero-figure.tsx`): the browser's faults get a red
    wave, the package's fixes a yellow highlighter band through the foot of the
    letters, light enough that the text still reads as set. These classes mark
    the notes in the margin; the text carries the same marks as CSS custom

@@ -51,7 +51,8 @@ function useCurrentSection(idList: string): string | null {
  * and carries `aria-current="location"`. Below 1440px it shows the letter
  * only: nine names with room between them do not fit beside the page name
  * until then. The name stays for screen readers. From 1440px up it reads
- * "A. Editor".
+ * "A· Editor". The letter is set as in the section headers, `A·` in bold; the
+ * name is at the normal weight.
  */
 export function SectionNav({
   label,
@@ -75,7 +76,7 @@ export function SectionNav({
               <a
                 aria-current={active ? "location" : undefined}
                 className={cn(
-                  "inline-block min-w-5 py-2xs text-center font-regular text-foreground text-hy-nav underline-offset-6 hover:text-muted min-[25rem]:min-w-6 min-[90rem]:min-w-0 min-[90rem]:text-left",
+                  "inline-block min-w-5 py-2xs text-center font-book text-foreground text-hy-nav underline-offset-6 hover:text-muted min-[25rem]:min-w-6 min-[90rem]:min-w-0 min-[90rem]:text-left",
                   // The current section is the one thing in the bar that must
                   // be seen at a glance: a red rule under it.
                   active ? "underline decoration-2 decoration-hy-signal" : "no-underline",
@@ -84,8 +85,8 @@ export function SectionNav({
                 href={`#${section.id}`}
                 title={section.nav}
               >
-                {section.number}
-                <span className="max-[90rem]:sr-only">. {section.nav}</span>
+                <span className="font-bold">{section.number.toUpperCase()}·</span>
+                <span className="max-[90rem]:sr-only"> {section.nav}</span>
               </a>
             </li>
           );

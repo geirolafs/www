@@ -12,8 +12,9 @@ type HeroProps = {
   lang?: string;
   /**
    * How many `100cqi` the title is wide, in font sizes. `text-hy-hero` is
-   * sized so "Skipt-ing-ar" fills the grid (5.025); a different word sets its
-   * own number so it fills the grid too.
+   * sized so "Skipt-ing-ar" fills the grid (5.543); a different word sets its
+   * own number so it fills the grid too. Both depend on the stylistic sets on
+   * `.hy-areal`.
    */
   fit?: number;
   /** The page's own demo, set under the lede: the same text without and with the package. */
@@ -78,7 +79,7 @@ export function Hero({
           name fades in on (globals.css). Setting `--text-hy-hero` here, on the
           element, overrides the theme's value for this title alone. */}
       <h1
-        className="col-span-full -ml-[0.05em] whitespace-nowrap font-hy-text font-semibold text-foreground text-hy-hero [font-feature-settings:'ss01']"
+        className="col-span-full -ml-[0.05em] whitespace-nowrap font-hy-text font-semibold text-foreground text-hy-hero"
         lang={lang}
         style={
           fit

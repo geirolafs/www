@@ -26,7 +26,7 @@ export const DEFAULT_SETTINGS: Settings = {
   pretty: true,
 };
 
-/** The `rules` option of `hyphenate()` that the Typographic rules setting asks for. */
+/** The `rules` option of `hyphenate()` that the Better breaks setting asks for. */
 export function rulesFor(
   settings: Pick<Settings, "typographic">
 ): "typographic" | "ritreglur" {
@@ -34,10 +34,11 @@ export function rulesFor(
 }
 
 /**
- * The typeset rules the Typeset setting turns on: the defaults plus en dashes,
- * so "1990-2010" in an example is set as Ritreglur §26.2.1 asks.
+ * The rules the Locale details setting turns on: the defaults plus en dashes,
+ * so "1990-2010" in an example is set as Ritreglur §26.2.1 asks, and a
+ * no-break space after a one-letter word, so "í" never ends a line.
  */
-export const PAGE_TYPESET = { dashes: true } as const;
+export const PAGE_TYPESET = { dashes: true, singleLetter: true } as const;
 
 /**
  * The `text-wrap` class the settings ask for, for a title or for body text:

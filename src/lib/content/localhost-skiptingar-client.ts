@@ -154,7 +154,7 @@ export const localhostSkiptingarClientContent = {
     },
     typeset: {
       label: "Locale details",
-      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr. and 30. september, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash.",
+      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr., 30. september and after a one-letter word like í, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash.",
     },
     showBreaks: {
       label: "Show breaks",
@@ -162,7 +162,7 @@ export const localhostSkiptingarClientContent = {
     },
     textWrap: {
       label: "CSS text-wrap",
-      tip: "On by default, and you can turn it off. It is CSS you add to the page: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off fills each line before it starts the next.",
+      tip: "On by default here, and we recommend it. It is CSS you add to the page, not a layer of the package: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off fills each line before it starts the next.",
     },
     /** The result box's width slider, in px. */
     width: { min: 120, max: 720, initial: 320 },

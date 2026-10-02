@@ -1,78 +1,229 @@
-import {
-  EDITOR_CLASS,
-  TITLE_CLASS,
-} from "@/app/components/localhost/fluid-typography/styles";
-import {
-  HeroFigureSide,
-  HighlightStyles,
-} from "@/app/components/localhost/skiptingar/hero-figure";
+import { TITLE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { PAGE_TYPESET } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 import { processSegments } from "@/packages/skiptingar/src";
+// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { SOFT_HYPHEN } from "@/packages/skiptingar/src/characters";
 
 const { demo } = localhostSkiptingarContent.hero;
 
-const title = processed(demo.title);
-const text = processed(demo.text);
+type Row = (typeof demo.rows)[number];
+type Kind = "without" | "with";
 
-/** The server's two layers: the patterns, then the typeset rules (the page's defaults). */
-function processed(text: string): string {
-  const [output = text] = processSegments([text], {
-    typeset: PAGE_TYPESET,
-    hyphenate: {},
-  });
-  return output;
+/** The samples' face and size: the serif, tight, so 1.1em is one line. */
+const SAMPLE_CLASS = cn(TITLE_CLASS, "text-hy-title leading-[1.1]");
+
+/** The small labels on the drawing, in Areal. */
+const TAG_CLASS = "font-medium text-hy-caption text-muted";
+
+/**
+ * A rule on the baseline of every line of the sample, across the whole panel:
+ * the ruled sheet the text is set on. Each line is 1.1em tall. Bespoke Serif's
+ * ascent is 1.01em and its descent 0.27em (OS/2 typo metrics, which the font
+ * flags for use, and hhea agrees), so the half-leading is (1.1 − 1.28) / 2 =
+ * −0.09em and the baseline sits 0.92em below the top of each line. The 1px
+ * rule starts there, so the letters stand on it. Change the face or the line
+ * height and this number must change too.
+ */
+const RULED =
+  "bg-[repeating-linear-gradient(to_bottom,transparent_0_0.92em,color-mix(in_srgb,var(--color-foreground)_14%,transparent)_0.92em_calc(0.92em+1px),transparent_calc(0.92em+1px)_1.1em)]";
+
+/** Red hatching past the measure, where the browser's line runs out of room. */
+const HATCH =
+  "after:absolute after:inset-y-0 after:left-full after:w-screen after:bg-[repeating-linear-gradient(135deg,color-mix(in_srgb,var(--color-hy-signal)_45%,transparent)_0_1px,transparent_1px_7px)]";
+
+/**
+ * Where each figure sits from `lg`: two to a row in columns 5–12, each pair
+ * on four shared rows. The second pair starts on row 5, a block further down
+ * (`mt-hyblock`), so each pair reads as its own row of figures.
+ */
+const PLACE = [
+  "lg:col-start-5 lg:row-start-1",
+  "lg:col-start-9 lg:row-start-1",
+  "lg:col-start-5 lg:row-start-5 lg:mt-hyblock",
+  "lg:col-start-9 lg:row-start-5 lg:mt-hyblock",
+];
+
+/**
+ * The row's parts as the server sets them with the page's defaults:
+ * hyphenation, then the locale details. The parts go in as segments, so a rule
+ * that spans two parts (a no-break space) still applies and each part keeps
+ * its own mark.
+ */
+function processed(row: Row): string[] {
+  return processSegments(
+    row.parts.map(part => part.text),
+    { typeset: PAGE_TYPESET, hyphenate: {} }
+  );
 }
 
 /**
- * The claim in one look, under the lede: the same title and paragraph as the
- * browser sets it alone and with skiptingar, side by side on one grid. Two
- * columns below `lg`, with each side's notes in a list under it; four from
- * `lg`, the notes in the outer two, each at its line.
+ * The text with each soft hyphen in a yellow span. The browser draws the
+ * hyphen at a soft hyphen it breaks at in the style of the element holding
+ * the soft hyphen, so the hyphens the package adds come out highlighted, with
+ * no measuring. A soft hyphen the browser does not use draws nothing.
+ */
+function highlightHyphens(text: string, key: number) {
+  return text.split(SOFT_HYPHEN).flatMap((piece, index) =>
+    index === 0
+      ? [piece]
+      : [
+          // biome-ignore lint/suspicious/noArrayIndexKey: the pieces are fixed copy and never reorder
+          <span className="bg-hy-accent" key={`${key}-${index}`}>
+            {SOFT_HYPHEN}
+          </span>,
+          piece,
+        ]
+  );
+}
+
+/**
+ * The parts; a `mark`ed one in red on the browser's side, highlighted yellow
+ * on the package's, where the hyphens it adds are highlighted too.
+ */
+function Parts({ row, kind }: { row: Row; kind: Kind }) {
+  const texts = kind === "with" ? processed(row) : row.parts.map(part => part.text);
+  return row.parts.map((part, index) => {
+    const raw = texts[index] ?? part.text;
+    const text = kind === "with" ? highlightHyphens(raw, index) : raw;
+    return "mark" in part && part.mark ? (
+      <span
+        className={kind === "with" ? "bg-hy-accent" : "text-hy-signal"}
+        // biome-ignore lint/suspicious/noArrayIndexKey: the parts are fixed copy and never reorder
+        key={index}
+      >
+        {text}
+      </span>
+    ) : (
+      text
+    );
+  });
+}
+
+/**
+ * The invisible copy of the measure that sets a column's width. A box holding
+ * it and a `w-0 min-w-full` child is as wide as the measure in any font.
+ */
+function Ghost({ text }: { text: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="invisible col-start-1 row-start-1 h-0 whitespace-nowrap"
+    >
+      {text}
+    </span>
+  );
+}
+
+/** The measure drawn as a dimension line over the figure, with ticks at both ends. */
+function Dimension({ row }: { row: Row }) {
+  return (
+    <div aria-hidden="true" className={cn(SAMPLE_CLASS, "grid w-max max-w-full")}>
+      <Ghost text={row.measure} />
+      <span className="relative col-start-1 row-start-1 h-2 w-0 min-w-full border-foreground border-x">
+        <span className="absolute inset-x-0 top-1/2 h-px bg-foreground" />
+      </span>
+    </div>
+  );
+}
+
+/**
+ * One side of a figure: its tag, then the sample on the ruled sheet, as wide
+ * as the measure. A dashed rule marks the measure's edge and runs a little
+ * past the text. On the browser's side of an `overflow` figure the rule is
+ * red, the ground past it is hatched red, and what runs past it is red: the
+ * sample is set twice in the same cell, one copy clipped at the rule and a red
+ * copy clipped to what lies past it. On the package's side each hyphen the
+ * browser drew at a soft hyphen gets a yellow highlight (`highlightHyphens`).
+ */
+function Panel({ row, kind }: { row: Row; kind: Kind }) {
+  const fault = kind === "without" && "overflow" in row && row.overflow;
+  const text = <Parts kind={kind} row={row} />;
+  const sample = (
+    <p
+      className={cn(
+        "relative grid w-max max-w-full [hyphenate-character:'-']",
+        "before:absolute before:-inset-y-2xs before:right-0 before:border-r",
+        fault
+          ? cn("before:border-hy-signal", HATCH)
+          : "before:border-foreground/50 before:border-dashed",
+        kind === "with" ? "hyphens-manual" : "hyphens-auto"
+      )}
+      lang="is"
+    >
+      <Ghost text={row.measure} />
+      <span
+        className={cn(
+          "relative z-1 col-start-1 row-start-1 w-0 min-w-full",
+          fault && "[clip-path:inset(-1em_0_-1em_-1em)]"
+        )}
+      >
+        {text}
+      </span>
+      {fault ? (
+        <span
+          aria-hidden="true"
+          className="relative z-1 col-start-1 row-start-1 w-0 min-w-full text-hy-signal [clip-path:inset(-1em_-100vw_-1em_100%)]"
+        >
+          {text}
+        </span>
+      ) : null}
+    </p>
+  );
+  return (
+    <div className="flex flex-col gap-2xs">
+      <p className={TAG_CLASS}>{kind === "with" ? demo.with : demo.without}</p>
+      <div className={cn(SAMPLE_CLASS, RULED, "overflow-x-clip")}>{sample}</div>
+    </div>
+  );
+}
+
+/**
+ * What the package fixes, under the lede, drawn as figures in a technical
+ * manual. Each figure is one problem: the measure as a dimension line, then
+ * the same text set at that measure on a ruled sheet, by the browser alone and
+ * with Skiptingar, and a one-line numbered caption. Red is the fault, yellow
+ * the fix. The title is set as the facts' title is (`HeroStats`).
  *
- * Both text columns are the same width, start on the same lines (a subgrid,
- * see `HeroFigureSide`) and have rules of the same length, so the only
- * difference between them is the typesetting. A light red area marks what
- * the browser gets wrong and the yellow highlighter what the package fixed,
- * with the changed glyph itself in red. The package's side shows the three
- * layers: hyphenation and typeset, made on the server (the browser lays it
- * out with `hyphens: manual` and ships no JavaScript for either), and CSS
- * `text-balance` on the title and `text-pretty` on the body. The browser's
- * side wraps greedily. The facts follow in their own section (`HeroStats`).
- *
- * Each text column is as wide as it can be, up to `--hero-measure`: the widest
- * measure at which every fault in the browser's text still shows, measured in
- * the browser (`HeroFigureSide`). 17.5rem until then. From `lg` the notes'
- * columns take what is left.
- *
- * `--hero-gap` is the grid's gutter, the page grid's own from `lg`, and the
- * width of the strip the browser's overflowing words fade out in.
+ * Below `lg` the figures stack under the title. From `lg` each figure's four
+ * parts (measure, browser, Skiptingar, caption) sit on four rows the two
+ * figures share (`grid-rows-subgrid`), so matching parts line up across them
+ * however many lines a sample takes. From `lg` the title takes
+ * columns 1–4 and the figures four columns each from column 5, two to a row,
+ * the same columns the facts use below.
  */
 export function HeroDemo() {
   return (
     <section
-      aria-label={demo.label}
-      className="col-span-full mt-hyhead grid grid-cols-[repeat(2,minmax(0,var(--hero-measure,17.5rem)))] gap-x-(--hero-gap) gap-y-md border-foreground border-y py-xl [--hero-gap:var(--spacing-sm)] lg:grid-cols-[minmax(0,1fr)_repeat(2,minmax(0,var(--hero-measure,17.5rem)))_minmax(0,1fr)] lg:[--hero-gap:var(--grid-gutter)]"
-      data-hero-grid=""
+      aria-labelledby="hero-fixes"
+      className="col-span-full mt-hyhead grid grid-cols-subgrid gap-y-hyblock border-foreground border-t pt-xl lg:gap-y-md"
     >
-      <HighlightStyles />
-      <HeroFigureSide
-        kind="without"
-        label={demo.without.label}
-        notes={demo.without.notes}
+      <h2
+        className="col-span-6 col-start-2 font-hy-text font-medium text-[2.5rem] text-foreground leading-(--text-hy-hero-stat) lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
+        id="hero-fixes"
       >
-        <p className={cn(TITLE_CLASS, "hyphens-auto text-wrap text-hy-lede")}>
-          {demo.title}
-        </p>
-        <p className={cn(EDITOR_CLASS, "hyphens-auto text-wrap")}>{demo.text}</p>
-      </HeroFigureSide>
-      <HeroFigureSide kind="with" label={demo.with.label} notes={demo.with.notes}>
-        <p className={cn(TITLE_CLASS, "hyphens-manual text-balance text-hy-lede")}>
-          {title}
-        </p>
-        <p className={cn(EDITOR_CLASS, "hyphens-manual text-pretty")}>{text}</p>
-      </HeroFigureSide>
+        {demo.title}
+      </h2>
+      {demo.rows.map((row, index) => (
+        <figure
+          className={cn(
+            "col-span-6 col-start-2 flex min-w-0 flex-col gap-md lg:col-span-4 lg:row-span-4 lg:grid lg:grid-rows-subgrid",
+            PLACE[index]
+          )}
+          key={row.id}
+        >
+          <Dimension row={row} />
+          <Panel kind="without" row={row} />
+          <Panel kind="with" row={row} />
+          <figcaption className="text-pretty font-book text-hy-note text-muted">
+            <span className="font-medium text-foreground">
+              {demo.figureLabel} {index + 1}
+            </span>{" "}
+            {row.caption}
+          </figcaption>
+        </figure>
+      ))}
     </section>
   );
 }
