@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import {
   LABEL_CLASS,
   NOTE_CLASS,
-  TITLE_CLASS,
 } from "@/app/components/localhost/fluid-typography/styles";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +23,7 @@ export type SectionLayout = "side" | "wide" | "free";
 type SectionProps = {
   /** The anchor the top bar links to. */
   id: string;
-  /** The section's letter in the page, like `A`. */
+  /** The section's letter in the page, like `a`, set in lower case. */
   number: string;
   label: string;
   /** One line under the title: what the specimen shows. */
@@ -89,7 +88,7 @@ export function Section({
           {number}
         </p>
         <h2
-          className={cn(TITLE_CLASS, "text-balance text-foreground text-hy-title")}
+          className="text-balance font-bold font-hy-text text-foreground text-hy-title [font-variation-settings:'MONO'_50]"
           id={titleId}
         >
           {label}

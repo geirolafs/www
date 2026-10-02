@@ -76,17 +76,19 @@ export const localhostSkiptingarContent = {
      * Two facts, each a number and the sentence that reads on from it: what
      * it is, and why it matters to someone setting text.
      */
+    /** The label beside the facts: what the package is built from. */
+    statsTitle: "What it is",
     stats: [
       {
         // The number itself is read from the package, on the server.
         count: "patterns",
         description:
-          "letter patterns from the 2020 Árni Magnússon list mark where a word may break. They need no word list, so new and rare compounds break too.",
+          "Letter patterns from the 2020 Árni Magnússon list mark where a word may break. They need no word list, so new and rare compounds break too.",
       },
       {
         value: "0 kB",
         description:
-          "of JavaScript to hyphenate or typeset on a server-rendered page. The server puts in the soft hyphens and the no-break spaces, so every browser gets the same breaks.",
+          "JavaScript to hyphenate or typeset on a server-rendered page. The server puts in the soft hyphens and the no-break spaces, so every browser gets the same breaks.",
       },
     ],
   },
@@ -237,7 +239,7 @@ export const localhostSkiptingarContent = {
   sections: {
     tryIt: {
       id: "try-it",
-      number: "A",
+      number: "a",
       nav: "Try it",
       label: "Try it",
       explanation:
@@ -245,7 +247,7 @@ export const localhostSkiptingarContent = {
     },
     breaks: {
       id: "breaks",
-      number: "B",
+      number: "b",
       nav: "Breaks",
       label: "Where Icelandic breaks",
       explanation:
@@ -253,7 +255,7 @@ export const localhostSkiptingarContent = {
     },
     noBreaks: {
       id: "no-breaks",
-      number: "C",
+      number: "c",
       nav: "No breaks",
       label: "Where Icelandic doesn’t break",
       explanation:
@@ -261,7 +263,7 @@ export const localhostSkiptingarContent = {
     },
     punctuation: {
       id: "punctuation",
-      number: "D",
+      number: "d",
       nav: "Punctuation",
       label: "Icelandic punctuation",
       explanation:
@@ -269,14 +271,14 @@ export const localhostSkiptingarContent = {
     },
     interfaces: {
       id: "interfaces",
-      number: "E",
+      number: "e",
       nav: "Interfaces",
       label: "Real interfaces",
       explanation: "Real interface problems, such as a heading at phone width.",
     },
     browsers: {
       id: "browsers",
-      number: "F",
+      number: "f",
       nav: "Browsers",
       label: "Same text, every browser",
       explanation:
@@ -284,7 +286,7 @@ export const localhostSkiptingarContent = {
     },
     howItWorks: {
       id: "how-it-works",
-      number: "G",
+      number: "g",
       nav: "How",
       label: "How it works",
       explanation:
@@ -292,7 +294,7 @@ export const localhostSkiptingarContent = {
     },
     install: {
       id: "install",
-      number: "H",
+      number: "h",
       nav: "Install",
       label: "Install",
       explanation:
@@ -300,7 +302,7 @@ export const localhostSkiptingarContent = {
     },
     reference: {
       id: "reference",
-      number: "I",
+      number: "i",
       nav: "Reference",
       label: "Reference",
       explanation:

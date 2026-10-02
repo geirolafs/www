@@ -43,7 +43,7 @@ export const localhostSettleRagContent = {
   sections: {
     tryIt: {
       id: "try-it",
-      number: "A",
+      number: "a",
       nav: "Try it",
       label: "Try it",
       explanation:
@@ -51,7 +51,7 @@ export const localhostSettleRagContent = {
     },
     shape: {
       id: "shape",
-      number: "B",
+      number: "b",
       nav: "The shape",
       label: "The rag is a shape",
       explanation:
@@ -59,7 +59,7 @@ export const localhostSettleRagContent = {
     },
     paragraph: {
       id: "paragraph",
-      number: "C",
+      number: "c",
       nav: "Paragraph",
       label: "The whole paragraph decides",
       explanation:
@@ -67,7 +67,7 @@ export const localhostSettleRagContent = {
     },
     overhangTighten: {
       id: "overhang-tighten",
-      number: "D",
+      number: "d",
       nav: "Overhang",
       label: "Overhang and tighten",
       explanation:
@@ -75,7 +75,7 @@ export const localhostSettleRagContent = {
     },
     howItWorks: {
       id: "how-it-works",
-      number: "E",
+      number: "e",
       nav: "How",
       label: "How it works",
       explanation:
@@ -83,7 +83,7 @@ export const localhostSettleRagContent = {
     },
     browserWrapping: {
       id: "browser-wrapping",
-      number: "F",
+      number: "f",
       nav: "Browsers",
       label: "Browser wrapping",
       explanation:
@@ -91,7 +91,7 @@ export const localhostSettleRagContent = {
     },
     install: {
       id: "install",
-      number: "G",
+      number: "g",
       nav: "Install",
       label: "Install",
       explanation:
@@ -99,7 +99,7 @@ export const localhostSettleRagContent = {
     },
     limitations: {
       id: "limitations",
-      number: "H",
+      number: "h",
       nav: "Limits",
       label: "Limitations",
       explanation:
@@ -107,7 +107,7 @@ export const localhostSettleRagContent = {
     },
     reference: {
       id: "reference",
-      number: "I",
+      number: "i",
       nav: "Reference",
       label: "Reference",
       explanation:

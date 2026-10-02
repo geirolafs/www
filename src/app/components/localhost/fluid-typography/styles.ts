@@ -12,10 +12,10 @@ export const LABEL_CLASS = "font-medium text-foreground text-hy-caption";
 
 /*
  * The type levels under a section's header, largest first. The header itself
- * (letter, serif title, description) is set in `Section`.
+ * (letter, semi-mono bold title, description) is set in `Section`.
  */
 
-/** A part inside a section, such as "CSS it pairs with": the serif, a step down from the title. */
+/** A part inside a section, such as "CSS it pairs with": the serif, a step below the section title. */
 export const SUBTITLE_CLASS =
   "text-balance font-hy-title font-bold text-foreground text-hy-lede";
 
