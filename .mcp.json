@@ -3,6 +3,14 @@
     "react-grab": {
       "type": "http",
       "url": "http://localhost:4723/mcp"
+    },
+    "css-studio": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "cssstudio"
+      ]
     }
   }
 }

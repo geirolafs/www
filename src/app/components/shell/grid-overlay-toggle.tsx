@@ -30,7 +30,7 @@ const GridOverlay = dynamic(() => import("./grid-overlay").then(m => m.GridOverl
  * inputs today, but a shortcut that eats keystrokes the first time one is added
  * is a bug that gets found the slow way.
  */
-const isTypingInto = (target: EventTarget | null) => {
+export const isTypingInto = (target: EventTarget | null) => {
   if (!(target instanceof HTMLElement)) {
     return false;
   }

@@ -5,6 +5,7 @@ import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { CssStudio } from "@/components/shell/css-studio";
 import { GridOverlayToggle } from "@/components/shell/grid-overlay-toggle";
 import { siteConfig } from "@/lib/config/site";
 import { jsonLd } from "@/lib/utils";
@@ -114,6 +115,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {process.env.NODE_ENV === "development" && (
           <>
+            {/* react-grab 0.1.37 sizes its overlay layers from the viewport,
+                so a 0-wide or 0-tall viewport (DevTools docked over the whole
+                page, a hidden tab) gives it empty OffscreenCanvases, and its
+                `drawImage` of one throws InvalidStateError into the dev
+                overlay. An empty canvas draws nothing anyway, so this skips
+                that one case and passes every other call through. react-grab
+                0.2.0 no longer draws through OffscreenCanvas, so drop this
+                when the pin below moves past 0.1.37. */}
+            <script
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: dev-only guard that must be in place before react-grab draws, static string
+              dangerouslySetInnerHTML={{
+                __html:
+                  "(function(){if(typeof OffscreenCanvas==='undefined')return;var p=CanvasRenderingContext2D.prototype,d=p.drawImage;p.drawImage=function(s){if(s instanceof OffscreenCanvas&&(s.width===0||s.height===0))return;return d.apply(this,arguments)}})();",
+              }}
+            />
             {/* Pinned to the react-grab that @react-grab/mcp@0.1.37 depends on
                 in bun.lock — the browser client and the local MCP server speak
                 a private protocol, so they must not drift apart. Bump all
@@ -168,6 +184,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SpeedInsights />
         {/* shift+G, as in Figma. The columns load on the first press. */}
         <GridOverlayToggle />
+        {process.env.NODE_ENV === "development" && <CssStudio />}
       </body>
     </html>
   );
