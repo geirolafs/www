@@ -149,11 +149,11 @@ export const localhostSkiptingarClientContent = {
     /** Under the settings, until one is pointed at, focused or tapped. */
     hint: "Point at a setting, or tap it, to read what it does.",
     typographic: {
-      label: "Typographic rules (new)",
+      label: "Better breaks",
       tip: "On by default, and you can turn it off. These rules drop legal breaks that read badly, such as ó-lán, the break before a linking syllable in sveitar-stjórnar-kosningum, and a break inside a foreign name like Icelandair. Off gives the official Ritreglur minimums only. The rules are new and under development, so turn them off if they give odd results.",
     },
     typeset: {
-      label: "Typeset",
+      label: "Locale details",
       tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr. and 30. september, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash.",
     },
     showBreaks: {
@@ -161,7 +161,7 @@ export const localhostSkiptingarClientContent = {
       tip: "Draws a red · for every soft hyphen. Puts an amber fill behind every no-break space and no-break hyphen (U+2011). This shows what the components put in.",
     },
     textWrap: {
-      label: "text-wrap",
+      label: "CSS text-wrap",
       tip: "On by default, and you can turn it off. It is CSS you add to the page: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off fills each line before it starts the next.",
     },
     /** The result box's width slider, in px. */

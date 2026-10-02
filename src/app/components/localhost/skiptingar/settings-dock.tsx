@@ -91,8 +91,8 @@ export function SettingsDock() {
   const switches = [
     [liveEditor.typographic.label, settings.typographic],
     [liveEditor.typeset.label, settings.typeset],
-    [liveEditor.showBreaks.label, settings.showBreaks],
     [liveEditor.textWrap.label, settings.pretty],
+    [liveEditor.showBreaks.label, settings.showBreaks],
   ] as const;
 
   return (

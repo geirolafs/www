@@ -678,7 +678,7 @@ export default function Page() {
       },
       {
         id: "typographic",
-        title: "Typographic rules (new, on by default)",
+        title: "Typographic rules (on by default)",
         body: [
           {
             text: "The typographic rules keep only some of the legal breaks. Body words need 6 or more letters, with 2 before a break and 3 after, so ",
@@ -977,7 +977,7 @@ export default function Page() {
         },
         {
           id: "typographic",
-          title: "Typographic rules (new, on by default)",
+          title: "Typographic rules (on by default)",
           body: [
             {
               text: "The typographic rules then drop legal breaks that read badly. They are new and under development, so they may change and give odd results. Turn them off in Try it, or with ",

@@ -48,16 +48,16 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
               tip={content.typeset.tip}
             />
             <Switch
-              checked={settings.showBreaks}
-              label={content.showBreaks.label}
-              onChange={value => setSetting("showBreaks", value)}
-              tip={content.showBreaks.tip}
-            />
-            <Switch
               checked={settings.pretty}
               label={content.textWrap.label}
               onChange={value => setSetting("pretty", value)}
               tip={content.textWrap.tip}
+            />
+            <Switch
+              checked={settings.showBreaks}
+              label={content.showBreaks.label}
+              onChange={value => setSetting("showBreaks", value)}
+              tip={content.showBreaks.tip}
             />
           </ControlGroup>
         </div>
