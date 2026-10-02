@@ -109,8 +109,144 @@ export const localhostSkiptingarContent = {
     navLabel: "Sections",
   },
 
-  /** Shown in each section until its specimen is built. */
-  placeholder: "Not built yet.",
+  /**
+   * Section I, under the pattern table and the related work. The pattern
+   * sources, the licences and the sizes themselves are already shown (the
+   * colophon, the install requirements, the cost chart), so this holds the
+   * rest. The test line is built from `tests.json` in the component:
+   * `testsAllPass` when nothing failed, `testsSomeFail` otherwise, with
+   * `{n}` the total and `{pass}` the passing count.
+   */
+  reference: {
+    testsAllPass: "{n} tests.",
+    testsSomeFail: "{pass} of {n} tests pass.",
+    testsErrorOne: "{n} error outside any test.",
+    testsErrorMany: "{n} errors outside any test.",
+    groups: [
+      {
+        id: "data",
+        label: "Data and rules",
+        items: [
+          {
+            id: "exceptions-file",
+            term: "Exception file",
+            body: [
+              { text: "One word per line, in lowercase, with " },
+              { text: "-", code: true },
+              { text: " for a break and " },
+              { text: "=", code: true },
+              { text: " for a compound joint. A line that starts with " },
+              { text: "#", code: true },
+              {
+                text: " is a comment. A word on the list replaces the pattern breaks for it, and the minimums on both sides still apply. A real line: ",
+              },
+              { text: "þjóð=fé-lags=um=ræða", code: true },
+              {
+                text: ". A test reads the file on every run. A capital letter, a digit or two separators in a row fail it, and the error names the line.",
+              },
+            ],
+          },
+          {
+            id: "one-letter",
+            term: "One-letter breaks",
+            body: [
+              { text: "The Ritreglur rules for breaking after one letter, as in " },
+              { text: "á-stríða", sample: true },
+              { text: ", follow " },
+              { text: "skiptir", href: "https://github.com/sveinbjornt/skiptir" },
+              { text: ", the Python package." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "support",
+        label: "Support",
+        items: [
+          {
+            id: "browsers",
+            term: "Browsers and Node",
+            body: [
+              {
+                text: "The typeset rules use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 got it earlier, so Safari sets the limit. The client entry runs the same code and has the same limit. Server-side use has no browser limit and needs Node 18 or newer.",
+              },
+            ],
+          },
+          {
+            id: "fonts",
+            term: "Fonts",
+            body: [
+              {
+                text: "Check that your font has glyphs for U+2011, the non-breaking hyphen ",
+              },
+              { text: "typeset()", code: true },
+              {
+                text: " puts in kennitala and phone numbers, and for U+00A0, the no-break space. Many fonts have no U+2011. Geist and Bespoke Serif, the faces on this page, lack it, so the browser draws that one hyphen from a fallback font.",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "checks",
+        label: "How it is checked",
+        items: [
+          {
+            id: "tests",
+            term: "Tests",
+            counts: true,
+            body: [
+              { text: "Counted from a real run of " },
+              { text: "bun test", code: true },
+              { text: " on the package folder. " },
+              { text: "bun run tests:count", code: true },
+              { text: " writes the numbers to " },
+              { text: "tests.json", code: true },
+              { text: ", and this page reads them from there." },
+            ],
+          },
+          {
+            id: "sizes",
+            term: "Sizes",
+            body: [
+              { text: "bun run size", code: true },
+              {
+                text: " builds a small entry for each way of using the package, as a site’s bundler would: minified, split into chunks, React left out. It adds up the files that load at once and, for the browser setup, the chunks that load later. Each file is compressed on its own with brotli (quality 11) and gzip (level 9), the way a browser downloads it, and the sum is rounded to 0.1 kB. Shared code counts in every setup that uses it. The sizes on this page come from ",
+              },
+              { text: "sizes.json", code: true },
+              { text: ", which that script writes." },
+            ],
+          },
+          {
+            id: "speed",
+            term: "Speed",
+            body: [
+              { text: "bun run bench", code: true },
+              {
+                text: " times the core with made-up character widths, so the browser’s own measuring is left out. It hyphenates and typesets a text of 20.000 words. Each case repeats for about 300 ms and the script reports the mean. It prints the results and keeps none, so this page shows no speed figures.",
+              },
+            ],
+          },
+          {
+            id: "source",
+            term: "Source",
+            body: [
+              { text: "The code, the tests and these scripts are in " },
+              {
+                text: "geirolafs/www on GitHub",
+                href: "https://github.com/geirolafs/www/tree/master/src/packages/skiptingar",
+              },
+              { text: ". Run " },
+              { text: "bun run size", code: true },
+              { text: " and " },
+              { text: "bun run bench", code: true },
+              { text: " in the package folder to measure them yourself." },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 
   colophon: {
     label: "Colophon",
@@ -897,6 +1033,210 @@ export default function Page() {
         },
       ],
       text: "UNESCO og NATO haldast óskipt, en KEFLAVÍKURFLUGVÖLLUR skiptist.",
+    },
+  },
+
+  /**
+   * Section B, Where Icelandic breaks. Every rule is checked against
+   * `src/packages/skiptingar/src/hyphenate.ts`. The example words are set by
+   * the package when the page renders, so no break position is typed here: an
+   * `options` object is passed to `hyphenate()` as it stands. In the part
+   * texts, `{endings}`, `{exceptions}`, `{min}` and `{max}` are filled in
+   * from the package's own exports.
+   */
+  breaksSection: {
+    order: {
+      label: "How a word gets its breaks",
+      steps: [
+        {
+          id: "patterns",
+          title: "Patterns",
+          body: [
+            {
+              text: "The 2020 patterns from the Árni Magnússon Institute mark where a word may break. They know syllables, not compounds, so they also break inside the parts of a compound, and they miss a few breaks the exception list adds.",
+            },
+          ],
+        },
+        {
+          id: "compounds",
+          title: "Compound knowledge",
+          body: [
+            {
+              text: "Rules then look for the joints between the parts. A break before a linking syllable is dropped, and a heading breaks at the joints it finds.",
+            },
+          ],
+        },
+        {
+          id: "exceptions",
+          title: "Exceptions",
+          body: [
+            {
+              text: "A short list of {exceptions} words, checked by hand, has the last word. A listed word takes its breaks from the list, and its joints are never dropped.",
+            },
+          ],
+        },
+      ],
+    },
+    rules: {
+      label: "Rules",
+      hint: [
+        {
+          text: "Each example is set by the package, not typed. Where there are two, they show the same word under two settings.",
+        },
+      ],
+      items: [
+        {
+          id: "joints",
+          title: "Joints first, in headings",
+          body: [
+            {
+              text: "In heading mode a word breaks only at its compound joints, when one fits. The parts stay whole.",
+            },
+          ],
+          word: "framkvæmdarvaldið",
+          shown: [
+            { label: "Body", options: { mode: "body" } },
+            { label: "Heading", options: { mode: "heading" } },
+          ],
+        },
+        {
+          id: "linking",
+          title: "Linking syllables",
+          body: [
+            { text: "A syllable such as " },
+            { text: "ar", sample: true },
+            { text: ", " },
+            { text: "ur", sample: true },
+            { text: ", " },
+            { text: "is", sample: true },
+            { text: " or " },
+            { text: "ir", sample: true },
+            {
+              text: " often joins the parts of a compound. Typographic rules drop the break before it, when the word can break after it. The syllable stays with the part before it.",
+            },
+          ],
+          word: "fornaldarfrægð",
+          shown: [
+            { label: "Typographic", options: { rules: "typographic" } },
+            { label: "Ritreglur", options: { rules: "ritreglur" } },
+          ],
+        },
+        {
+          id: "names",
+          title: "Place names and patronymics",
+          body: [
+            {
+              text: "In heading mode a capitalised name that ends in one of {endings} endings, such as ",
+            },
+            { text: "-dóttir", sample: true },
+            { text: " or " },
+            { text: "-eyri", sample: true },
+            {
+              text: ", breaks before the ending, if the word is long enough to break in a heading at all. This only picks one of the breaks the patterns already allow.",
+            },
+          ],
+          word: "Sigurðardóttir",
+          shown: [
+            { label: "Body", options: { mode: "body" } },
+            { label: "Heading", options: { mode: "heading" } },
+          ],
+        },
+        {
+          id: "listed",
+          title: "Listed words",
+          body: [
+            {
+              text: "The exception list marks a word’s breaks, and its joints with a ",
+            },
+            { text: "=", code: true },
+            {
+              text: ". It wins over the patterns, so a compound the patterns break inside its parts can still break at its joints.",
+            },
+          ],
+          word: "þjóðfélagsumræða",
+          shown: [
+            {
+              label: "Patterns only",
+              options: { mode: "heading", exceptions: false },
+            },
+            { label: "With the list", options: { mode: "heading" } },
+          ],
+        },
+        {
+          id: "foreign",
+          title: "Foreign names",
+          body: [
+            {
+              text: "A capitalised word with c, q or w is not Icelandic, and Icelandic patterns split it badly. Typographic rules keep it whole. Ritreglur does not.",
+            },
+          ],
+          word: "Icelandair",
+          shown: [
+            { label: "Typographic", options: { rules: "typographic" } },
+            { label: "Ritreglur", options: { rules: "ritreglur" } },
+          ],
+        },
+        {
+          id: "acronyms",
+          title: "Acronyms",
+          body: [
+            {
+              text: "An all-caps word of {min} to {max} letters never breaks. That is a design choice, not a spelling rule. Longer all-caps words still break.",
+            },
+          ],
+          word: "UNESCO",
+          shown: [
+            { label: "Default", options: {} },
+            {
+              label: "Acronyms not skipped, Ritreglur",
+              options: { rules: "ritreglur", skipAcronyms: false },
+            },
+          ],
+        },
+      ],
+    },
+    sets: {
+      label: "Two rule sets",
+      hint: [
+        {
+          text: "The Rules setting picks one. Typographic is the default. Both read the same patterns and differ in which breaks they keep.",
+        },
+      ],
+      items: [
+        {
+          id: "typographic",
+          title: "Typographic",
+          body: [
+            {
+              text: "Keeps only the breaks that look good. Body text breaks words of 6 letters or more, with at least 2 letters before a break and 3 after. A heading breaks words of 12 letters or more, with 3 before and 4 after. It also drops the break before a linking syllable and keeps foreign names whole.",
+            },
+          ],
+          word: "framkvæmdarvaldið",
+          shown: [
+            { label: "Body", options: { rules: "typographic", mode: "body" } },
+            { label: "Heading", options: { rules: "typographic", mode: "heading" } },
+          ],
+        },
+        {
+          id: "ritreglur",
+          title: "Ritreglur",
+          body: [
+            {
+              text: "Keeps every break the patterns allow in body text, close to what the official spelling rules allow. It may break before a linking syllable, and it breaks foreign names too. A heading still breaks at its joints when one fits, and the exception list and acronyms still apply. Body text and headings use the same limits: words of 4 letters or more, with at least 1 letter before a break and 2 after.",
+            },
+          ],
+          word: "framkvæmdarvaldið",
+          shown: [{ label: "Body", options: { rules: "ritreglur", mode: "body" } }],
+        },
+      ],
+    },
+    editor: {
+      label: "Fix a word",
+      hint: [
+        {
+          text: "Type a word. The editor starts from the breaks the engine gives under Ritreglur. Click a gap to switch it between none, break and compound joint, then copy the line for the exception list.",
+        },
+      ],
     },
   },
 

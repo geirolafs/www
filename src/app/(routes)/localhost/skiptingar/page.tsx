@@ -3,8 +3,9 @@ import { Hero } from "@/app/components/localhost/fluid-typography/hero";
 import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
 import { Section, Specimen } from "@/app/components/localhost/fluid-typography/section";
 import { Shell } from "@/app/components/localhost/fluid-typography/shell";
-import { NOTE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { parseBlocks } from "@/app/components/localhost/skiptingar/blocks";
+import { BreakEditor } from "@/app/components/localhost/skiptingar/break-editor";
+import { Breaks } from "@/app/components/localhost/skiptingar/breaks";
 import { Compare, PatternTable } from "@/app/components/localhost/skiptingar/compare";
 import { HeroDemo } from "@/app/components/localhost/skiptingar/hero-demo";
 import { HeroStats } from "@/app/components/localhost/skiptingar/hero-stats";
@@ -13,11 +14,14 @@ import { initialOutput } from "@/app/components/localhost/skiptingar/initial-out
 import { Install } from "@/app/components/localhost/skiptingar/install";
 import { LiveEditor } from "@/app/components/localhost/skiptingar/live-editor";
 import { PlaygroundProvider } from "@/app/components/localhost/skiptingar/playground";
+import { Reference } from "@/app/components/localhost/skiptingar/reference";
 import { Related } from "@/app/components/localhost/skiptingar/related";
 import {
+  Acronyms,
   CardGrid,
   HeadingSample,
   MixedLanguages,
+  Names,
 } from "@/app/components/localhost/skiptingar/samples";
 import { SettingsDock } from "@/app/components/localhost/skiptingar/settings-dock";
 import { Sizes } from "@/app/components/localhost/skiptingar/sizes";
@@ -32,10 +36,10 @@ const {
   hero,
   shell,
   sections,
-  placeholder,
   colophon,
   liveEditor,
   samplesSection: samples,
+  breaksSection: breaksContent,
 } = localhostSkiptingarContent;
 
 // The editor's first output, block by block, with its initial settings, so the
@@ -97,7 +101,25 @@ export default function Page() {
         </Section>
 
         <Section {...sections.breaks} layout="side">
-          <p className={NOTE_CLASS}>{placeholder}</p>
+          <Breaks />
+          <Specimen
+            hint={<RichText parts={samples.names.hint} />}
+            label={samples.names.label}
+          >
+            <Names />
+          </Specimen>
+          <Specimen
+            hint={<RichText parts={samples.acronyms.hint} />}
+            label={samples.acronyms.label}
+          >
+            <Acronyms />
+          </Specimen>
+          <Specimen
+            hint={<RichText parts={breaksContent.editor.hint} />}
+            label={breaksContent.editor.label}
+          >
+            <BreakEditor />
+          </Specimen>
         </Section>
 
         <Section {...sections.noBreaks} layout="wide">
@@ -150,6 +172,7 @@ export default function Page() {
         <Section {...sections.reference} layout="side">
           <PatternTable />
           <Related />
+          <Reference />
         </Section>
 
         <SettingsDock />

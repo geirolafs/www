@@ -18,6 +18,7 @@
     "generate:posters": "bun run scripts/generate-portfolio-posters.ts",
     "generate:skiptingar": "bun run src/packages/skiptingar/scripts/build-data.ts",
     "test": "bun test",
+    "tests:count": "bun run src/packages/skiptingar/scripts/tests.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
