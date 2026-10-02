@@ -22,6 +22,7 @@ import {
 import { SettingsDock } from "@/app/components/localhost/skiptingar/settings-dock";
 import { Sizes } from "@/app/components/localhost/skiptingar/sizes";
 import { Typography } from "@/app/components/localhost/skiptingar/typography";
+import { subsites } from "@/lib/config/subsites";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 // deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
 import { CleanCopy } from "@/packages/skiptingar/src/client/clean-copy";
@@ -47,6 +48,9 @@ export const metadata: Metadata = {
   // `absolute` drops the site's title suffix: this page stands on its own.
   title: { absolute: pageContent.title },
   description: pageContent.description,
+  // The page lives on its own host; without this it inherits the root
+  // layout's canonical, which points at the home page.
+  alternates: { canonical: subsites.skiptingar.origin },
   robots: {
     index: false,
     follow: false,
