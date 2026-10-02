@@ -26,7 +26,7 @@
  * fonts then fail to compile. `bun run build` stays strict.
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { closeSync, existsSync, openSync, readSync } from "node:fs";
 import { mkdir, rename } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -52,7 +52,18 @@ function isWoff2(bytes: Uint8Array): boolean {
 /** A file is in place only when it exists and starts like a WOFF2 file. */
 function isInPlace(file: string): boolean {
   const path = join(FONT_DIR, file);
-  return existsSync(path) && isWoff2(readFileSync(path));
+  if (!existsSync(path)) {
+    return false;
+  }
+  // Only the signature matters, so skip reading the whole font.
+  const head = Buffer.alloc(WOFF2_SIGNATURE.length);
+  const fd = openSync(path, "r");
+  try {
+    readSync(fd, head, 0, head.length, 0);
+  } finally {
+    closeSync(fd);
+  }
+  return isWoff2(head);
 }
 
 /** Ends the script: a warning with `--optional`, an error otherwise. */
@@ -112,9 +123,7 @@ async function main(): Promise<void> {
   }
 
   await mkdir(FONT_DIR, { recursive: true });
-  for (const file of missing) {
-    await download(file, token);
-  }
+  await Promise.all(missing.map(file => download(file, token)));
 }
 
 main().catch((error: unknown) => {
