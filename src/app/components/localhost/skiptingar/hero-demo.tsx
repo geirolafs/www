@@ -5,30 +5,16 @@ import {
 import {
   HeroFigureSide,
   HighlightStyles,
-  type Known,
 } from "@/app/components/localhost/skiptingar/hero-figure";
 import { PAGE_TYPESET } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { NO_BREAK_SPACE, processSegments, SOFT_HYPHEN } from "@/packages/skiptingar/src";
+import { processSegments } from "@/packages/skiptingar/src";
 
 const { demo } = localhostSkiptingarContent.hero;
 
 const title = processed(demo.title);
 const text = processed(demo.text);
-
-/**
- * What the figure's notes need from the server's text: the phrases the typeset
- * rules glued. A glued phrase is a run of words joined by no-break spaces, so
- * the laid-out text no longer shows it as a phrase.
- */
-const known: Known = {
-  glued: [title, text].flatMap(output =>
-    [...output.replaceAll(SOFT_HYPHEN, "").matchAll(/[^ ]+(?:\u00A0[^ ]+)+/g)].map(
-      match => match[0].replaceAll(NO_BREAK_SPACE, " ")
-    )
-  ),
-};
 
 /** The server's two layers: the patterns, then the typeset rules (the page's defaults). */
 function processed(text: string): string {
@@ -40,22 +26,35 @@ function processed(text: string): string {
 }
 
 /**
- * The claim in one look, under the lede, drawn as a figure rather than a
- * specimen: the same title and paragraph in the same narrow column, as the
- * browser sets it alone and with skiptingar. Each side marks what this
- * layout shows, faults with a red wave and fixes with a yellow band, and
- * names each in its margin at the line it happens on (`HeroFigureSide`). The
- * package's side shows the three layers: hyphenation and typeset, made on
- * the server (the browser lays it out with `hyphens: manual` and ships no
- * JavaScript for either), and CSS `text-balance` on the title and
- * `text-pretty` on the body. The browser's side wraps greedily. No slider: the
- * column is narrow enough that the difference shows at any screen width.
+ * The claim in one look, under the lede: the same title and paragraph as the
+ * browser sets it alone and with skiptingar, side by side on one grid. Two
+ * columns below `lg`, with each side's notes in a list under it; four from
+ * `lg`, the notes in the outer two, each at its line.
+ *
+ * Both text columns are the same width, start on the same lines (a subgrid,
+ * see `HeroFigureSide`) and have rules of the same length, so the only
+ * difference between them is the typesetting. A light red area marks what
+ * the browser gets wrong and the yellow highlighter what the package fixed,
+ * with the changed glyph itself in red. The package's side shows the three
+ * layers: hyphenation and typeset, made on the server (the browser lays it
+ * out with `hyphens: manual` and ships no JavaScript for either), and CSS
+ * `text-balance` on the title and `text-pretty` on the body. The browser's
+ * side wraps greedily. The facts follow in their own section (`HeroStats`).
+ *
+ * Each text column is as wide as it can be, up to `--hero-measure`: the widest
+ * measure at which every fault in the browser's text still shows, measured in
+ * the browser (`HeroFigureSide`). 17.5rem until then. From `lg` the notes'
+ * columns take what is left.
+ *
+ * `--hero-gap` is the grid's gutter, the page grid's own from `lg`, and the
+ * width of the strip the browser's overflowing words fade out in.
  */
 export function HeroDemo() {
   return (
     <section
       aria-label={demo.label}
-      className="col-span-full grid gap-x-project gap-y-xl pt-hyhead xl:grid-cols-2"
+      className="col-span-full mt-hyhead grid grid-cols-[repeat(2,minmax(0,var(--hero-measure,17.5rem)))] gap-x-(--hero-gap) gap-y-md border-foreground border-y py-xl [--hero-gap:var(--spacing-sm)] lg:grid-cols-[minmax(0,1fr)_repeat(2,minmax(0,var(--hero-measure,17.5rem)))_minmax(0,1fr)] lg:[--hero-gap:var(--grid-gutter)]"
+      data-hero-grid=""
     >
       <HighlightStyles />
       <HeroFigureSide
@@ -68,12 +67,7 @@ export function HeroDemo() {
         </p>
         <p className={cn(EDITOR_CLASS, "hyphens-auto text-wrap")}>{demo.text}</p>
       </HeroFigureSide>
-      <HeroFigureSide
-        kind="with"
-        known={known}
-        label={demo.with.label}
-        notes={demo.with.notes}
-      >
+      <HeroFigureSide kind="with" label={demo.with.label} notes={demo.with.notes}>
         <p className={cn(TITLE_CLASS, "hyphens-manual text-balance text-hy-lede")}>
           {title}
         </p>

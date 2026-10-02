@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type HeroProps = {
   /** The page's name for a screen reader, without the typed hyphens. */
@@ -19,19 +20,59 @@ type HeroProps = {
   demo?: ReactNode;
   /** The facts, set under the demo: a `<ul>` of numbers, each with a sentence. */
   stats?: ReactNode;
+  /**
+   * Lay the wash under the hero (`hy-hero-wash`, globals.css): a gradient
+   * multiplied over the page colour, so the hero reads apart from the
+   * sections under it.
+   */
+  wash?: boolean;
 };
 
 /**
+ * The title with each typed hyphen in red (`hy-signal`), the colour the
+ * specimens below give a break.
+ */
+function marked(title: string) {
+  let offset = 0;
+  return title.split(/(-)/).map(part => {
+    const key = offset;
+    offset += part.length;
+    return part === "-" ? (
+      <span className="text-hy-signal" key={key}>
+        -
+      </span>
+    ) : (
+      part
+    );
+  });
+}
+
+/**
  * The front of a fluid-typography page: its name, set in Geist across the full
- * width of the grid, then a tagline in the serif and a sentence on what it is.
+ * width of the grid, then one paragraph in the serif: the tagline, then what it is.
  * A page can set a demo and a row of facts under the lede; without them the
  * hero ends at the lede, and the specimens come in the sections below.
  * The section is an `@container`, so `text-hy-hero` sizes the name from the
  * grid's width.
  */
-export function Hero({ name, title, tagline, lede, lang, fit, demo, stats }: HeroProps) {
+export function Hero({
+  name,
+  title,
+  tagline,
+  lede,
+  lang,
+  fit,
+  demo,
+  stats,
+  wash,
+}: HeroProps) {
   return (
-    <section className="hy-hero @container page-grid pt-project pb-hysection">
+    <section
+      className={cn(
+        "hy-hero @container page-grid pt-project pb-hysection",
+        wash && "hy-hero-wash"
+      )}
+    >
       {/* The hyphens are part of the picture, so a screen reader gets the word.
           `hy-hero` on the section names the view timeline the bar's page
           name fades in on (globals.css). Setting `--text-hy-hero` here, on the
@@ -46,15 +87,11 @@ export function Hero({ name, title, tagline, lede, lang, fit, demo, stats }: Her
         }
       >
         <span className="sr-only">{name}</span>
-        <span aria-hidden="true">{title}</span>
+        <span aria-hidden="true">{marked(title)}</span>
       </h1>
 
       <p className="col-span-full mt-28 text-pretty border-foreground border-t pt-xl font-book font-hy-title text-foreground text-hy-intro">
-        {tagline}
-      </p>
-
-      <p className="col-span-full mt-md max-w-measure text-pretty font-book text-hy-body text-muted">
-        {lede}
+        {tagline} {lede}
       </p>
 
       {demo}

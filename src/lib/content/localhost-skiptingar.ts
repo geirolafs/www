@@ -72,12 +72,12 @@ export const localhostSkiptingarContent = {
       title: "Kjörsókn í Hrafnafjarðarbyggð aldrei meiri í sveitarstjórnarkosningum",
       text: 'Kjörsókn í sveitarstjórnarkosningunum 16. maí 2026 var sú mesta sem mælst hefur í Hrafnafjarðarbyggð, 91,4%. "Þetta er söguleg niðurstaða," sagði dr. Guðrún Sigurðardóttir, formaður yfirkjörstjórnar, kl. 14.30 daginn eftir.',
     },
+    /** The label beside the facts: what the package is built from. */
+    statsTitle: "What it is",
     /**
      * Two facts, each a number and the sentence that reads on from it: what
      * it is, and why it matters to someone setting text.
      */
-    /** The label beside the facts: what the package is built from. */
-    statsTitle: "What it is",
     stats: [
       {
         // The number itself is read from the package, on the server.

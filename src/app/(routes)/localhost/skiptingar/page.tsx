@@ -12,7 +12,6 @@ import { HowItWorks } from "@/app/components/localhost/skiptingar/how-it-works";
 import { initialOutput } from "@/app/components/localhost/skiptingar/initial-output";
 import { Install } from "@/app/components/localhost/skiptingar/install";
 import { LiveEditor } from "@/app/components/localhost/skiptingar/live-editor";
-import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { PlaygroundProvider } from "@/app/components/localhost/skiptingar/playground";
 import { Reference } from "@/app/components/localhost/skiptingar/reference";
 import { Related } from "@/app/components/localhost/skiptingar/related";
@@ -27,7 +26,6 @@ import { Typography } from "@/app/components/localhost/skiptingar/typography";
 import { subsites } from "@/lib/config/subsites";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 // deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
-import { SOFT_HYPHEN } from "@/packages/skiptingar/src/characters";
 import { CleanCopy } from "@/packages/skiptingar/src/client/clean-copy";
 
 const {
@@ -81,8 +79,8 @@ export default function Page() {
           name={hero.name}
           stats={<HeroStats />}
           tagline={hero.tagline}
-          // The breaks as the red dots the specimens below use.
-          title={<MarkedText text={hero.title.replaceAll("-", SOFT_HYPHEN)} />}
+          title={hero.title}
+          wash
         />
       }
       lang="is"

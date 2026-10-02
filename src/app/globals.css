@@ -1276,6 +1276,27 @@ html:has(.hy-shell) {
   view-timeline-name: --hy-hero;
 }
 
+/* The hero's wash (Figma `www` 2090:8801): a near-white at the top that
+   cools to a pale blue at the hero's foot, multiplied over the page's warm
+   white. The top matches the page, so the wash only shows as the hero runs
+   down; the bar under it is the plain page colour again, so leaving the
+   hero reads as a step back to the paper. */
+.hy-hero-wash {
+  background-color: var(--color-background);
+  background-image: linear-gradient(
+    to top,
+    #d0dde8,
+    #d2dee9 14.29%,
+    #d8e2ea 28.57%,
+    #e1e8ed 42.86%,
+    #ecf0f1 57.14%,
+    #f5f6f4 71.43%,
+    #fbfaf5 85.71%,
+    #fdfbf6
+  );
+  background-blend-mode: multiply;
+}
+
 /* The hero figure's marks (`hero-figure.tsx`): the browser's faults get a red
    wave, the package's fixes a yellow highlighter band through the foot of the
    letters, light enough that the text still reads as set. These classes mark
