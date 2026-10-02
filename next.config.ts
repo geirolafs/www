@@ -6,16 +6,6 @@ import {
   REMOTE_IMAGE_HOSTS,
 } from "./src/lib/config/image";
 
-if (process.env.NODE_ENV === "development") {
-  // Dev-only tooling, imported lazily so a production install without
-  // devDependencies can still load this config. Never blocks `next dev`.
-  import("@react-grab/mcp/server")
-    .then(({ startMcpServer }) => startMcpServer())
-    .catch((error: unknown) => {
-      console.warn("[react-grab] MCP server failed to start:", error);
-    });
-}
-
 const nextConfig: NextConfig = {
   // Enable Cache Components for explicit caching control
   cacheComponents: true,
