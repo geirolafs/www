@@ -68,6 +68,18 @@ export const localhostContent = {
       preview: "/localhost/previews/portfolio-preview.webp",
     },
     {
+      href: "/localhost/settle-rag",
+      title: "Settle Rag",
+      description: "Where a ragged paragraph should break, judged as one shape.",
+      preview: "/localhost/previews/hyphenation.webp",
+    },
+    {
+      href: "/localhost/skiptingar",
+      title: "Skiptingar",
+      description: "Where Icelandic text may break, and where it must not.",
+      preview: "/localhost/previews/hyphenation.webp",
+    },
+    {
       href: "/localhost/spring-hover",
       title: "Spring hover",
       description: "Letters on springs that give way to the cursor and settle back.",
