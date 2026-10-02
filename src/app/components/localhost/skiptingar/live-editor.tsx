@@ -1,9 +1,7 @@
 "use client";
 
 import { useMemo, useRef } from "react";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
 import { NO_BREAK_SPACE, SOFT_HYPHEN, useHyphenateAll } from "skiptingar/client";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
 
 import { Measure } from "@/app/components/localhost/fluid-typography/measure";
 import {

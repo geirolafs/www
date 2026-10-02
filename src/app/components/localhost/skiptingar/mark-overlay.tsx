@@ -2,7 +2,6 @@
 
 import type { ReactNode, RefObject } from "react";
 import { useLayoutEffect, useRef, useState } from "react";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
 import { NO_BREAK_SPACE, NON_BREAKING_HYPHEN, SOFT_HYPHEN } from "skiptingar/client";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
 

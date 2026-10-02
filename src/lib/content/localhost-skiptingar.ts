@@ -3,7 +3,7 @@
  * typography. The Icelandic texts are the samples; the English strings are the
  * page's own labels. The copy that client components read (the Try it editor,
  * the width slider) is defined in `localhost-skiptingar-client.ts`. The install
- * commands show with a status line that gives the version on npm.
+ * commands show with a status line.
  *
  * The page presents version 1 as three layers, all on the server and on by
  * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
@@ -242,7 +242,7 @@ export const localhostSkiptingarContent = {
             body: [
               { text: "bun run bench", code: true },
               {
-                text: " times the core with made-up character widths and leaves out the browser’s own measuring. It hyphenates a text of 20.000 words and adds the locale details. Each case repeats for about 300 ms, and the script reports the mean. It prints the results but saves none, so this page shows no speed figures.",
+                text: " times hyphenate() and typeset() each on its own, on a text of 20.000 words. Each one repeats for about 300 ms, and the script prints words per second. It prints the results but saves none, so this page shows no speed figures.",
               },
             ],
           },
@@ -530,18 +530,12 @@ export default function Page() {
     roadmap: {
       id: "roadmap",
       title: "Planned",
-      intro:
-        "What comes before the first release, and what can wait. Nothing here is promised.",
+      intro: "What comes next, and what can wait. Nothing here is promised.",
       groups: [
         {
-          id: "v1",
-          label: "Beta and v1",
+          id: "next",
+          label: "Next",
           items: [
-            {
-              id: "publish",
-              title: "On npm",
-              body: "The three entry points as one ESM package with its types, no runtime dependencies and a changelog.",
-            },
             {
               id: "docs",
               title: "This page as the documentation",

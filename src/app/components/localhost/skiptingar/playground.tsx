@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { createContext, use, useMemo, useState } from "react";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
 import { configureSkiptingar } from "skiptingar/client";
 import {
   DEFAULT_SETTINGS,
