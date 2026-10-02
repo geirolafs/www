@@ -133,7 +133,7 @@ export const localhostSkiptingarContent = {
         count: "rules",
         label: "Locale rules",
         // The rule names are read from the package too and set under it.
-        caption: "Each rule can be turned off on its own.",
+        caption: "Each rule can be turned on or off on its own.",
       },
       {
         value: "0 kB",
