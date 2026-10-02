@@ -1,12 +1,11 @@
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
-import { EXCEPTION_COUNT, PATTERN_COUNT } from "@/packages/skiptingar/src";
+import { PATTERN_COUNT } from "@/packages/skiptingar/src";
 
 const { stats } = localhostSkiptingarContent.hero;
 
 /** Icelandic number format, `.` for thousands. The counts come from the package. */
 const COUNTS = {
   patterns: new Intl.NumberFormat("is").format(PATTERN_COUNT),
-  exceptions: new Intl.NumberFormat("is").format(EXCEPTION_COUNT),
 } as const;
 
 /**
@@ -15,7 +14,7 @@ const COUNTS = {
  */
 export function HeroStats() {
   return (
-    <ul className="col-span-full grid gap-x-sm gap-y-xl pt-xl lg:grid-cols-3 lg:gap-x-md">
+    <ul className="col-span-full grid gap-x-sm gap-y-xl pt-xl lg:grid-cols-2 lg:gap-x-md">
       {stats.map(stat => (
         <li
           className="flex flex-col gap-md border-foreground border-t pt-md"

@@ -7,7 +7,7 @@ import { typeset } from "@/packages/skiptingar/src";
 
 const { noBreak, punctuation } = localhostSkiptingarContent;
 
-/** The rule sets a section can show: where Icelandic doesn't break, and its punctuation. */
+/** The groups of typeset rules a section can show: where Icelandic doesn't break, and its punctuation. */
 const SETS = { noBreak, punctuation } as const;
 
 type TypographyProps = {
@@ -15,7 +15,7 @@ type TypographyProps = {
 };
 
 /**
- * One set of typesetting rules as rows, Off beside On, across the section's
+ * One group of typesetting rules as rows, Off beside On, across the section's
  * `wide` layout. The typeset text is computed here, with each no-break space
  * shown as a mark. A rule with `options` turns on only that option; the rest
  * are on by default.

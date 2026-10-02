@@ -3,7 +3,12 @@ import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles"
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { hyphenate, patternPoints, SOFT_HYPHEN } from "@/packages/skiptingar/src";
+import {
+  hyphenate,
+  patternPoints,
+  SOFT_HYPHEN,
+  typeset,
+} from "@/packages/skiptingar/src";
 
 const { diagram } = localhostSkiptingarContent.howItWorks;
 
@@ -80,26 +85,31 @@ function HtmlWord({ hyphenated }: { hyphenated: string }) {
 }
 
 /**
- * How it works, as one word through five stages: the word, its pattern
- * digits, the breaks the rules keep, the soft hyphens in the HTML, and the
- * line the browser sets. Every value is computed by the package here on the
- * server, so the diagram cannot drift from what the package does. A bracket
- * above the cards shows which stages run on the server and which in the
- * browser.
+ * How it works, as one word through seven stages: the word, its pattern
+ * digits, the breaks the Ritreglur minimums keep, the breaks the typographic
+ * rules keep, the typeset rules (on a phrase of
+ * their own, since a single word has nothing for them to change), the HTML
+ * with its soft hyphens and no-break spaces, and the line the browser sets.
+ * Every value is computed by the package here on the server, so the diagram
+ * cannot drift from what the package does. A bracket above the cards shows
+ * which stages run on the server and which in the browser.
  */
 export function PipelineDiagram() {
   const { word, line, stages } = diagram;
+  const ritreglur = hyphenate(word, { rules: "ritreglur" });
+  // The typographic rules are the default, so this is what the page ships.
   const hyphenated = hyphenate(word);
+  const typesetSample = typeset(diagram.typesetSample);
 
   return (
     <figure className="col-span-full flex flex-col gap-sm">
       <figcaption className={LABEL_CLASS}>{diagram.label}</figcaption>
-      {/* The bracket: four stages on the server, one in the browser. */}
-      <div aria-hidden="true" className="hidden gap-md lg:grid lg:grid-cols-5">
+      {/* The bracket: six stages on the server, one in the browser. */}
+      <div aria-hidden="true" className="hidden gap-md lg:grid lg:grid-cols-7">
         <span
           className={cn(
             LABEL_CLASS,
-            "col-span-4 border-border border-t pt-2xs text-muted"
+            "col-span-6 border-border border-t pt-2xs text-muted"
           )}
         >
           {diagram.server}
@@ -108,7 +118,7 @@ export function PipelineDiagram() {
           {diagram.browser}
         </span>
       </div>
-      <ol className="grid gap-xl lg:grid-cols-5 lg:gap-md">
+      <ol className="grid gap-xl lg:grid-cols-7 lg:gap-md">
         <Stage
           note={stages.word.note}
           number={1}
@@ -134,12 +144,32 @@ export function PipelineDiagram() {
           where={diagram.server}
         >
           <span className={WORD_CLASS} lang="is">
+            <MarkedText text={ritreglur} />
+          </span>
+        </Stage>
+        <Stage
+          note={stages.typographic.note}
+          number={4}
+          title={stages.typographic.title}
+          where={diagram.server}
+        >
+          <span className={WORD_CLASS} lang="is">
             <MarkedText text={hyphenated} />
           </span>
         </Stage>
         <Stage
+          note={stages.typeset.note}
+          number={5}
+          title={stages.typeset.title}
+          where={diagram.server}
+        >
+          <span className="font-hy-title text-foreground text-hy-body" lang="is">
+            <MarkedText text={typesetSample} />
+          </span>
+        </Stage>
+        <Stage
           note={stages.html.note}
-          number={4}
+          number={6}
           title={stages.html.title}
           where={diagram.server}
         >
@@ -148,7 +178,7 @@ export function PipelineDiagram() {
         <Stage
           last
           note={stages.line.note}
-          number={5}
+          number={7}
           title={stages.line.title}
           where={diagram.browser}
         >

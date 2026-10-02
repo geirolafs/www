@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ChoiceGroup,
   ControlGroup,
   HintLine,
   Switch,
@@ -14,8 +13,8 @@ import { cn } from "@/lib/utils";
 const { liveEditor: content } = localhostSkiptingarClientContent;
 
 /**
- * The page settings: mode, rules and the three switches. They set every live
- * specimen on the page, not just the editor. The editor shows them in its
+ * The page settings, four switches. They set every live specimen on the
+ * page, not just the editor. The editor shows them in its
  * header column, and the dock shows the same controls once that column has
  * scrolled away; both write to one `PlaygroundProvider`.
  *
@@ -35,21 +34,13 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
             layout === "column" && "lg:flex-col lg:gap-xl"
           )}
         >
-          <ChoiceGroup
-            label={content.mode.label}
-            onChange={value => setSetting("mode", value)}
-            options={content.mode.options}
-            tip={content.mode.tip}
-            value={settings.mode}
-          />
-          <ChoiceGroup
-            label={content.rules.label}
-            onChange={value => setSetting("rules", value)}
-            options={content.rules.options}
-            tip={content.rules.tip}
-            value={settings.rules}
-          />
           <ControlGroup label={content.options.label}>
+            <Switch
+              checked={settings.typographic}
+              label={content.typographic.label}
+              onChange={value => setSetting("typographic", value)}
+              tip={content.typographic.tip}
+            />
             <Switch
               checked={settings.typeset}
               label={content.typeset.label}
@@ -74,8 +65,7 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
           className="max-w-80"
           placeholder={content.hint}
           reserve={[
-            content.mode.tip,
-            content.rules.tip,
+            content.typographic.tip,
             content.typeset.tip,
             content.showBreaks.tip,
             content.textWrap.tip,

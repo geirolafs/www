@@ -7,8 +7,8 @@ import { useMarkOverlay } from "@/app/components/localhost/skiptingar/mark-overl
 import { usePlayground } from "@/app/components/localhost/skiptingar/playground";
 import {
   DEFAULT_SETTINGS,
-  JOINTS,
   PAGE_TYPESET,
+  rulesFor,
   type Settings,
   wrapClass,
 } from "@/app/components/localhost/skiptingar/settings";
@@ -31,13 +31,13 @@ type LiveTextProps = {
    * has changed, so the first paint is already processed.
    */
   initial: string;
-  /** Settings this specimen keeps whatever the page says, like a title's `mode`. */
+  /** Settings this specimen keeps whatever the page says, like a specimen that always shows its breaks. */
   fixed?: Partial<Settings>;
 };
 
 /** The settings that change the output string; the rest only change how it is shown. */
 function sameOutputSettings(a: Settings, b: Settings): boolean {
-  return a.mode === b.mode && a.rules === b.rules && a.typeset === b.typeset;
+  return a.typeset === b.typeset && a.typographic === b.typographic;
 }
 
 /**
@@ -63,9 +63,7 @@ function useLiveOutput({ text, initial, fixed }: LiveTextProps) {
           {
             text: source,
             options: {
-              mode: settings.mode,
-              rules: settings.rules,
-              joints: JOINTS,
+              rules: rulesFor(settings),
               typeset: settings.typeset ? PAGE_TYPESET : false,
             },
           },

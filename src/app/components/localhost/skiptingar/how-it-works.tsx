@@ -36,7 +36,7 @@ function withCounts(parts: readonly Part[]): Part[] {
  */
 export function HowItWorks() {
   const { example } = content;
-  const result = hyphenate(example.heading, { mode: "heading" });
+  const result = hyphenate(example.heading);
 
   return (
     <>

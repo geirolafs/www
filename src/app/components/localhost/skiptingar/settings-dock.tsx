@@ -87,10 +87,9 @@ export function SettingsDock() {
     };
   }, [open]);
 
-  const mode = liveEditor.mode.options.find(option => option.value === settings.mode);
-  const rules = liveEditor.rules.options.find(option => option.value === settings.rules);
   // Label, and whether it is on.
   const switches = [
+    [liveEditor.typographic.label, settings.typographic],
     [liveEditor.typeset.label, settings.typeset],
     [liveEditor.showBreaks.label, settings.showBreaks],
     [liveEditor.textWrap.label, settings.pretty],
@@ -127,15 +126,9 @@ export function SettingsDock() {
             aria-hidden="true"
             className="pointer-events-none absolute top-0 right-full flex h-full translate-x-2 items-center gap-xs whitespace-nowrap bg-foreground pl-sm font-medium text-background text-hy-control opacity-0 transition-[opacity,transform] duration-150 ease-out group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 motion-reduce:transition-none"
           >
-            <span>{mode?.label}</span>
-            <span className="opacity-50">·</span>
-            <span>{rules?.label}</span>
             {/* Off is struck through and muted. */}
             {switches.map(([label, on]) => (
-              <span
-                className={cn("max-md:hidden", !on && "line-through opacity-50")}
-                key={label}
-              >
+              <span className={cn(!on && "line-through opacity-50")} key={label}>
                 {label}
               </span>
             ))}

@@ -13,8 +13,8 @@ import { useMarkOverlay } from "@/app/components/localhost/skiptingar/mark-overl
 import { usePlayground } from "@/app/components/localhost/skiptingar/playground";
 import {
   DEFAULT_SETTINGS,
-  JOINTS,
   PAGE_TYPESET,
+  rulesFor,
   type Settings,
   wrapClass,
 } from "@/app/components/localhost/skiptingar/settings";
@@ -36,8 +36,8 @@ function count(texts: readonly string[], character: string): number {
 }
 
 /**
- * One block of the result. A title is set like a heading, and balanced when
- * the text-wrap setting is on.
+ * One block of the result. A title is set large, and balanced when the
+ * text-wrap setting is on.
  */
 function EditorBlock({
   output,
@@ -49,7 +49,6 @@ function EditorBlock({
   title: boolean;
 }) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const heading = title || settings.mode === "heading";
 
   // Show breaks draws its marks after the paragraph, not in it: a mark inside
   // the line can change its width.
@@ -65,8 +64,8 @@ function EditorBlock({
       <p
         className={cn(
           "hyphens-manual",
-          heading ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
-          wrapClass(settings, heading)
+          title ? cn(TITLE_CLASS, "text-hy-title") : EDITOR_CLASS,
+          wrapClass(settings, title)
         )}
         ref={ref}
       >
@@ -89,7 +88,7 @@ type LiveEditorProps = {
 
 /**
  * The composer, the page settings and the result. A `# ` line is a title,
- * set in heading mode with `text-balance`; the rest follows the settings.
+ * set large with `text-balance`; the rest follows the settings.
  * The result and the rest of the page follow the text once it is handed on,
  * not the draft as it is typed.
  */
@@ -101,9 +100,8 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
 
   const atInitial =
     text === content.initialText &&
-    settings.mode === DEFAULT_SETTINGS.mode &&
-    settings.rules === DEFAULT_SETTINGS.rules &&
-    settings.typeset === DEFAULT_SETTINGS.typeset;
+    settings.typeset === DEFAULT_SETTINGS.typeset &&
+    settings.typographic === DEFAULT_SETTINGS.typographic;
 
   // At the page's own text and settings the server has already set every
   // block (`initialOutputs`), so nothing is asked for.
@@ -113,9 +111,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
       : blocks.map(block => ({
           text: block.text,
           options: {
-            mode: block.kind === "title" ? "heading" : settings.mode,
-            rules: settings.rules,
-            joints: JOINTS,
+            rules: rulesFor(settings),
             typeset: settings.typeset ? PAGE_TYPESET : false,
           },
         }))

@@ -14,26 +14,27 @@ import { NO_BREAK_SPACE, processSegments, SOFT_HYPHEN } from "@/packages/skiptin
 
 const { demo } = localhostSkiptingarContent.hero;
 
-const title = processed(demo.title, "heading");
-const text = processed(demo.text, "body");
+const title = processed(demo.title);
+const text = processed(demo.text);
 
 /**
- * What the figure's notes need from the server's text: the joints, and the
- * phrases the typeset rules glued.
+ * What the figure's notes need from the server's text: the phrases the typeset
+ * rules glued. A glued phrase is a run of words joined by no-break spaces, so
+ * the laid-out text no longer shows it as a phrase.
  */
 const known: Known = {
-  joints: demo.joints,
   glued: [title, text].flatMap(output =>
-    [...output.replaceAll(SOFT_HYPHEN, "").matchAll(/\S+(?: \S+)+/g)].map(match =>
-      match[0].replaceAll(NO_BREAK_SPACE, " ")
+    [...output.replaceAll(SOFT_HYPHEN, "").matchAll(/[^ ]+(?:\u00A0[^ ]+)+/g)].map(
+      match => match[0].replaceAll(NO_BREAK_SPACE, " ")
     )
   ),
 };
 
-function processed(text: string, mode: "body" | "heading"): string {
+/** The server's two layers: the patterns, then the typeset rules (the page's defaults). */
+function processed(text: string): string {
   const [output = text] = processSegments([text], {
     typeset: PAGE_TYPESET,
-    hyphenate: { mode, joints: "prefer" },
+    hyphenate: {},
   });
   return output;
 }
@@ -44,8 +45,10 @@ function processed(text: string, mode: "body" | "heading"): string {
  * browser sets it alone and with skiptingar. Each side marks what this
  * layout shows, faults with a red wave and fixes with a yellow band, and
  * names each in its margin at the line it happens on (`HeroFigureSide`). The
- * package's side is processed on the server and the browser lays it out with
- * `hyphens: manual`, so it ships no JavaScript to hyphenate. No slider: the
+ * package's side shows the three layers: hyphenation and typeset, made on
+ * the server (the browser lays it out with `hyphens: manual` and ships no
+ * JavaScript for either), and CSS `text-balance` on the title and
+ * `text-pretty` on the body. The browser's side wraps greedily. No slider: the
  * column is narrow enough that the difference shows at any screen width.
  */
 export function HeroDemo() {
@@ -60,10 +63,10 @@ export function HeroDemo() {
         label={demo.without.label}
         notes={demo.without.notes}
       >
-        <p className={cn(TITLE_CLASS, "hyphens-auto text-balance text-hy-lede")}>
+        <p className={cn(TITLE_CLASS, "hyphens-auto text-wrap text-hy-lede")}>
           {demo.title}
         </p>
-        <p className={cn(EDITOR_CLASS, "hyphens-auto text-pretty")}>{demo.text}</p>
+        <p className={cn(EDITOR_CLASS, "hyphens-auto text-wrap")}>{demo.text}</p>
       </HeroFigureSide>
       <HeroFigureSide
         kind="with"

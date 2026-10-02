@@ -6,12 +6,13 @@ import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skipti
 
 const { liveEditor: content } = localhostSkiptingarClientContent;
 
-export type Mode = (typeof content.mode.options)[number]["value"];
-export type Rules = (typeof content.rules.options)[number]["value"];
-
 export type Settings = {
-  mode: Mode;
-  rules: Rules;
+  /**
+   * The typographic rules: which breaks to keep (`rules: "typographic"`), as
+   * against the official Ritreglur minimums alone. New and under development.
+   * Not the same as `typeset`, which is about spaces, quotes and dashes.
+   */
+  typographic: boolean;
   typeset: boolean;
   showBreaks: boolean;
   /** `text-pretty` for body text and `text-balance` for titles; off wraps greedily. */
@@ -25,14 +26,18 @@ export const DEFAULT_SETTINGS: Settings = {
   pretty: true,
 };
 
+/** The `rules` option of `hyphenate()` that the Typographic rules setting asks for. */
+export function rulesFor(
+  settings: Pick<Settings, "typographic">
+): "typographic" | "ritreglur" {
+  return settings.typographic ? "typographic" : "ritreglur";
+}
+
 /**
  * The typeset rules the Typeset setting turns on: the defaults plus en dashes,
  * so "1990-2010" in an example is set as Ritreglur §26.2.1 asks.
  */
 export const PAGE_TYPESET = { dashes: true } as const;
-
-/** How heading mode treats compound joints: only them, never as a preference. */
-export const JOINTS = "only";
 
 /**
  * The `text-wrap` class the settings ask for, for a title or for body text:

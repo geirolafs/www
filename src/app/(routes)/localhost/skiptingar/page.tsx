@@ -4,7 +4,6 @@ import { RichText } from "@/app/components/localhost/fluid-typography/rich-text"
 import { Section, Specimen } from "@/app/components/localhost/fluid-typography/section";
 import { Shell } from "@/app/components/localhost/fluid-typography/shell";
 import { parseBlocks } from "@/app/components/localhost/skiptingar/blocks";
-import { BreakEditor } from "@/app/components/localhost/skiptingar/break-editor";
 import { Breaks } from "@/app/components/localhost/skiptingar/breaks";
 import { Compare, PatternTable } from "@/app/components/localhost/skiptingar/compare";
 import { HeroDemo } from "@/app/components/localhost/skiptingar/hero-demo";
@@ -13,15 +12,14 @@ import { HowItWorks } from "@/app/components/localhost/skiptingar/how-it-works";
 import { initialOutput } from "@/app/components/localhost/skiptingar/initial-output";
 import { Install } from "@/app/components/localhost/skiptingar/install";
 import { LiveEditor } from "@/app/components/localhost/skiptingar/live-editor";
+import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { PlaygroundProvider } from "@/app/components/localhost/skiptingar/playground";
 import { Reference } from "@/app/components/localhost/skiptingar/reference";
 import { Related } from "@/app/components/localhost/skiptingar/related";
 import {
-  Acronyms,
   CardGrid,
   HeadingSample,
   MixedLanguages,
-  Names,
 } from "@/app/components/localhost/skiptingar/samples";
 import { SettingsDock } from "@/app/components/localhost/skiptingar/settings-dock";
 import { Sizes } from "@/app/components/localhost/skiptingar/sizes";
@@ -29,6 +27,7 @@ import { Typography } from "@/app/components/localhost/skiptingar/typography";
 import { subsites } from "@/lib/config/subsites";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 // deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
+import { SOFT_HYPHEN } from "@/packages/skiptingar/src/characters";
 import { CleanCopy } from "@/packages/skiptingar/src/client/clean-copy";
 
 const {
@@ -39,13 +38,12 @@ const {
   colophon,
   liveEditor,
   samplesSection: samples,
-  breaksSection: breaksContent,
 } = localhostSkiptingarContent;
 
 // The editor's first output, block by block, with its initial settings, so the
-// server HTML already holds the processed text. A title is set in heading mode.
+// server HTML already holds the processed text.
 const initialOutputs = parseBlocks(liveEditor.initialText).map(block =>
-  initialOutput(block.text, block.kind === "title" ? { mode: "heading" } : {})
+  initialOutput(block.text)
 );
 
 export const metadata: Metadata = {
@@ -83,7 +81,8 @@ export default function Page() {
           name={hero.name}
           stats={<HeroStats />}
           tagline={hero.tagline}
-          title={hero.title}
+          // The breaks as the red dots the specimens below use.
+          title={<MarkedText text={hero.title.replaceAll("-", SOFT_HYPHEN)} />}
         />
       }
       lang="is"
@@ -102,24 +101,6 @@ export default function Page() {
 
         <Section {...sections.breaks} layout="side">
           <Breaks />
-          <Specimen
-            hint={<RichText parts={samples.names.hint} />}
-            label={samples.names.label}
-          >
-            <Names />
-          </Specimen>
-          <Specimen
-            hint={<RichText parts={samples.acronyms.hint} />}
-            label={samples.acronyms.label}
-          >
-            <Acronyms />
-          </Specimen>
-          <Specimen
-            hint={<RichText parts={breaksContent.editor.hint} />}
-            label={breaksContent.editor.label}
-          >
-            <BreakEditor />
-          </Specimen>
         </Section>
 
         <Section {...sections.noBreaks} layout="wide">

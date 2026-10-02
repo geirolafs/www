@@ -10,32 +10,9 @@ import {
 } from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
-import {
-  ACRONYM_LENGTH,
-  EXCEPTION_COUNT,
-  hyphenate,
-  NAME_ENDINGS,
-} from "@/packages/skiptingar/src";
+import { hyphenate } from "@/packages/skiptingar/src";
 
 const { breaksSection: content } = localhostSkiptingarContent;
-
-const FILLED = {
-  "{endings}": String(NAME_ENDINGS.length),
-  "{exceptions}": String(EXCEPTION_COUNT),
-  "{min}": String(ACRONYM_LENGTH.min),
-  "{max}": String(ACRONYM_LENGTH.max),
-} as const;
-
-/** Fills in the placeholders, so every number comes from the package. */
-function filled(parts: readonly Part[]): Part[] {
-  return parts.map(part => ({
-    ...part,
-    text: Object.entries(FILLED).reduce(
-      (text, [placeholder, value]) => text.replaceAll(placeholder, value),
-      part.text
-    ),
-  }));
-}
 
 type Item = {
   readonly id: string;
@@ -58,7 +35,7 @@ function Rule({ item }: { item: Item }) {
       <div className="flex min-w-0 max-w-measure flex-col gap-1">
         <h4 className={ITEM_TITLE_CLASS}>{item.title}</h4>
         <p className={BODY_CLASS}>
-          <RichText parts={filled(item.body)} />
+          <RichText parts={item.body} />
         </p>
       </div>
       <dl className="flex flex-wrap gap-x-xl gap-y-sm">
@@ -100,12 +77,13 @@ function Rules({
 }
 
 /**
- * Section B's text: the order a word gets its breaks in, the rules as a list
- * with one example each, and the two rule sets. Three specimens, one after
- * the other, in the section's `side` layout.
+ * Section B's text: the order a word gets its breaks in (patterns, the
+ * Ritreglur minimums, soft hyphens on the server), and examples with the
+ * package's own output. Two specimens, one after the other, in the section's
+ * `side` layout.
  */
 export function Breaks() {
-  const { order, rules, sets } = content;
+  const { order, rules } = content;
 
   return (
     <>
@@ -124,7 +102,7 @@ export function Breaks() {
               <div className="flex min-w-0 max-w-measure flex-col gap-1">
                 <h4 className={ITEM_TITLE_CLASS}>{step.title}</h4>
                 <p className={BODY_CLASS}>
-                  <RichText parts={filled(step.body)} />
+                  <RichText parts={step.body} />
                 </p>
               </div>
             </li>
@@ -132,7 +110,6 @@ export function Breaks() {
         </ol>
       </Specimen>
       <Rules hint={rules.hint} items={rules.items} label={rules.label} />
-      <Rules hint={sets.hint} items={sets.items} label={sets.label} />
     </>
   );
 }

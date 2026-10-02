@@ -19,9 +19,7 @@ type Found = { id: string; ranges: Range[]; anchor: DOMRect };
 
 /** What the server knows about the text that the laid-out text no longer shows. */
 export type Known = {
-  /** The start of each compound up to a joint. */
-  joints: readonly string[];
-  /** The phrases the typeset rules glued, each space a plain space. */
+  /** The phrases the typeset rules glued with no-break spaces, each space a plain space. */
   glued: readonly string[];
 };
 
@@ -65,22 +63,11 @@ function matches(block: Block, pattern: RegExp): Word[] {
   }));
 }
 
-/** Words between spaces. A no-break space counts as one, so glued words are separate. */
+/** Words between spaces. */
 const words = (block: Block) => matches(block, /\S+/g);
 
 const rects = (range: Range) =>
   [...range.getClientRects()].filter(rect => rect.width > 0);
-
-/**
- * Whether the character `after` sits on a line below the one `before` ends
- * on. A character just after a soft-hyphen break also reports a box on the
- * line above, so its last box is the one that counts.
- */
-function breaksBetween(before: Range, after: Range): boolean {
-  const end = rects(before).at(-1);
-  const start = rects(after).at(-1);
-  return Boolean(end && start && start.top > end.top + end.height / 2);
-}
 
 /** A note for the ranges, at the first one's first line. Nothing found, no note. */
 function found(id: string, ranges: Range[], anchor?: DOMRect): Found[] {
@@ -109,46 +96,44 @@ const findProblems: Finder = (blocks, column) => {
   return [...found("overflow", overflow, overflowAt), ...found("quotes", quotes)];
 };
 
+/** Whether a word's text sits on more than one line: the browser broke it. */
+function isSplit(range: Range): boolean {
+  const lines = rects(range);
+  const tops = lines.map(rect => rect.top);
+  const height = lines[0]?.height ?? 0;
+  return lines.length > 1 && Math.max(...tops) - Math.min(...tops) > height / 2;
+}
+
 /** What the package did, each only where this layout shows it. */
-const findFixes: Finder = (blocks, _column, { joints, glued }) => {
-  const joint: Range[] = [];
-  let jointAt: DOMRect | undefined;
+const findFixes: Finder = (blocks, _column, { glued }) => {
+  const split: Range[] = [];
   const glue: Range[] = [];
   const quotes: Range[] = [];
   for (const block of blocks) {
+    // A word broken at a soft hyphen: its text sits on more than one line.
     for (const word of words(block)) {
-      // Broken right after a joint: the part before it ends one line and
-      // the letter after it starts the next. The note sits on the line
-      // that ends in the hyphen.
-      for (const prefix of joints) {
-        const cut = word.start + prefix.length;
-        if (!word.text.startsWith(prefix) || cut >= word.end) {
-          continue;
-        }
-        const before = block.range(word.start, cut);
-        if (breaksBetween(before, block.range(cut, cut + 1))) {
-          joint.push(block.range(word.start, word.end));
-          jointAt ??= rects(before).at(-1);
-          break;
-        }
+      const range = block.range(word.start, word.end);
+      if (isSplit(range)) {
+        split.push(range);
       }
     }
     // The glued phrases come from the server's text, each space a plain one.
     const plain = block.text.replaceAll(NO_BREAK_SPACE, " ");
     for (const phrase of glued) {
       for (let at = plain.indexOf(phrase); at >= 0; at = plain.indexOf(phrase, at + 1)) {
-        glue.push(block.range(at, at + phrase.length));
+        // Only a phrase that sits on one line is kept on one line: a word in
+        // it can still break at a soft hyphen.
+        const range = block.range(at, at + phrase.length);
+        if (rects(range).length > 0 && !isSplit(range)) {
+          glue.push(range);
+        }
       }
     }
     for (const quote of matches(block, /[„“]/g)) {
       quotes.push(block.range(quote.start, quote.end));
     }
   }
-  return [
-    ...found("joint", joint, jointAt),
-    ...found("glue", glue),
-    ...found("quotes", quotes),
-  ];
+  return [...found("split", split), ...found("glue", glue), ...found("quotes", quotes)];
 };
 
 const SIDES = {
@@ -231,7 +216,7 @@ function useNotes(
   return notes;
 }
 
-const NOTHING_KNOWN: Known = { joints: [], glued: [] };
+const NOTHING_KNOWN: Known = { glued: [] };
 
 /**
  * The marks in the text, as custom highlights: the same as `.hy-problem-mark`

@@ -1,6 +1,6 @@
 /**
  * The copy that client components read on /localhost/skiptingar: tips, the
- * Try it editor, the width slider and the break editor. It lives apart from
+ * Try it editor and the width slider. It lives apart from
  * `localhost-skiptingar.ts` so the page's other copy (the samples, how it
  * works, the credits) stays on the server and out of the client chunk. Keep
  * server-only copy out of this file.
@@ -8,10 +8,9 @@
 
 /**
  * The example texts. Each one holds every problem the package solves:
- * long compounds, a title, numbers with units, dates and ordinals,
- * abbreviations with numbers, a kennitala or phone number, a title before a
- * name, straight quotes, a number range, one-letter words, a web address and
- * an email that must stay whole, an acronym and a patronymic. A line that
+ * long compounds, a title, and the things the typeset layer looks at: numbers with units, dates and ordinals, abbreviations with numbers, a
+ * kennitala or phone number, a title before a name, straight quotes and a
+ * number range. A web address and an email must stay whole. A line that
  * starts with `# ` is a title.
  */
 const examples = [
@@ -143,31 +142,19 @@ export const localhostSkiptingarClientContent = {
       words: (count: number) => `${count} ${count === 1 ? "word" : "words"}`,
     },
     /** What the editor starts with. The page renders the first output from these on the server. */
-    initial: { mode: "body", rules: "typographic", typeset: true },
-    mode: {
-      label: "Mode",
-      tip: "Body breaks a word at every allowed spot. Heading is stricter: only long words break, with more letters kept on each side, and a word breaks only at its compound joints when one fits: those on the exception list, the break after a linking syllable (stjórnar-völd) and a name’s ending (Sigurðar-dóttir).",
-      options: [
-        { value: "body", label: "Body" },
-        { value: "heading", label: "Heading" },
-      ],
-    },
-    rules: {
-      label: "Rules",
-      tip: "Typographic keeps only breaks that look good: in body text, words of 6 or more letters with 2 letters before and 3 after the break (in a heading 12, 3 and 4), and never just before a linking syllable (stjórnar-völd, not stjórn-ar-völd). Ritreglur allows every break the patterns allow, close to the official spelling rules: 1 letter before, 2 after. Words of 4+ letters (Skiptingar’s own limit).",
-      options: [
-        { value: "typographic", label: "Typographic" },
-        { value: "ritreglur", label: "Ritreglur" },
-      ],
-    },
+    initial: { typographic: true, typeset: true },
     options: {
       label: "Options",
     },
     /** Under the settings, until one is pointed at, focused or tapped. */
     hint: "Point at a setting, or tap it, to read what it does.",
+    typographic: {
+      label: "Typographic rules (new)",
+      tip: "On by default, and you can turn it off. These rules decide which breaks to keep: they drop legal breaks that read badly, such as ó-lán, the break before a linking syllable in sveitar-stjórnar-kosningum, and a break inside a foreign name like Icelandair. Off gives the official Ritreglur minimums only. They are new and under development, so turn them off if they give odd results. Not the same as Typeset, which is about spaces, quotes and dashes.",
+    },
     typeset: {
       label: "Typeset",
-      tip: "Swaps some spaces for no-break spaces, in 1.000 kr. and 30. september for example, straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another.",
+      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces, in 1.000 kr. and 30. september for example, straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another, except the dash rule, which also adds an invisible word joiner after the en dash.",
     },
     showBreaks: {
       label: "Show breaks",
@@ -175,7 +162,7 @@ export const localhostSkiptingarClientContent = {
     },
     textWrap: {
       label: "text-wrap",
-      tip: "The browser’s own line breaking: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off wraps each line greedily. How it works shows each one with and without.",
+      tip: "On by default, and you can turn it off. CSS you add to the page: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off wraps each line greedily. How it works shows each one with and without.",
     },
     /** The result box's width slider, in px. */
     width: { min: 120, max: 720, initial: 320 },
@@ -219,36 +206,5 @@ export const localhostSkiptingarClientContent = {
     withoutCaption: "the browser alone",
     with: "With Skiptingar",
     withCaption: "page settings",
-  },
-
-  breakEditor: {
-    wordLabel: "Word",
-    initialWord: "þjóðfélagsumræða",
-    lineLabel: "Exception line",
-    gapsLabel: "Breaks between letters",
-    keyLabel: "Key",
-    states: {
-      none: {
-        name: "none",
-        mark: "·",
-        tip: "No break here. The word stays whole at this spot.",
-      },
-      break: {
-        name: "break",
-        mark: "-",
-        tip: "A line may break here. It becomes a soft hyphen.",
-      },
-      joint: {
-        name: "compound joint",
-        mark: "=",
-        tip: "The seam between two parts of a compound. In heading mode, a word on the exception list breaks only at these.",
-      },
-    },
-    gapLabel: (letter: string, state: string) => `Gap after ${letter}: ${state}`,
-    copy: {
-      idle: "Copy line",
-      copied: "Copied",
-      failed: "Copy failed",
-    },
   },
 } as const;

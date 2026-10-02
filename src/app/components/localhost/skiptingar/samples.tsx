@@ -1,44 +1,17 @@
 import { Measure } from "@/app/components/localhost/fluid-typography/measure";
 import { PAIR_BOX, Pair } from "@/app/components/localhost/fluid-typography/pair";
-import {
-  LABEL_CLASS,
-  NOTE_CLASS,
-  TITLE_CLASS,
-} from "@/app/components/localhost/fluid-typography/styles";
+import { TITLE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { initialOutput } from "@/app/components/localhost/skiptingar/initial-output";
 import { LiveBlock } from "@/app/components/localhost/skiptingar/live-text";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
-import {
-  PAGE_TYPESET,
-  type Settings,
-} from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
-import { processSegments } from "@/packages/skiptingar/src";
+import { hyphenate } from "@/packages/skiptingar/src";
 
 const { samplesSection: content } = localhostSkiptingarContent;
 
 /** The "without" side never breaks inside a word and wraps greedily. */
 const WITHOUT = "hyphens-manual text-wrap";
-
-/** Hyphenated and typeset with the defaults, for the specimens that show their marks. */
-function processed(text: string): string {
-  const [output = text] = processSegments([text], {
-    typeset: PAGE_TYPESET,
-    hyphenate: {},
-  });
-  return output;
-}
-
-function Credit({ children }: { children: string }) {
-  return (
-    <p className={NOTE_CLASS} lang="is">
-      {children}
-    </p>
-  );
-}
-
-const HEADING: Partial<Settings> = { mode: "heading" };
 
 /**
  * Two headings in a phone-width box, one above the other: without the
@@ -62,8 +35,7 @@ export function HeadingSample() {
             <LiveBlock
               as="h4"
               className={headingClass}
-              fixed={HEADING}
-              initial={initialOutput(heading, HEADING)}
+              initial={initialOutput(heading)}
               key={heading}
               text={heading}
               title
@@ -81,118 +53,6 @@ export function HeadingSample() {
         </div>
       }
     />
-  );
-}
-
-/**
- * One paragraph as a pair: the browser alone, then with skiptingar. Each
- * caller's `initial` width was picked by measuring the right edge of both
- * sides across the slider's range in Chrome, where the difference is clearest.
- */
-function ParagraphPair({
-  text,
-  className,
-  initial,
-  name,
-}: {
-  text: string;
-  className: string;
-  initial: number;
-  name: string;
-}) {
-  return (
-    <Pair
-      initial={initial}
-      name={name}
-      max={560}
-      min={180}
-      with={
-        <LiveBlock
-          className={cn(PAIR_BOX, className)}
-          initial={initialOutput(text)}
-          text={text}
-        />
-      }
-      without={
-        <p className={cn(PAIR_BOX, WITHOUT, className)} lang="is">
-          {text}
-        </p>
-      }
-    />
-  );
-}
-
-export function ShortParagraph() {
-  return (
-    <>
-      {/* Weight 300 is a scoped exception for this route (see AGENTS.md). */}
-      <ParagraphPair
-        className="font-light text-foreground text-hy-lede"
-        initial={280}
-        name={content.short.label}
-        text={content.short.text}
-      />
-      <Credit>{content.short.credit}</Credit>
-    </>
-  );
-}
-
-export function LongParagraph() {
-  return (
-    <>
-      <ParagraphPair
-        className="font-book text-foreground text-prose"
-        initial={360}
-        name={content.long.label}
-        text={content.long.text}
-      />
-      <Credit>{content.long.credit}</Credit>
-    </>
-  );
-}
-
-export function LawText() {
-  const { articles } = content.law;
-  const article = "flex flex-col gap-2xs";
-  const number = cn(LABEL_CLASS, "text-muted tabular-nums");
-  const text = "font-book text-foreground text-prose";
-
-  return (
-    <>
-      <Pair
-        name={content.law.label}
-        initial={280}
-        max={560}
-        min={180}
-        with={
-          <div className={cn(PAIR_BOX, "flex flex-col gap-sm")}>
-            {articles.map(item => (
-              <div className={article} key={item.number}>
-                <p className={number} lang="is">
-                  {item.number}
-                </p>
-                <LiveBlock
-                  className={text}
-                  initial={initialOutput(item.text)}
-                  text={item.text}
-                />
-              </div>
-            ))}
-          </div>
-        }
-        without={
-          <div className={cn(PAIR_BOX, "flex flex-col gap-sm")} lang="is">
-            {articles.map(item => (
-              <div className={article} key={item.number}>
-                <p className={number}>{item.number}</p>
-                <p className={cn(text, WITHOUT)}>{item.text}</p>
-              </div>
-            ))}
-          </div>
-        }
-      />
-      <Credit>{content.law.credit}</Credit>
-    </>
   );
 }
 
@@ -244,35 +104,11 @@ export function CardGrid() {
   );
 }
 
-const NAME: Partial<Settings> = { mode: "heading", showBreaks: true };
-
 /**
- * Names in heading mode with their breaks always shown, each broken at the
- * joint before its last part. They follow the page's rules, so switching to
- * Ritreglur makes the shorter names break too.
- */
-export function Names() {
-  return (
-    <ul className="flex flex-col gap-2xs">
-      {content.names.names.map(name => (
-        <li key={name}>
-          <LiveBlock
-            className={cn(TITLE_CLASS, "wrap-break-word text-foreground text-hy-title")}
-            fixed={NAME}
-            initial={initialOutput(name, NAME)}
-            text={name}
-            title
-          />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/**
- * Icelandic with two English phrases in it. The Icelandic parts are processed
- * and the English ones are not, the way `<Hyphenate>` treats a nested `lang`,
- * and every mark is shown, so the difference is visible.
+ * Icelandic with two English phrases in it. The Icelandic parts get breaks and
+ * the English ones do not, the way `<Hyphenate>` treats a nested `lang`, and
+ * every mark is shown, so the difference is visible. Hyphenation alone: the
+ * specimen does not depend on the optional typeset layer.
  */
 export function MixedLanguages() {
   const { mixed } = content;
@@ -282,25 +118,11 @@ export function MixedLanguages() {
         className={cn(PAIR_BOX, "hyphens-manual text-pretty font-book text-prose")}
         lang="is"
       >
-        <MarkedText text={processed(mixed.before)} />
+        <MarkedText text={hyphenate(mixed.before)} />
         <span lang="en">{mixed.word}</span>
-        <MarkedText text={processed(mixed.middle)} />
-        <span lang="en">{mixed.quote}</span>
-        <MarkedText text={processed(mixed.after)} />
-      </p>
-    </Measure>
-  );
-}
-
-/** The acronyms, with every mark shown: none in UNESCO, several in the long one. */
-export function Acronyms() {
-  return (
-    <Measure initial={260} max={560} min={160} name={content.acronyms.label}>
-      <p
-        className={cn(PAIR_BOX, "hyphens-manual text-pretty font-book text-prose")}
-        lang="is"
-      >
-        <MarkedText text={processed(content.acronyms.text)} />
+        <MarkedText text={hyphenate(mixed.middle)} />
+        <span lang="en">{mixed.phrase}</span>
+        <MarkedText text={hyphenate(mixed.after)} />
       </p>
     </Measure>
   );

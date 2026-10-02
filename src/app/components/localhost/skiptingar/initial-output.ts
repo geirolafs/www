@@ -1,7 +1,7 @@
 import {
   DEFAULT_SETTINGS,
-  JOINTS,
   PAGE_TYPESET,
+  rulesFor,
   type Settings,
 } from "@/app/components/localhost/skiptingar/settings";
 import { processSegments } from "@/packages/skiptingar/src";
@@ -15,11 +15,7 @@ export function initialOutput(text: string, fixed: Partial<Settings> = {}): stri
   const settings = { ...DEFAULT_SETTINGS, ...fixed };
   const [output = text] = processSegments([text], {
     typeset: settings.typeset ? PAGE_TYPESET : false,
-    hyphenate: {
-      mode: settings.mode,
-      rules: settings.rules,
-      joints: JOINTS,
-    },
+    hyphenate: { rules: rulesFor(settings) },
   });
   return output;
 }

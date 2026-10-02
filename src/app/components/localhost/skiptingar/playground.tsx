@@ -13,7 +13,7 @@ import { configureSkiptingar } from "@/packages/skiptingar/src/client/remote";
 const { liveEditor: content } = localhostSkiptingarClientContent;
 
 // The page's text is hyphenated by the server (`api/route.ts`), so the
-// browser never downloads the 47 kB of patterns. If the endpoint fails, the
+// browser does not download the patterns. If the endpoint fails, the
 // hooks load the patterns instead.
 configureSkiptingar({ endpoint: "/localhost/skiptingar/api" });
 

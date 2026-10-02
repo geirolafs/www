@@ -39,9 +39,9 @@ function testsLine(): string {
 
 /**
  * What is left of section I's reference after the pattern table, the install
- * requirements and the cost chart: the exception file's format, the source of
- * the one-letter rules, what the browser and the font must support, and how
- * the numbers on this page were measured. The same rows as `Related`: a name
+ * requirements and the cost chart: the source of the one-letter rules, what
+ * the browser and the font must support, and how the numbers on this page
+ * were measured. The same rows as `Related`: a name
  * on the left and a plain line on the right, in groups.
  */
 export function Reference() {
