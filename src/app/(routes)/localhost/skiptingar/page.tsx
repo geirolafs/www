@@ -105,10 +105,6 @@ export default function Page() {
           <Typography set="noBreak" />
         </Section>
 
-        <Section {...sections.punctuation} layout="wide">
-          <Typography set="punctuation" />
-        </Section>
-
         <Section {...sections.interfaces} layout="side">
           <Specimen
             hint={<RichText parts={samples.heading.hint} />}

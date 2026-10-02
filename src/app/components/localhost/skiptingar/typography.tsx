@@ -5,10 +5,10 @@ import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 import { typeset } from "@/packages/skiptingar/src";
 
-const { noBreak, punctuation } = localhostSkiptingarContent;
+const { noBreak } = localhostSkiptingarContent;
 
-/** The groups of typeset rules a section can show: where Icelandic doesn't break, and its punctuation. */
-const SETS = { noBreak, punctuation } as const;
+/** The groups of typeset rules a section can show: where Icelandic doesn't break. */
+const SETS = { noBreak } as const;
 
 type TypographyProps = {
   set: keyof typeof SETS;

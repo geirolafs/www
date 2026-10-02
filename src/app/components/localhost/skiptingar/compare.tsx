@@ -50,7 +50,7 @@ function Column({
 /**
  * The first paragraph of the editor's text three ways, side by side under one
  * width slider. The first two columns show the text as typed; the third
- * follows the page settings. For the `wide` layout of section F.
+ * follows the page settings. For the `wide` layout of section E.
  */
 export function Compare() {
   const { columns } = compare;
@@ -79,7 +79,7 @@ export function Compare() {
 
 /**
  * The table of pattern differences, TeX against the 2020 data. It belongs to
- * the reference (section I), not to the browser comparison above, so it is
+ * the reference (section H), not to the browser comparison above, so it is
  * its own component. On a narrow screen it scrolls sideways.
  */
 export function PatternTable() {

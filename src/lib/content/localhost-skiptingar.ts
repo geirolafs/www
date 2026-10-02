@@ -26,7 +26,7 @@ import sizes from "@/packages/skiptingar/sizes.json";
 /** A size from `bun run size` (sizes.json), in kB brotli, unit kept with the number. */
 const kB = (setup: keyof typeof sizes) => `${sizes[setup].brotli}\u00a0kB`;
 
-/** The text the browser comparison (section F) and the CSS pairs set. */
+/** The text the browser comparison (section E) and the CSS pairs set. */
 const compareText =
   "Alþingi og forseti Íslands fara saman með löggjafarvaldið. Forseti og önnur stjórnarvöld samkvæmt stjórnarskrá þessari og öðrum landslögum fara með framkvæmdarvaldið. Dómendur fara með dómsvaldið.";
 
@@ -313,24 +313,16 @@ export const localhostSkiptingarContent = {
       explanation:
         "Good line breaking also means knowing where not to break. Locale details keep these words together with no-break spaces.",
     },
-    punctuation: {
-      id: "punctuation",
-      number: "d",
-      nav: "Punctuation",
-      label: "Icelandic punctuation",
-      explanation:
-        "Icelandic quotes and dashes, shown before and after. Locale details do these too.",
-    },
     interfaces: {
       id: "interfaces",
-      number: "e",
+      number: "d",
       nav: "Interfaces",
       label: "Real interfaces",
       explanation: "Real interface problems, such as a heading at phone width.",
     },
     browsers: {
       id: "browsers",
-      number: "f",
+      number: "e",
       nav: "Browsers",
       label: "Same text, every browser",
       explanation:
@@ -338,7 +330,7 @@ export const localhostSkiptingarContent = {
     },
     howItWorks: {
       id: "how-it-works",
-      number: "g",
+      number: "f",
       nav: "How",
       label: "How it works",
       explanation:
@@ -346,7 +338,7 @@ export const localhostSkiptingarContent = {
     },
     install: {
       id: "install",
-      number: "h",
+      number: "g",
       nav: "Install",
       label: "Install",
       explanation:
@@ -354,7 +346,7 @@ export const localhostSkiptingarContent = {
     },
     reference: {
       id: "reference",
-      number: "i",
+      number: "h",
       nav: "Reference",
       label: "Reference",
       explanation:
@@ -1398,33 +1390,6 @@ export default function Page() {
         tip: "Puts a no-break space between the last two words of the text, so the last line is never a single word. This rule is off by default, so this row turns it on. Prefer text-pretty where the browser supports it.",
         input: "Þau fóru saman til Akureyrar",
         options: { lastWords: true },
-      },
-    ],
-  },
-
-  /**
-   * Icelandic punctuation: the quotes and the dashes. Same shape as
-   * `noBreak`; `options` is the `typeset()` option that the row turns on.
-   */
-  punctuation: {
-    off: "Off",
-    on: "On",
-    rules: [
-      {
-        id: "quotes",
-        label: "Quotes",
-        tag: "quotes",
-        tip: "Straight double quotes become Icelandic „…“. A paired 'word' becomes ‚word‘, the mark for a word’s meaning (Ritreglur §28.2). A quote inside a quote uses „…“ again. Type it that way (§28.1).",
-        input: "Hann sagði \"komdu heim\" og orðið fákur merkir 'hestur'.",
-      },
-      {
-        id: "dashes",
-        measure: 13.5,
-        label: "Dashes",
-        tag: "dashes",
-        tip: "Swaps the hyphen in a number range, and a spaced hyphen, for an en dash. This rule is off by default, so this row turns it on.",
-        input: "Árin 1990-2000 var veturinn - og þá sérstaklega febrúar - óvenju mildur.",
-        options: { dashes: true },
       },
     ],
   },
