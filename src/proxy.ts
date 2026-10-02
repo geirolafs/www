@@ -58,9 +58,16 @@ export default function proxy(request: NextRequest) {
   // A subsite host serves its /localhost route at its root:
   // `skiptingar.geir.studio/x` renders `/localhost/skiptingar/x`. Every other
   // path on that host falls under the route too, so the rest of the site is
-  // not reachable there.
+  // not reachable there. The one exception is the page's endpoint: its client
+  // code posts to `/localhost/skiptingar/api`, which must not become
+  // `/localhost/skiptingar/localhost/skiptingar/api`. Only that path passes as
+  // it is, so each page still has one URL on its host.
   const subsite = subsiteForHost(hostname);
-  const page = subsite ? `${subsite.path}${pathname === "/" ? "" : pathname}` : pathname;
+  const isEndpoint = subsite !== undefined && pathname === `${subsite.path}/api`;
+  const page =
+    subsite && !isEndpoint
+      ? `${subsite.path}${pathname === "/" ? "" : pathname}`
+      : pathname;
 
   const accept = request.headers.get("accept") ?? "";
 
