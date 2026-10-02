@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-// deep import: the client barrel re-exports code this page must not load; a slimmer `exports` entry replaces this at publish
 import { CleanCopy } from "skiptingar/client";
 import { Hero } from "@/app/components/localhost/fluid-typography/hero";
 import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
