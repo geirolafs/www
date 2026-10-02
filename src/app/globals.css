@@ -375,6 +375,20 @@
   --font-hy-text-face: var(--font-areal-face);
   --font-hy-mono-face: var(--font-areal-face);
   --font-hy-mono-axes: "MONO" 100;
+  font-variation-settings: "MONO" 0;
+}
+
+/* Three steps on Areal's `MONO` axis: 0 for reading text (above), 100 for
+   code (`--font-hy-mono-axes`), and 50, semi-mono, for labels, UI and small
+   text. The small sizes are the UI's sizes, so the step follows the size
+   class and no component has to opt in. Code set at a small size keeps 100. */
+.hy-areal
+:is(.text-hy-nav, .text-hy-label, .text-hy-note, .text-hy-caption, .text-hy-control):not(
+  .font-hy-mono,
+  .hy-inline-code,
+  .hy-code
+) {
+  font-variation-settings: "MONO" 50;
 }
 
 /* ==========================================================================
