@@ -10,6 +10,7 @@ import {
   TITLE_CLASS,
 } from "@/app/components/localhost/fluid-typography/styles";
 import { CssPairs } from "@/app/components/localhost/skiptingar/css-pairs";
+import { NUMBER } from "@/app/components/localhost/skiptingar/format";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { PipelineDiagram } from "@/app/components/localhost/skiptingar/pipeline-diagram";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
@@ -18,7 +19,7 @@ import { hyphenate, PATTERN_COUNT } from "@/packages/skiptingar/src";
 
 const { howItWorks: content } = localhostSkiptingarContent;
 
-const PATTERNS = new Intl.NumberFormat("is").format(PATTERN_COUNT);
+const PATTERNS = NUMBER.format(PATTERN_COUNT);
 
 /** Fills in the `{patterns}` placeholder, so the count comes from the package. */
 function withCounts(parts: readonly Part[]): Part[] {

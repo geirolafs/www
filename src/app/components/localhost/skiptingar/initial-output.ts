@@ -1,21 +1,19 @@
 import {
   DEFAULT_SETTINGS,
-  PAGE_TYPESET,
-  rulesFor,
-  type Settings,
+  outputOptions,
 } from "@/app/components/localhost/skiptingar/settings";
 import { processSegments } from "@/packages/skiptingar/src";
 
 /**
  * A text processed with the page's default settings, on the server, so the
  * HTML already holds the processed text and nothing reflows when the engine
- * loads in the browser. `fixed` is a specimen's own override, as in `LiveBlock`.
+ * loads in the browser.
  */
-export function initialOutput(text: string, fixed: Partial<Settings> = {}): string {
-  const settings = { ...DEFAULT_SETTINGS, ...fixed };
+export function initialOutput(text: string): string {
+  const { rules, typeset } = outputOptions(DEFAULT_SETTINGS);
   const [output = text] = processSegments([text], {
-    typeset: settings.typeset ? PAGE_TYPESET : false,
-    hyphenate: { rules: rulesFor(settings) },
+    typeset,
+    hyphenate: { rules },
   });
   return output;
 }

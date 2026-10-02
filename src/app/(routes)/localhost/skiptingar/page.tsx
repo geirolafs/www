@@ -102,7 +102,7 @@ export default function Page() {
         </Section>
 
         <Section {...sections.noBreaks} layout="wide">
-          <Typography set="noBreak" />
+          <Typography />
         </Section>
 
         <Section {...sections.interfaces} layout="side">

@@ -1,4 +1,6 @@
 import { InlineCode } from "@/app/components/localhost/fluid-typography/code";
+import { SECTION_TITLE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
+import { NUMBER } from "@/app/components/localhost/skiptingar/format";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 import {
@@ -9,10 +11,10 @@ import {
 
 const { stats, statsTitle } = localhostSkiptingarContent.hero;
 
-/** Icelandic number format, `.` for thousands. The counts come from the package. */
+/** The counts, in the Icelandic number format. They come from the package. */
 const COUNTS = {
-  patterns: new Intl.NumberFormat("is").format(PATTERN_COUNT),
-  rules: new Intl.NumberFormat("is").format(LOCALE_RULE_COUNT),
+  patterns: NUMBER.format(PATTERN_COUNT),
+  rules: NUMBER.format(LOCALE_RULE_COUNT),
 } as const;
 
 /** Which row of the section each fact takes from `lg`, one under the other. */
@@ -84,7 +86,10 @@ export function HeroStats() {
       className="col-span-full mt-hyhead grid grid-cols-subgrid gap-y-hyblock border-foreground border-t pt-xl"
     >
       <h2
-        className="col-span-6 col-start-2 text-balance font-hy-title font-medium text-foreground text-hy-section lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
+        className={cn(
+          SECTION_TITLE_CLASS,
+          "col-span-6 col-start-2 lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
+        )}
         id="hero-facts"
       >
         {statsTitle}
@@ -93,31 +98,34 @@ export function HeroStats() {
           keeps it a list where `contents` would drop that (Safari). */}
       {/* biome-ignore lint/a11y/noRedundantRoles: Safari drops the list role on `display: contents` */}
       <ul className="contents" role="list">
-        {stats.map((stat, index) => (
-          <li
-            className={cn(
-              "@container col-span-6 col-start-2 flex min-w-0 flex-col gap-md lg:col-span-8 lg:col-start-5",
-              ROW[index]
-            )}
-            key={"count" in stat ? stat.count : stat.value}
-          >
-            <p className="font-hy-text font-medium text-foreground text-hy-body">
-              {stat.label}
-            </p>
-            <p
+        {stats.map((stat, index) => {
+          const value = "count" in stat ? COUNTS[stat.count] : stat.value;
+          return (
+            <li
               className={cn(
-                "font-hy-text font-medium text-foreground text-hy-hero-stat",
-                BASELINE
+                "@container col-span-6 col-start-2 flex min-w-0 flex-col gap-md lg:col-span-8 lg:col-start-5",
+                ROW[index]
               )}
+              key={"count" in stat ? stat.count : stat.value}
             >
-              {"count" in stat ? COUNTS[stat.count] : stat.value}
-            </p>
-            {"count" in stat && stat.count === "rules" ? <RuleNames /> : null}
-            <p className="text-pretty font-book text-hy-note text-muted">
-              {stat.caption}
-            </p>
-          </li>
-        ))}
+              <p className="font-hy-text font-medium text-foreground text-hy-body">
+                {stat.label}
+              </p>
+              <p
+                className={cn(
+                  "font-hy-text font-medium text-foreground text-hy-hero-stat",
+                  BASELINE
+                )}
+              >
+                {value}
+              </p>
+              {"count" in stat && stat.count === "rules" ? <RuleNames /> : null}
+              <p className="text-pretty font-book text-hy-note text-muted">
+                {stat.caption}
+              </p>
+            </li>
+          );
+        })}
       </ul>
     </section>
   );

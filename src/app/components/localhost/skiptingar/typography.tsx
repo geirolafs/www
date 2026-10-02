@@ -7,21 +7,14 @@ import { typeset } from "@/packages/skiptingar/src";
 
 const { noBreak } = localhostSkiptingarContent;
 
-/** The groups of typeset rules a section can show: where Icelandic doesn't break. */
-const SETS = { noBreak } as const;
-
-type TypographyProps = {
-  set: keyof typeof SETS;
-};
-
 /**
- * One group of typesetting rules as rows, Off beside On, across the section's
+ * The typesetting rules where Icelandic doesn't break, as rows, Off beside On, across the section's
  * `wide` layout. The typeset text is computed here, with each no-break space
  * shown as a mark. A rule with `options` turns on only that option; the rest
  * are on by default.
  */
-export function Typography({ set }: TypographyProps) {
-  const { off, on, rules } = SETS[set];
+export function Typography() {
+  const { off, on, rules } = noBreak;
 
   return (
     <div className="col-span-full flex flex-col lg:grid lg:grid-cols-subgrid">

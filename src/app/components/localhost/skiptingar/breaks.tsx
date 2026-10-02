@@ -18,17 +18,23 @@ type Item = {
   readonly id: string;
   readonly title: string;
   readonly body: readonly Part[];
-  readonly word: string;
-  readonly shown: readonly {
-    readonly label: string;
-    readonly options: Parameters<typeof hyphenate>[1];
-  }[];
+  readonly shown: readonly { readonly label: string; readonly text: string }[];
 };
 
 /**
- * One rule: its name, one plain sentence and its word, hyphenated here on the
- * server under each setting in `shown`. The breaks are never typed.
+ * Each rule's word under each setting in `rules.shown`, hyphenated once at
+ * module load: the words and settings are fixed copy, so no render repeats it.
+ * The breaks are never typed.
  */
+const ITEMS: readonly Item[] = content.rules.items.map(({ word, ...item }) => ({
+  ...item,
+  shown: content.rules.shown.map(({ label, options }) => ({
+    label,
+    text: hyphenate(word, options),
+  })),
+}));
+
+/** One rule: its name, one plain sentence and its word under each setting. */
 function Rule({ item }: { item: Item }) {
   return (
     <li className="flex flex-col gap-sm border-border border-t py-md">
@@ -46,7 +52,7 @@ function Rule({ item }: { item: Item }) {
               className="wrap-break-word hyphens-manual font-hy-title text-foreground text-hy-lede"
               lang="is"
             >
-              <MarkedText text={hyphenate(item.word, shown.options)} />
+              <MarkedText text={shown.text} />
             </dd>
           </div>
         ))}
@@ -109,7 +115,7 @@ export function Breaks() {
           ))}
         </ol>
       </Specimen>
-      <Rules hint={rules.hint} items={rules.items} label={rules.label} />
+      <Rules hint={rules.hint} items={ITEMS} label={rules.label} />
     </>
   );
 }

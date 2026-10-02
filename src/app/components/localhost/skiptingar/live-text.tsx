@@ -7,8 +7,7 @@ import { useMarkOverlay } from "@/app/components/localhost/skiptingar/mark-overl
 import { usePlayground } from "@/app/components/localhost/skiptingar/playground";
 import {
   DEFAULT_SETTINGS,
-  PAGE_TYPESET,
-  rulesFor,
+  outputOptions,
   type Settings,
   wrapClass,
 } from "@/app/components/localhost/skiptingar/settings";
@@ -26,13 +25,11 @@ type LiveTextProps = {
    */
   text?: string;
   /**
-   * The server's output for the same text with the default settings and
-   * `fixed` (`initialOutput`). Shown until the engine loads, while nothing
-   * has changed, so the first paint is already processed.
+   * The server's output for the same text with the default settings
+   * (`initialOutput`). Shown until the engine loads, while nothing has
+   * changed, so the first paint is already processed.
    */
   initial: string;
-  /** Settings this specimen keeps whatever the page says, like a specimen that always shows its breaks. */
-  fixed?: Partial<Settings>;
 };
 
 /** The settings that change the output string; the rest only change how it is shown. */
@@ -45,27 +42,22 @@ function sameOutputSettings(a: Settings, b: Settings): boolean {
  * or hand it a new text, and every specimen that uses this follows. Returns
  * the processed string and the settings it was made with.
  */
-function useLiveOutput({ text, initial, fixed }: LiveTextProps) {
-  const { settings: pageSettings, text: pageText } = usePlayground();
-  const settings = { ...pageSettings, ...fixed };
+function useLiveOutput({ text, initial }: LiveTextProps) {
+  const { settings, text: pageText } = usePlayground();
   const source = text ?? firstParagraph(pageText);
   const initialSource = text ?? firstParagraph(liveEditor.initialText);
 
   // At the page's own text and settings the server has already set it
   // (`initial`), so nothing is asked for and hydration matches.
   const atInitial =
-    source === initialSource &&
-    sameOutputSettings(settings, { ...DEFAULT_SETTINGS, ...fixed });
+    source === initialSource && sameOutputSettings(settings, DEFAULT_SETTINGS);
   const { texts } = useHyphenateAll(
     atInitial
       ? []
       : [
           {
             text: source,
-            options: {
-              rules: rulesFor(settings),
-              typeset: settings.typeset ? PAGE_TYPESET : false,
-            },
+            options: outputOptions(settings),
           },
         ]
   );

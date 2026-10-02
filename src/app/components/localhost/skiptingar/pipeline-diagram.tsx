@@ -11,6 +11,15 @@ import {
 } from "@/packages/skiptingar/src";
 
 const { diagram } = localhostSkiptingarContent.howItWorks;
+const { word, line, stages } = diagram;
+
+// The word and the line are fixed copy, so the package sets them once at
+// module load and no render repeats it.
+const RITREGLUR = hyphenate(word, { rules: "ritreglur" });
+// The typographic rules are the default, so this is what the page ships.
+const HYPHENATED = hyphenate(word);
+const TYPESET_SAMPLE = typeset(diagram.typesetSample);
+const LINE = hyphenate(line);
 
 /**
  * The word in the editor's serif at the editor's size, the same in every
@@ -95,12 +104,6 @@ function HtmlWord({ hyphenated }: { hyphenated: string }) {
  * which stages run on the server and which in the browser.
  */
 export function PipelineDiagram() {
-  const { word, line, stages } = diagram;
-  const ritreglur = hyphenate(word, { rules: "ritreglur" });
-  // The typographic rules are the default, so this is what the page ships.
-  const hyphenated = hyphenate(word);
-  const typesetSample = typeset(diagram.typesetSample);
-
   return (
     <figure className="col-span-full flex flex-col gap-sm">
       <figcaption className={LABEL_CLASS}>{diagram.label}</figcaption>
@@ -144,7 +147,7 @@ export function PipelineDiagram() {
           where={diagram.server}
         >
           <span className={WORD_CLASS} lang="is">
-            <MarkedText text={ritreglur} />
+            <MarkedText text={RITREGLUR} />
           </span>
         </Stage>
         <Stage
@@ -154,7 +157,7 @@ export function PipelineDiagram() {
           where={diagram.server}
         >
           <span className={WORD_CLASS} lang="is">
-            <MarkedText text={hyphenated} />
+            <MarkedText text={HYPHENATED} />
           </span>
         </Stage>
         <Stage
@@ -164,7 +167,7 @@ export function PipelineDiagram() {
           where={diagram.server}
         >
           <span className="font-hy-title text-foreground text-hy-body" lang="is">
-            <MarkedText text={typesetSample} />
+            <MarkedText text={TYPESET_SAMPLE} />
           </span>
         </Stage>
         <Stage
@@ -173,7 +176,7 @@ export function PipelineDiagram() {
           title={stages.html.title}
           where={diagram.server}
         >
-          <HtmlWord hyphenated={hyphenated} />
+          <HtmlWord hyphenated={HYPHENATED} />
         </Stage>
         <Stage
           last
@@ -187,7 +190,7 @@ export function PipelineDiagram() {
             className="w-[7.5em] hyphens-manual border-border border-r border-dashed font-hy-title text-foreground text-hy-body"
             lang="is"
           >
-            {hyphenate(line)}
+            {LINE}
           </p>
         </Stage>
       </ol>

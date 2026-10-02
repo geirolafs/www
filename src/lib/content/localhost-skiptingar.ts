@@ -1034,6 +1034,11 @@ export default function Page() {
           text: "The package sets each example; none is typed by hand. Each shows the same word with better breaks off (Ritreglur only) and on (the default).",
         },
       ],
+      // Every example word is set under both: better breaks off, then on.
+      shown: [
+        { label: "Ritreglur", options: { rules: "ritreglur" } },
+        { label: "Typographic (default)", options: {} },
+      ],
       items: [
         {
           id: "linking",
@@ -1046,10 +1051,6 @@ export default function Page() {
             { text: "." },
           ],
           word: "sveitarstjórnarkosningum",
-          shown: [
-            { label: "Ritreglur", options: { rules: "ritreglur" } },
-            { label: "Typographic (default)", options: {} },
-          ],
         },
         {
           id: "room",
@@ -1060,10 +1061,6 @@ export default function Page() {
             },
           ],
           word: "ólán",
-          shown: [
-            { label: "Ritreglur", options: { rules: "ritreglur" } },
-            { label: "Typographic (default)", options: {} },
-          ],
         },
         {
           id: "foreign",
@@ -1074,10 +1071,6 @@ export default function Page() {
             },
           ],
           word: "Icelandair",
-          shown: [
-            { label: "Ritreglur", options: { rules: "ritreglur" } },
-            { label: "Typographic (default)", options: {} },
-          ],
         },
       ],
     },

@@ -4,14 +4,12 @@ import {
   ITEM_TITLE_CLASS,
   LABEL_CLASS,
 } from "@/app/components/localhost/fluid-typography/styles";
+import { NUMBER } from "@/app/components/localhost/skiptingar/format";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 import tests from "@/packages/skiptingar/tests.json";
 
 const { reference } = localhostSkiptingarContent;
-
-/** Icelandic number format, `.` for thousands, as the hero's counts. */
-const NUMBER = new Intl.NumberFormat("is");
 
 const fill = (template: string, values: Record<string, number>) =>
   template.replace(/\{(\w+)\}/g, (_, key: string) => NUMBER.format(values[key] ?? 0));

@@ -15,6 +15,10 @@ export const LABEL_CLASS = "font-medium text-foreground text-hy-caption";
  * (letter, serif title, description) is set in `Section`.
  */
 
+/** A section's title: the serif at Medium, the largest type under the page's own. */
+export const SECTION_TITLE_CLASS =
+  "text-balance font-hy-title font-medium text-foreground text-hy-section";
+
 /** A part inside a section, such as "CSS it pairs with": the serif, a step below the section title. */
 export const SUBTITLE_CLASS =
   "text-balance font-hy-title font-bold text-foreground text-hy-lede";

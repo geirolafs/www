@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
-import { marked } from "@/app/components/localhost/fluid-typography/hero";
 import {
   type Part,
   RichText,
 } from "@/app/components/localhost/fluid-typography/rich-text";
 import { SectionNav } from "@/app/components/localhost/fluid-typography/section-nav";
 import { FOCUS_CLASS } from "@/app/components/localhost/fluid-typography/styles";
+import { marked } from "@/app/components/localhost/fluid-typography/title";
 import { ArealSuperfamily, BespokeSerif } from "@/app/styles/fonts-licensed";
 import { cn } from "@/lib/utils";
 

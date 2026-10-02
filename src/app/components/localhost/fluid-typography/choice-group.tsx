@@ -8,8 +8,6 @@ import {
 } from "@/app/components/localhost/fluid-typography/styles";
 import { cn } from "@/lib/utils";
 
-type Option<T extends string> = { readonly value: T; readonly label: string };
-
 type HintSource = "hover" | "focus" | "tap";
 
 /** `key` tells nested controls apart: a group and the option inside it. */
@@ -159,8 +157,6 @@ export function HintLine({
 
 type ControlGroupProps = {
   label: string;
-  /** Leave the visible label out when the surrounding text already names it. */
-  hideLabel?: boolean;
   /** What the group means, shown in the panel's hint line. */
   tip?: string;
   children: ReactNode;
@@ -170,7 +166,7 @@ type ControlGroupProps = {
  * A labelled group of controls, stacked. The `fieldset` and its `legend` name
  * the group for a screen reader, and its tip describes it.
  */
-export function ControlGroup({ label, hideLabel, tip, children }: ControlGroupProps) {
+export function ControlGroup({ label, tip, children }: ControlGroupProps) {
   const { describedBy, description, handlers } = useHint(tip);
 
   return (
@@ -181,23 +177,13 @@ export function ControlGroup({ label, hideLabel, tip, children }: ControlGroupPr
     >
       <legend className="sr-only">{label}</legend>
       {description}
-      {hideLabel ? null : (
-        <span aria-hidden="true" className={cn(GROUP_LABEL_CLASS, "pb-1.5")}>
-          {label}
-        </span>
-      )}
+      <span aria-hidden="true" className={cn(GROUP_LABEL_CLASS, "pb-1.5")}>
+        {label}
+      </span>
       {children}
     </fieldset>
   );
 }
-
-/**
- * A native radio, redrawn square: a 16px box with a hairline lift, filled
- * with an 8px square when checked. The square is the input's own `::before`.
- * The edge is `border`, not the lighter grey of the fields, because it has to
- * be 3:1 against the page.
- */
-const RADIO_INPUT = `grid size-4 shrink-0 cursor-pointer appearance-none place-content-center border border-border bg-background shadow-hy-control before:size-2 before:scale-0 before:bg-foreground checked:border-foreground checked:before:scale-100 ${FOCUS_CLASS}`;
 
 /**
  * A native switch: a checkbox with `role="switch"`, drawn square as a 32px
@@ -211,49 +197,6 @@ const SWITCH_INPUT = `relative h-[1.15rem] w-8 shrink-0 cursor-pointer appearanc
 
 const ROW_LABEL_CLASS =
   "flex cursor-pointer items-center gap-xs font-medium text-foreground text-hy-control";
-
-type ChoiceGroupProps<T extends string> = {
-  label: string;
-  hideLabel?: boolean;
-  tip?: string;
-  options: readonly Option<T>[];
-  value: T;
-  onChange: (value: T) => void;
-};
-
-/**
- * Pick one of a few values. It is a native radio group: the browser gives it
- * the arrow-key movement, the one-in-the-group rule and the announcements. Each
- * row is a `label`, so the text is clickable too.
- */
-export function ChoiceGroup<T extends string>({
-  label,
-  hideLabel,
-  tip,
-  options,
-  value,
-  onChange,
-}: ChoiceGroupProps<T>) {
-  const name = useId();
-
-  return (
-    <ControlGroup hideLabel={hideLabel} label={label} tip={tip}>
-      {options.map(option => (
-        <label className={cn(ROW_LABEL_CLASS, "min-h-6")} key={option.value}>
-          <input
-            checked={option.value === value}
-            className={RADIO_INPUT}
-            name={name}
-            onChange={() => onChange(option.value)}
-            type="radio"
-            value={option.value}
-          />
-          {option.label}
-        </label>
-      ))}
-    </ControlGroup>
-  );
-}
 
 type SwitchProps = {
   label: string;

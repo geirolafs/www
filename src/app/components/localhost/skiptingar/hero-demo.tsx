@@ -1,4 +1,7 @@
-import { TITLE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
+import {
+  SECTION_TITLE_CLASS,
+  TITLE_CLASS,
+} from "@/app/components/localhost/fluid-typography/styles";
 import { PAGE_TYPESET } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
@@ -8,7 +11,16 @@ import { SOFT_HYPHEN } from "@/packages/skiptingar/src/characters";
 
 const { demo } = localhostSkiptingarContent.hero;
 
-type Row = (typeof demo.rows)[number];
+type Row = {
+  readonly id: string;
+  readonly parts: readonly { readonly text: string; readonly mark?: boolean }[];
+  readonly measure: string;
+  readonly caption: string;
+  /** The browser's side runs past the measure. */
+  readonly overflow?: boolean;
+  /** No dimension line: the measure is the wider of two settings. */
+  readonly bare?: boolean;
+};
 type Kind = "without" | "with";
 
 /** The samples' face and size: the serif, tight, so 1.1em is one line. */
@@ -65,6 +77,11 @@ function processed(row: Row): string[] {
   );
 }
 
+const ROWS: readonly Row[] = demo.rows;
+
+/** Each row set once, at module load: the copy is fixed, so no render repeats it. */
+const PROCESSED = new Map(ROWS.map(row => [row, processed(row)]));
+
 /**
  * The text with each soft hyphen in a blue span. The browser draws the
  * hyphen at a soft hyphen it breaks at in the style of the element holding
@@ -90,11 +107,12 @@ function colourHyphens(text: string, key: number) {
  * package's, where the hyphens it adds are blue too.
  */
 function Parts({ row, kind }: { row: Row; kind: Kind }) {
-  const texts = kind === "with" ? processed(row) : row.parts.map(part => part.text);
+  const texts =
+    (kind === "with" && PROCESSED.get(row)) || row.parts.map(part => part.text);
   return row.parts.map((part, index) => {
     const raw = texts[index] ?? part.text;
     const text = kind === "with" ? colourHyphens(raw, index) : raw;
-    return "mark" in part && part.mark ? (
+    return part.mark ? (
       <span
         className={kind === "with" ? FIX : "text-hy-signal"}
         // biome-ignore lint/suspicious/noArrayIndexKey: the parts are fixed copy and never reorder
@@ -145,8 +163,8 @@ function Dimension({ row }: { row: Row }) {
  * browser drew at a soft hyphen is blue (`colourHyphens`).
  */
 function Panel({ row, kind }: { row: Row; kind: Kind }) {
-  const fault = kind === "without" && "overflow" in row && row.overflow;
-  const bare = "bare" in row && row.bare;
+  const fault = kind === "without" && row.overflow;
+  const bare = row.bare;
   const text = <Parts kind={kind} row={row} />;
   const sample = (
     <p
@@ -207,12 +225,15 @@ export function HeroDemo() {
       className="col-span-full mt-hyhead grid grid-cols-subgrid gap-y-hyblock border-foreground border-t pt-xl lg:gap-y-md"
     >
       <h2
-        className="col-span-6 col-start-2 text-balance font-hy-title font-medium text-foreground text-hy-section lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
+        className={cn(
+          SECTION_TITLE_CLASS,
+          "col-span-6 col-start-2 lg:col-span-4 lg:col-start-1 lg:row-span-4 lg:row-start-1"
+        )}
         id="hero-fixes"
       >
         {demo.title}
       </h2>
-      {demo.rows.map((row, index) => (
+      {ROWS.map((row, index) => (
         <figure
           className={cn(
             "col-span-6 col-start-2 flex min-w-0 flex-col gap-md lg:col-span-4 lg:row-span-4 lg:grid lg:grid-rows-subgrid",
@@ -222,11 +243,7 @@ export function HeroDemo() {
         >
           {/* A bare figure keeps the row, empty, so its parts stay on the
               rows the figure beside it uses. */}
-          {"bare" in row && row.bare ? (
-            <div aria-hidden="true" />
-          ) : (
-            <Dimension row={row} />
-          )}
+          {row.bare ? <div aria-hidden="true" /> : <Dimension row={row} />}
           <Panel kind="without" row={row} />
           <Panel kind="with" row={row} />
           <figcaption className="text-pretty font-book text-hy-note text-muted">

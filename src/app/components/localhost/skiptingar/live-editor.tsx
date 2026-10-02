@@ -13,8 +13,7 @@ import { useMarkOverlay } from "@/app/components/localhost/skiptingar/mark-overl
 import { usePlayground } from "@/app/components/localhost/skiptingar/playground";
 import {
   DEFAULT_SETTINGS,
-  PAGE_TYPESET,
-  rulesFor,
+  outputOptions,
   type Settings,
   wrapClass,
 } from "@/app/components/localhost/skiptingar/settings";
@@ -110,10 +109,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
       ? []
       : blocks.map(block => ({
           text: block.text,
-          options: {
-            rules: rulesFor(settings),
-            typeset: settings.typeset ? PAGE_TYPESET : false,
-          },
+          options: outputOptions(settings),
         }))
   );
   const outputs = atInitial ? initialOutputs : processed.texts;

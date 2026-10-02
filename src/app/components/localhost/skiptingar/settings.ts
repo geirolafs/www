@@ -40,6 +40,17 @@ export function rulesFor(
  */
 export const PAGE_TYPESET = { dashes: true, singleLetter: true } as const;
 
+/** The options `hyphenate()` and the client hook take for the settings that change the output string. */
+export function outputOptions(settings: Pick<Settings, "typographic" | "typeset">): {
+  rules: ReturnType<typeof rulesFor>;
+  typeset: typeof PAGE_TYPESET | false;
+} {
+  return {
+    rules: rulesFor(settings),
+    typeset: settings.typeset ? PAGE_TYPESET : false,
+  };
+}
+
 /**
  * The `text-wrap` class the settings ask for, for a title or for body text:
  * `text-balance` for a title and `text-pretty` for body text when the page asks

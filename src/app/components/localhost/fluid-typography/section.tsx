@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import {
   LABEL_CLASS,
   NOTE_CLASS,
+  SECTION_TITLE_CLASS,
 } from "@/app/components/localhost/fluid-typography/styles";
 import { cn } from "@/lib/utils";
 
@@ -90,10 +91,7 @@ export function Section({
         <p aria-hidden="true" className="font-bold text-foreground text-hy-body">
           {number.toUpperCase()}
         </p>
-        <h2
-          className="text-balance font-hy-title font-medium text-foreground text-hy-section"
-          id={titleId}
-        >
+        <h2 className={SECTION_TITLE_CLASS} id={titleId}>
           {label}
         </h2>
         {explanation ? (
