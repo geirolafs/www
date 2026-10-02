@@ -78,6 +78,15 @@ export function Install() {
             </li>
           ))}
         </ul>
+        <section aria-labelledby={entries.endpoint.id} className="flex flex-col gap-sm">
+          <h4 className={LABEL_CLASS} id={entries.endpoint.id}>
+            {entries.endpoint.title}
+          </h4>
+          <p className={cn(BODY_CLASS, "max-w-measure")}>
+            <RichText parts={entries.endpoint.body} />
+          </p>
+          <CodeBlock code={entries.endpoint.source} label={entries.endpoint.label} />
+        </section>
         <p className={cn(NOTE_CLASS, "max-w-measure")}>{install.requirements}</p>
       </Part>
 

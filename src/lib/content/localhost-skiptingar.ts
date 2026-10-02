@@ -448,6 +448,28 @@ export default function Page() {
           ],
         },
       ],
+      endpoint: {
+        id: "entry-points-endpoint",
+        title: "Hyphenation in the browser, done on the server",
+        body: [
+          { text: "Mount the handler on a POST route and point the client at it once. " },
+          { text: "useHyphenate()", code: true },
+          {
+            text: " and its sibling hooks then send their text to your server and get it back hyphenated, so the browser downloads no patterns. A request holds up to 200 texts and 50.000 characters. If the endpoint fails, the hooks load the patterns in the browser instead.",
+          },
+        ],
+        label: "Route and client setup",
+        source: `// app/api/skiptingar/route.ts
+import { handleSkiptingarRequest } from "skiptingar";
+
+export const POST = (request: Request) => handleSkiptingarRequest(request);
+
+// a client file, run once
+"use client";
+import { configureSkiptingar } from "skiptingar/client";
+
+configureSkiptingar({ endpoint: "/api/skiptingar" });`,
+      },
     },
     cost: {
       id: "cost",
