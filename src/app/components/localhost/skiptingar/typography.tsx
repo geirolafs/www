@@ -1,4 +1,4 @@
-import { typeset } from "skiptingar";
+import { localeDetails } from "skiptingar";
 import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { TypographyFeature } from "@/app/components/localhost/skiptingar/typography-feature";
@@ -9,7 +9,7 @@ const { noBreak } = localhostSkiptingarContent;
 
 /**
  * The typesetting rules where Icelandic doesn't break, as rows, Off beside On, across the section's
- * `wide` layout. The typeset text is computed here, with each no-break space
+ * `wide` layout. The locale details text is computed here, with each no-break space
  * shown as a mark. A rule with `options` turns on only that option; the rest
  * are on by default.
  */
@@ -36,7 +36,10 @@ export function Typography() {
           off={rule.input}
           on={
             <MarkedText
-              text={typeset(rule.input, "options" in rule ? rule.options : undefined)}
+              text={localeDetails(
+                rule.input,
+                "options" in rule ? rule.options : undefined
+              )}
             />
           }
           tag={rule.tag}

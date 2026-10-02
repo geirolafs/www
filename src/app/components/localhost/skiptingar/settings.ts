@@ -10,10 +10,10 @@ export type Settings = {
   /**
    * The typographic rules: which breaks to keep (`rules: "typographic"`), as
    * against the official Ritreglur minimums alone. New and under development.
-   * Not the same as `typeset`, which is about spaces, quotes and dashes.
+   * Not the same as `localeDetails`, which is about spaces, quotes and dashes.
    */
   typographic: boolean;
-  typeset: boolean;
+  localeDetails: boolean;
   showBreaks: boolean;
   /** `text-pretty` for body text and `text-balance` for titles; off wraps greedily. */
   pretty: boolean;
@@ -36,16 +36,18 @@ function rulesFor(settings: Pick<Settings, "typographic">): "typographic" | "rit
  * space after a one-letter word, so "í" never ends a line. That rule is off by
  * default.
  */
-export const PAGE_TYPESET = { singleLetter: true } as const;
+export const PAGE_LOCALE_DETAILS = { singleLetter: true } as const;
 
 /** The options `hyphenate()` and the client hook take for the settings that change the output string. */
-export function outputOptions(settings: Pick<Settings, "typographic" | "typeset">): {
+export function outputOptions(
+  settings: Pick<Settings, "typographic" | "localeDetails">
+): {
   rules: ReturnType<typeof rulesFor>;
-  typeset: typeof PAGE_TYPESET | false;
+  localeDetails: typeof PAGE_LOCALE_DETAILS | false;
 } {
   return {
     rules: rulesFor(settings),
-    typeset: settings.typeset ? PAGE_TYPESET : false,
+    localeDetails: settings.localeDetails ? PAGE_LOCALE_DETAILS : false,
   };
 }
 

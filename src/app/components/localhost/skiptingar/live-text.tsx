@@ -33,7 +33,7 @@ type LiveTextProps = {
 
 /** The settings that change the output string; the rest only change how it is shown. */
 function sameOutputSettings(a: Settings, b: Settings): boolean {
-  return a.typeset === b.typeset && a.typographic === b.typographic;
+  return a.localeDetails === b.localeDetails && a.typographic === b.typographic;
 }
 
 /**

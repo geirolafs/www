@@ -97,7 +97,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
 
   const atInitial =
     text === content.initialText &&
-    settings.typeset === DEFAULT_SETTINGS.typeset &&
+    settings.localeDetails === DEFAULT_SETTINGS.localeDetails &&
     settings.typographic === DEFAULT_SETTINGS.typographic;
 
   // At the page's own text and settings the server has already set every

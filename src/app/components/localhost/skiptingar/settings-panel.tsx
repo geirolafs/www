@@ -42,10 +42,10 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
               tip={content.typographic.tip}
             />
             <Switch
-              checked={settings.typeset}
-              label={content.typeset.label}
-              onChange={value => setSetting("typeset", value)}
-              tip={content.typeset.tip}
+              checked={settings.localeDetails}
+              label={content.localeDetails.label}
+              onChange={value => setSetting("localeDetails", value)}
+              tip={content.localeDetails.tip}
             />
             <Switch
               checked={settings.pretty}
@@ -66,7 +66,7 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
           placeholder={content.hint}
           reserve={[
             content.typographic.tip,
-            content.typeset.tip,
+            content.localeDetails.tip,
             content.showBreaks.tip,
             content.textWrap.tip,
           ]}

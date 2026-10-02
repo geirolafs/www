@@ -3,7 +3,7 @@ import {
   SECTION_TITLE_CLASS,
   TITLE_CLASS,
 } from "@/app/components/localhost/fluid-typography/styles";
-import { PAGE_TYPESET } from "@/app/components/localhost/skiptingar/settings";
+import { PAGE_LOCALE_DETAILS } from "@/app/components/localhost/skiptingar/settings";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 
@@ -71,7 +71,7 @@ const PLACE = [
 function processed(row: Row): string[] {
   return processSegments(
     row.parts.map(part => part.text),
-    { typeset: PAGE_TYPESET, hyphenate: {} }
+    { localeDetails: PAGE_LOCALE_DETAILS, hyphenate: {} }
   );
 }
 

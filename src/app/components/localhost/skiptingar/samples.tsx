@@ -108,7 +108,7 @@ export function CardGrid() {
  * Icelandic with two English phrases in it. The Icelandic parts get breaks and
  * the English ones do not, the way `<Hyphenate>` treats a nested `lang`, and
  * every mark is shown, so the difference is visible. Hyphenation alone: the
- * specimen does not depend on the optional typeset layer.
+ * specimen does not depend on the optional locale details layer.
  */
 export function MixedLanguages() {
   const { mixed } = content;

@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils";
 
 type TypographyFeatureProps = {
   label: string;
-  /** The `typeset()` option that turns the rule on or off, shown as code. */
+  /** The `localeDetails()` option that turns the rule on or off, shown as code. */
   tag: string;
   /** What the rule does, in a line. */
   tip: string;
   /** The text as written. */
   off: ReactNode;
-  /** The typeset text, computed on the server. */
+  /** The text with the rule applied, computed on the server. */
   on: ReactNode;
   /** The captions over the two sides, for a phone and a screen reader. */
   captions: { off: string; on: string };
@@ -57,7 +57,7 @@ function Side({
 /**
  * One typesetting rule as a row, like a font's OpenType feature list: the
  * name, its option and what it does in columns 1–4, the text as written in
- * 5–8 and typeset in 9–12, so the two compare side by side. Both strings come
+ * 5–8 and with the rule applied in 9–12, so the two compare side by side. Both strings come
  * from the server.
  */
 export function TypographyFeature({

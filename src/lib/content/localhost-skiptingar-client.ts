@@ -8,7 +8,7 @@
 
 /**
  * The example texts. Each one holds every problem the package solves:
- * long compounds, a title, and the things the typeset layer looks at: numbers with units, dates and ordinals, abbreviations with numbers, a
+ * long compounds, a title, and the things the locale details layer looks at: numbers with units, dates and ordinals, abbreviations with numbers, a
  * kennitala or phone number, a title before a name, straight quotes and a
  * number range. A web address and an email must stay whole. A line that
  * starts with `# ` is a title.
@@ -142,7 +142,7 @@ export const localhostSkiptingarClientContent = {
       words: (count: number) => `${count} ${count === 1 ? "word" : "words"}`,
     },
     /** What the editor starts with. The page renders the first output from these on the server. */
-    initial: { typographic: true, typeset: true },
+    initial: { typographic: true, localeDetails: true },
     options: {
       label: "Options",
     },
@@ -152,7 +152,7 @@ export const localhostSkiptingarClientContent = {
       label: "Better breaks",
       tip: "On by default, and you can turn it off. These rules drop legal breaks that read badly, such as ó-lán, the break before a linking syllable in sveitar-stjórnar-kosningum, and a break inside a foreign name like Icelandair. Off gives the official Ritreglur minimums only. The rules are new and under development, so turn them off if they give odd results.",
     },
-    typeset: {
+    localeDetails: {
       label: "Locale details",
       tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr. and 30. september, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. This page also keeps a one-letter word like í with the word after it, a rule that is off by default. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash.",
     },
@@ -162,7 +162,7 @@ export const localhostSkiptingarClientContent = {
     },
     textWrap: {
       label: "CSS text-wrap",
-      tip: "On by default here, and we recommend it. It is CSS you add to the page, not a layer of the package: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off fills each line before it starts the next.",
+      tip: "On by default here, and I recommend it. It is CSS you add to the page, not a layer of the package: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off fills each line before it starts the next.",
     },
     /** The result box's width slider, in px. */
     width: { min: 120, max: 720, initial: 320 },

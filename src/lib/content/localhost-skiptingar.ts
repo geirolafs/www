@@ -9,7 +9,7 @@
  * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
  * in as soft hyphens), better breaks (the experimental `rules: "typographic"`
  * preset, which decides which breaks to keep) and locale details (no-break
- * spaces, Icelandic quotes and dashes; `typeset()` in the API). CSS text-wrap
+ * spaces, Icelandic quotes and dashes). CSS text-wrap
  * (pretty for body text, balance for titles) is not a layer: it is the
  * reader's own CSS, which the page recommends pairing with the layers. Better
  * breaks, locale details and the CSS can be turned off. Keep the names apart:
@@ -198,7 +198,7 @@ export const localhostSkiptingarContent = {
               {
                 text: "Check that your font has glyphs for U+00A0, the no-break space, and U+2011, the no-break hyphen. ",
               },
-              { text: "typeset()", code: true },
+              { text: "localeDetails()", code: true },
               {
                 text: " puts U+2011 in kennitala and phone numbers. Many fonts have no U+2011. ABC Areal and Bespoke Serif, the faces on this page, lack it. The browser draws that hyphen from a fallback font.",
               },
@@ -242,7 +242,7 @@ export const localhostSkiptingarContent = {
             body: [
               { text: "bun run bench", code: true },
               {
-                text: " times hyphenate() and typeset() each on its own, on a text of 20.000 words. Each one repeats for about 300 ms, and the script prints words per second. It prints the results but saves none, so this page shows no speed figures.",
+                text: " times hyphenate() and localeDetails() each on its own, on a text of 20.000 words. Each one repeats for about 300 ms, and the script prints words per second. It prints the results but saves none, so this page shows no speed figures.",
               },
             ],
           },
@@ -332,7 +332,7 @@ export const localhostSkiptingarContent = {
       nav: "How",
       label: "How it works",
       explanation:
-        "Three layers on the server: letter patterns, better breaks and locale details. We recommend pairing them with CSS text-wrap, so the browser sets the lines well.",
+        "Three layers on the server: letter patterns, better breaks and locale details. I recommend pairing them with CSS text-wrap, so the browser sets the lines well.",
     },
     install: {
       id: "install",
@@ -371,7 +371,7 @@ export const localhostSkiptingarContent = {
         {
           text: " where the page renders on the server. It adds all three layers. Pass ",
         },
-        { text: "typeset={false}", code: true },
+        { text: "localeDetails={false}", code: true },
         {
           text: " to leave out the locale details. Pair it with CSS text-wrap: here Tailwind’s text-balance for the title and text-pretty for the paragraph. Add ",
         },
@@ -407,7 +407,7 @@ export default function Page() {
           body: [
             { text: "hyphenate()", code: true },
             { text: ", " },
-            { text: "typeset()", code: true },
+            { text: "localeDetails()", code: true },
             { text: " and " },
             { text: "processSegments()", code: true },
             {
@@ -426,7 +426,7 @@ export default function Page() {
           body: [
             { text: "<Hyphenate>", code: true },
             { text: " (all three layers) and " },
-            { text: "<Typeset>", code: true },
+            { text: "<LocaleDetails>", code: true },
             {
               text: " (locale details only). They change only the text in the JSX you give them.",
             },
@@ -525,11 +525,11 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           ],
         },
         {
-          id: "typeset",
+          id: "locale-details",
           label: "Locale details",
           items: [
             {
-              id: "sk-typeset",
+              id: "sk-locale-details",
               label: "Skiptingar on the server",
               kB: 0,
               own: true,
@@ -667,8 +667,8 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
       word: "Hrafnafjarðarbyggð",
       /** The browser stage sets the word in this line, narrow enough that it must break. */
       line: "Kjörsókn í Hrafnafjarðarbyggð",
-      /** The typeset stage shows its own phrase, since a single word has nothing for it to change. */
-      typesetSample: '"Verð 1.000 kr."',
+      /** The locale details stage shows its own phrase, since a single word has nothing for it to change. */
+      localeDetailsSample: '"Verð 1.000 kr."',
       server: "On the server",
       browser: "In the browser",
       stages: {
@@ -688,7 +688,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           title: "Better breaks",
           note: "It drops breaks that read badly, here the one inside fjarð-ar.",
         },
-        typeset: {
+        localeDetails: {
           title: "Locale details",
           note: "Spaces become no-break spaces and straight quotes become Icelandic quotes, here in another phrase.",
         },
@@ -698,7 +698,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         },
         line: {
           title: "Line",
-          note: "The browser picks the break that fits and draws the hyphen only there. CSS text-wrap, which we recommend, shapes the choice: pretty for body text, balance for titles.",
+          note: "The browser picks the break that fits and draws the hyphen only there. CSS text-wrap, which I recommend, shapes the choice: pretty for body text, balance for titles.",
         },
       },
       softHyphen: "&shy;",
@@ -746,13 +746,13 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         ],
       },
       {
-        id: "typeset",
+        id: "locale-details",
         title: "Locale details (on by default)",
         body: [
           {
             text: "Locale details are on by default in the components and the hooks. Pass ",
           },
-          { text: "typeset={false}", code: true },
+          { text: "localeDetails={false}", code: true },
           {
             text: " to hyphenate only. Hyphenation does not depend on them. Locale details swap characters one for one: spaces become no-break spaces in ",
           },
@@ -789,7 +789,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         title: "CSS text-wrap (recommended)",
         body: [
           {
-            text: "Soft hyphens only say where a line may break. We recommend pairing the three layers with CSS ",
+            text: "Soft hyphens only say where a line may break. I recommend pairing the three layers with CSS ",
           },
           { text: "text-wrap: pretty", code: true },
           { text: " for body text and " },
@@ -1292,12 +1292,12 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
   /**
    * Where Icelandic does not break: each rule glues a plain space with a
    * no-break space (or a hyphen with a non-breaking one). `options` is the
-   * `typeset()` option that the row turns on. `measure` is the column width in
+   * `localeDetails()` option that the row turns on. `measure` is the column width in
    * em where the text as written breaks at a space the rule glues, so the two
    * sides wrap differently (measured in Chrome).
    */
   noBreak: {
-    /** The two column captions: the text as written, and typeset. */
+    /** The two column captions: the text as written, and with the rule applied. */
     off: "Off",
     on: "On",
     rules: [

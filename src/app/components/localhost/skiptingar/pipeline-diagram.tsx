@@ -1,4 +1,4 @@
-import { hyphenate, patternPoints, SOFT_HYPHEN, typeset } from "skiptingar";
+import { hyphenate, localeDetails, patternPoints, SOFT_HYPHEN } from "skiptingar";
 import { Stage } from "@/app/components/localhost/fluid-typography/stage";
 import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
@@ -13,7 +13,7 @@ const { word, line, stages } = diagram;
 const RITREGLUR = hyphenate(word, { rules: "ritreglur" });
 // The typographic rules are the default, so this is what the page ships.
 const HYPHENATED = hyphenate(word);
-const TYPESET_SAMPLE = typeset(diagram.typesetSample);
+const LOCALE_DETAILS_SAMPLE = localeDetails(diagram.localeDetailsSample);
 const LINE = hyphenate(line);
 
 /**
@@ -91,7 +91,7 @@ function HtmlWord({ hyphenated }: { hyphenated: string }) {
 /**
  * How it works, as one word through seven stages: the word, its pattern
  * digits, the breaks the Ritreglur minimums keep, the breaks the typographic
- * rules keep, the typeset rules (on a phrase of
+ * rules keep, the locale details rules (on a phrase of
  * their own, since a single word has nothing for them to change), the HTML
  * with its soft hyphens and no-break spaces, and the line the browser sets.
  * Every value is computed by the package here on the server, so the diagram
@@ -156,13 +156,13 @@ export function PipelineDiagram() {
           </span>
         </Stage>
         <Stage
-          note={stages.typeset.note}
+          note={stages.localeDetails.note}
           number={5}
-          title={stages.typeset.title}
+          title={stages.localeDetails.title}
           where={diagram.server}
         >
           <span className="font-hy-title text-foreground text-hy-body" lang="is">
-            <MarkedText text={TYPESET_SAMPLE} />
+            <MarkedText text={LOCALE_DETAILS_SAMPLE} />
           </span>
         </Stage>
         <Stage
