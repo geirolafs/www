@@ -3,8 +3,8 @@
  * typography. The Icelandic texts are the samples; the English strings are the
  * page's own labels. The copy that client components read (the Try it editor,
  * the width slider) is defined in `localhost-skiptingar-client.ts`. The install
- * command is left out on purpose, as the npm package is a placeholder with no
- * code yet.
+ * commands show with a status line that says the npm package is a placeholder
+ * with no code yet.
  *
  * The page presents version 1 as three layers, all on the server and on by
  * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
@@ -46,7 +46,7 @@ export const localhostSkiptingarContent = {
     name: "Skiptingar",
     title: "Skipt-ing-ar",
     tagline: "Icelandic text, set well.",
-    lede: "Letter patterns, better breaks and locale details, all on the server. Pair them with CSS text-wrap. The browser runs no code and copied text comes out clean.",
+    lede: "Letter patterns, better breaks and locale details, all on the server. Pair them with CSS text-wrap. The browser runs no hyphenation code, and copied text comes out clean.",
 
     /**
      * The problems as numbered figures, drawn like a technical manual: each
@@ -138,9 +138,8 @@ export const localhostSkiptingarContent = {
       },
       {
         value: "0 kB",
-        label: "JavaScript in the browser",
-        caption:
-          "The server puts in the soft hyphens and no-break spaces. Every browser gets the same breaks.",
+        label: "Hyphenation JavaScript in the browser",
+        caption: `The server puts in the soft hyphens and no-break spaces, so every browser gets the same break points. Only CleanCopy, for clean copied text, runs in the browser: ${kB("cleanCopy")}.`,
       },
     ],
   },
@@ -528,7 +527,7 @@ export default function Page() {
           ],
         },
       ],
-      note: "Measured on 1 October 2026: each package bundled with a minimal use, minified, React left out, brotli. Each row shows only what that setup downloads for its job, so the scope differs: some rows include hyphenation, and some leave it to the server.",
+      note: "The Skiptingar rows come from bun run size and change with each run. The other packages were measured on 1 October 2026. Each package is bundled with a minimal use, minified, React left out, brotli. Each row shows only what that setup downloads for its job, so the scope differs: some rows include hyphenation, and some leave it to the server.",
     },
     roadmap: {
       id: "roadmap",
@@ -589,6 +588,8 @@ export default function Page() {
 
   compare: {
     text: compareText,
+    /** The width slider's accessible name: "Width, Browser comparison". */
+    measureName: "Browser comparison",
     columns: {
       none: {
         label: "None",
@@ -600,7 +601,7 @@ export default function Page() {
       },
       skiptingar: {
         label: "Skiptingar",
-        hint: "Soft hyphens from the letter patterns and better breaks, put in on the server. Every browser gets the same breaks.",
+        hint: "Soft hyphens from the letter patterns and better breaks, put in on the server. Every browser gets the same break points.",
       },
     },
     table: {
@@ -705,7 +706,7 @@ export default function Page() {
           { text: ", where the older TeX patterns gave " },
           { text: "þjóð-fé-lagsum-ræða", sample: true },
           {
-            text: ". The official spelling rules (Ritreglur) then ask for room on both sides of a break: at least 1 letter before it and 2 after. Skiptingar adds its own limit: a word needs 4 or more letters. These minimums alone still allow breaks that read badly, such as ",
+            text: ". The official spelling rules (Ritreglur) then ask for room on both sides of a break: at least 1 letter before it and 2 after, in words of 4 letters or more. These minimums alone still allow breaks that read badly, such as ",
           },
           { text: "ó-lán", sample: true },
           {
@@ -749,7 +750,7 @@ export default function Page() {
           { text: " and " },
           { text: "dr. Jón", sample: true },
           {
-            text: ", and straight quotes become Icelandic „…“. The optional dashes rule is the one exception: it also adds an invisible word joiner after an en dash in a range. So the locale details can run across a whole JSX tree and pair quotes across inline elements such as ",
+            text: ", and straight quotes become Icelandic „…“. The dashes rule is the one exception: it also adds an invisible word joiner after an en dash in a range. So the locale details can run across a whole JSX tree and pair quotes across inline elements such as ",
           },
           { text: "<strong>", code: true },
           { text: "." },
@@ -780,7 +781,7 @@ export default function Page() {
           { text: " for body text and " },
           { text: "balance", code: true },
           {
-            text: " for titles help the browser choose. This is your CSS, not package code. It is on by default on this page, and you can leave it out.",
+            text: " for titles. They help the browser choose. This is your CSS, not package code. It is on by default on this page, and you can leave it out.",
           },
         ],
       },
@@ -789,7 +790,7 @@ export default function Page() {
         title: "Why on the server",
         body: [
           {
-            text: "All three layers run while the page renders, so the browser gets plain HTML. That means 0 kB of JavaScript for any of them on a server-rendered page, the same breaks in every browser, and no flash while text is processed. ",
+            text: "All three layers run while the page renders, so the browser gets plain HTML. That means 0 kB of JavaScript for any of them on a server-rendered page, the same break points in every browser, and no flash while text is processed. ",
           },
           { text: "<CleanCopy />", code: true },
           {
@@ -991,53 +992,21 @@ export default function Page() {
    * `options` object is passed to `hyphenate()` as it stands.
    */
   breaksSection: {
-    order: {
-      label: "How a word gets its breaks",
-      steps: [
-        {
-          id: "patterns",
-          title: "Letter patterns",
-          body: [
-            {
-              text: "The 2020 letter patterns from the Árni Magnússon Institute mark where a word may break. They work on syllables, not on where a compound’s parts meet, so a break can fall inside a part. The official spelling rules (Ritreglur) then remove breaks with too little room: at least 1 letter before a break and 2 after, in words of 4 letters or more. The 4 is Skiptingar’s own choice.",
-            },
-          ],
-        },
-        {
-          id: "typographic",
-          title: "Better breaks (on by default)",
-          body: [
-            {
-              text: "Better breaks then drop legal breaks that read badly. They are new and under development, so they may change and give odd results. Turn them off in Try it, or with ",
-            },
-            { text: 'rules: "ritreglur"', code: true },
-            {
-              text: ", for the official minimums only. Better breaks control which breaks to keep. Locale details are a separate layer for spaces, quotes and dashes.",
-            },
-          ],
-        },
-        {
-          id: "server",
-          title: "Soft hyphens, on the server",
-          body: [
-            {
-              text: "The server puts the remaining breaks in the text as soft hyphens. The browser picks which break each line uses.",
-            },
-          ],
-        },
-      ],
-    },
     rules: {
       label: "Examples",
       hint: [
         {
-          text: "The package sets each example; none is typed by hand. Each shows the same word with better breaks off (Ritreglur only) and on (the default).",
+          text: "The package sets each example; none is typed by hand. Each shows the same word with better breaks off (Ritreglur only) and on (the default). Better breaks are new and under development, so they may change. Turn them off in Try it, or with ",
         },
+        { text: 'rules: "ritreglur"', code: true },
+        { text: ". " },
+        { text: "How it works", href: "#how-it-works" },
+        { text: " goes through each step." },
       ],
       // Every example word is set under both: better breaks off, then on.
       shown: [
         { label: "Ritreglur", options: { rules: "ritreglur" } },
-        { label: "Typographic (default)", options: {} },
+        { label: "Better breaks (default)", options: {} },
       ],
       items: [
         {
@@ -1153,9 +1122,9 @@ export default function Page() {
           id: "phone",
           term: "Phone numbers",
           body: [
-            { text: "555-1234", sample: true },
+            { text: "588-5522", sample: true },
             { text: " and " },
-            { text: "555 1234", sample: true },
+            { text: "588 5522", sample: true },
             {
               text: " stay together with the locale details. Browsers otherwise break after the hyphen.",
             },
@@ -1331,7 +1300,7 @@ export default function Page() {
         measure: 9,
         label: "Date",
         tag: "dates",
-        tip: "Keeps a month and the year after it together, so sep. 2026 and sept. 2027 stay on one line.",
+        tip: "Keeps a day with its month, and a month with the year after it, so 30. sep. 2026 and sept. 2027 stay on one line.",
         input: "Opnað 30. sep. 2026 og lokað í sept. 2027.",
       },
       {
@@ -1356,7 +1325,7 @@ export default function Page() {
         label: "Kennitala and phone",
         tag: "numbers",
         tip: "Kennitala and phone numbers stay on one line. The hyphen becomes a no-break hyphen (U+2011) and the spaces become no-break spaces. CleanCopy puts a normal hyphen back when you copy.",
-        input: "Kennitala 010190-2939, sími 555-1234 eða +354 555 1234.",
+        input: "Kennitala 011390-2939, sími 588-5522 eða +354 588 5522.",
       },
       {
         id: "titles",

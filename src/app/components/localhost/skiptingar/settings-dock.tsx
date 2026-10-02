@@ -59,6 +59,7 @@ export function SettingsDock() {
   const past = usePastEditorSettings();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const { settings } = usePlayground();
   const visible = past || open;
 
@@ -68,6 +69,11 @@ export function SettingsDock() {
     }
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        // The panel unmounts on close, and focus inside it would fall to the
+        // body. Move it to the button first, and only when it was in the dock.
+        if (rootRef.current?.contains(document.activeElement)) {
+          buttonRef.current?.focus();
+        }
         setOpen(false);
       }
     };
@@ -118,7 +124,15 @@ export function SettingsDock() {
           "group relative grid size-10 shrink-0 cursor-pointer place-items-center bg-foreground text-background shadow-hy-float",
           FOCUS_CLASS
         )}
-        onClick={() => setOpen(current => !current)}
+        onClick={event => {
+          // Safari does not focus a button on click, so a press that closes
+          // the panel would leave focus on the body.
+          if (open) {
+            event.currentTarget.focus();
+          }
+          setOpen(current => !current);
+        }}
+        ref={buttonRef}
         type="button"
       >
         {open ? null : (

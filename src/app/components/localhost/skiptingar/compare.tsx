@@ -57,7 +57,13 @@ export function Compare() {
   const initial = initialOutput(firstParagraph(liveEditor.initialText));
 
   return (
-    <Measure className="col-span-full" initial={220} max={420} min={140} name="Compare">
+    <Measure
+      className="col-span-full"
+      initial={220}
+      max={420}
+      min={140}
+      name={compare.measureName}
+    >
       <div className="flex flex-col gap-y-xl lg:grid lg:grid-cols-3 lg:grid-rows-[auto_auto] lg:gap-x-md">
         <Column hint={columns.none.hint} label={columns.none.label}>
           <p className={cn(COLUMN_CLASS, "hyphens-manual text-wrap")} lang="is">

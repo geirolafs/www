@@ -180,8 +180,9 @@ export function useMarkOverlay(
       className="pointer-events-none absolute top-0 left-0 select-none"
       ref={overlayRef}
     >
-      {marks.map(mark => {
-        const id = `${mark.kind}-${mark.x}-${mark.y}`;
+      {marks.map((mark, index) => {
+        // Two marks can share a position, so the index keeps the key unique.
+        const id = `${mark.kind}-${mark.x}-${mark.y}-${index}`;
         if (mark.kind === "dot") {
           return (
             <span

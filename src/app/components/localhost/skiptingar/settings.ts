@@ -27,18 +27,16 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 /** The `rules` option of `hyphenate()` that the Better breaks setting asks for. */
-export function rulesFor(
-  settings: Pick<Settings, "typographic">
-): "typographic" | "ritreglur" {
+function rulesFor(settings: Pick<Settings, "typographic">): "typographic" | "ritreglur" {
   return settings.typographic ? "typographic" : "ritreglur";
 }
 
 /**
- * The rules the Locale details setting turns on: the defaults plus en dashes,
- * so "1990-2010" in an example is set as Ritreglur §26.2.1 asks, and a
- * no-break space after a one-letter word, so "í" never ends a line.
+ * The rules the Locale details setting turns on: the defaults plus a no-break
+ * space after a one-letter word, so "í" never ends a line. That rule is off by
+ * default.
  */
-export const PAGE_TYPESET = { dashes: true, singleLetter: true } as const;
+export const PAGE_TYPESET = { singleLetter: true } as const;
 
 /** The options `hyphenate()` and the client hook take for the settings that change the output string. */
 export function outputOptions(settings: Pick<Settings, "typographic" | "typeset">): {

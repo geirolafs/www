@@ -83,39 +83,11 @@ function Rules({
 }
 
 /**
- * Section B's text: the order a word gets its breaks in (patterns, the
- * Ritreglur minimums, soft hyphens on the server), and examples with the
- * package's own output. Two specimens, one after the other, in the section's
- * `side` layout.
+ * Section B's examples, with the package's own output. The steps a word goes
+ * through are explained once, in How it works; the hint links there.
  */
 export function Breaks() {
-  const { order, rules } = content;
+  const { rules } = content;
 
-  return (
-    <>
-      <Specimen label={order.label}>
-        <ol className="flex flex-col">
-          {order.steps.map((step, index) => (
-            <li
-              // 2rem for the step number: no spacing token is that wide.
-              className="grid grid-cols-[2rem_1fr] gap-x-xs border-border border-t py-md"
-              key={step.id}
-            >
-              {/* Tabular figures keep the step numbers the same width. */}
-              <span className="font-medium text-hy-copy text-muted tabular-nums">
-                {index + 1}
-              </span>
-              <div className="flex min-w-0 max-w-measure flex-col gap-1">
-                <h4 className={ITEM_TITLE_CLASS}>{step.title}</h4>
-                <p className={BODY_CLASS}>
-                  <RichText parts={step.body} />
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </Specimen>
-      <Rules hint={rules.hint} items={ITEMS} label={rules.label} />
-    </>
-  );
+  return <Rules hint={rules.hint} items={ITEMS} label={rules.label} />;
 }

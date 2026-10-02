@@ -76,7 +76,7 @@ export function SectionNav({
               <a
                 aria-current={active ? "location" : undefined}
                 className={cn(
-                  "inline-block min-w-5 py-2xs text-center font-book text-foreground text-hy-nav underline-offset-6 hover:text-muted min-[25rem]:min-w-6 min-[90rem]:min-w-0 min-[90rem]:text-left",
+                  "inline-block min-w-6 py-2xs text-center font-book text-foreground text-hy-nav underline-offset-6 hover:text-muted min-[90rem]:min-w-0 min-[90rem]:text-left",
                   // The current section is the one thing in the bar that must
                   // be seen at a glance: a red rule under it.
                   active ? "underline decoration-2 decoration-hy-signal" : "no-underline",
