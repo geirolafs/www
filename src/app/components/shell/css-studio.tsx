@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { isTypingInto } from "./grid-overlay-toggle";
+import { useEffect } from "react";
+import { useShortcutToggle } from "@/lib/hooks/use-shortcut-toggle";
 
 /* shift+S, beside shift+G for the grid. Matched on `event.key` for the same
-   reason the grid toggle is (see `grid-overlay-toggle.tsx`). CSS Studio claims
+   reason the grid toggle is (see `use-shortcut-toggle.ts`). CSS Studio claims
    alt+C and alt+F for itself, so those are out. */
 const TOGGLE_KEY = "s";
 
@@ -19,21 +19,9 @@ const STORAGE_KEY = "dev:css-studio";
  * keeps the package out of the production bundle.
  */
 export function CssStudio() {
-  /* `null` until storage is read, so the persist effect cannot write `off`
-     over a stored `on` on the first commit. */
-  const [open, setOpen] = useState<boolean | null>(null);
+  const [open] = useShortcutToggle(TOGGLE_KEY, STORAGE_KEY);
 
   useEffect(() => {
-    setOpen(window.sessionStorage.getItem(STORAGE_KEY) === "on");
-  }, []);
-
-  useEffect(() => {
-    if (open === null) {
-      return;
-    }
-
-    window.sessionStorage.setItem(STORAGE_KEY, open ? "on" : "off");
-
     if (!open) {
       return;
     }
@@ -63,29 +51,6 @@ export function CssStudio() {
       }
     };
   }, [open]);
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() !== TOGGLE_KEY || !event.shiftKey) {
-        return;
-      }
-
-      if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) {
-        return;
-      }
-
-      if (isTypingInto(event.target)) {
-        return;
-      }
-
-      event.preventDefault();
-      setOpen(previous => !previous);
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   return null;
 }
