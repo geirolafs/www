@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type HeroProps = {
   /** The page's name for a screen reader, without the typed hyphens. */
@@ -15,16 +15,21 @@ type HeroProps = {
    * own number so it fills the grid too.
    */
   fit?: number;
+  /** The page's own demo, set under the lede: the same text without and with the package. */
+  demo?: ReactNode;
+  /** The facts, set under the demo: a `<ul>` of numbers, each with a sentence. */
+  stats?: ReactNode;
 };
 
 /**
  * The front of a fluid-typography page: its name, set in Geist across the full
  * width of the grid, then a tagline in the serif and a sentence on what it is.
- * No demo yet; the specimens come in the sections below.
+ * A page can set a demo and a row of facts under the lede; without them the
+ * hero ends at the lede, and the specimens come in the sections below.
  * The section is an `@container`, so `text-hy-hero` sizes the name from the
  * grid's width.
  */
-export function Hero({ name, title, tagline, lede, lang, fit }: HeroProps) {
+export function Hero({ name, title, tagline, lede, lang, fit, demo, stats }: HeroProps) {
   return (
     <section className="hy-hero @container page-grid pt-project pb-hysection">
       {/* The hyphens are part of the picture, so a screen reader gets the word.
@@ -51,6 +56,10 @@ export function Hero({ name, title, tagline, lede, lang, fit }: HeroProps) {
       <p className="col-span-full mt-md max-w-measure text-pretty font-book text-hy-body text-muted">
         {lede}
       </p>
+
+      {demo}
+
+      {stats}
     </section>
   );
 }
