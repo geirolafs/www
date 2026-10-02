@@ -36,7 +36,7 @@ in it and adds none. Icelandic text from `skiptingar` works as it is.
 ```tsx
 "use client";
 import { SettledText } from "settle-rag/client";
-import { RAG_LANGUAGE } from "skiptingar";
+import { RAG_LANGUAGE } from "skiptingar/client";
 
 <SettledText
   as="p"
@@ -68,8 +68,9 @@ const language = {
 ```
 
 All three are optional. For Icelandic, import `RAG_LANGUAGE` from
-`skiptingar`; it is a plain object with these three keys, so neither package
-needs the other.
+`skiptingar/client` in a client component (0.1.3 or newer), so Skiptingar's
+pattern data stays out of the browser, or from `skiptingar` on the server. It
+is a plain object with these three keys, so neither package needs the other.
 
 ## Options
 

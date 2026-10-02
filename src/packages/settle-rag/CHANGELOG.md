@@ -9,7 +9,8 @@ The first version. The API may still change before 1.0.
 - Language is an input: the short words, the linking syllables and the locale
   come in as `language` (`RagLanguage`) in the options. Settle Rag ships none;
   without one, only one-letter words count as short and no hyphen is a joint.
-  `skiptingar` has the Icelandic one (`RAG_LANGUAGE`).
+  `skiptingar` has the Icelandic one (`RAG_LANGUAGE`, from `skiptingar/client`
+  in the browser since 0.1.3).
 - Settle rag can tighten a line: `tighten`, `tightenLetters` and
   `tightenWeight` let a line take a little less word space (and, only when it
   has too few spaces, letter space) to keep a word on it, as a typesetter does
