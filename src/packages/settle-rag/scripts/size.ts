@@ -1,13 +1,11 @@
 /**
- * What each way of using the package costs a browser, measured the way a
- * site's bundler would build it (minified, React left out, brotli). Each
- * setup is a small entry that imports what that use needs; its size is the
- * files loaded at once plus, for `lazy`, the chunks loaded on first use.
+ * What using the package costs a browser, measured the way a site's bundler
+ * would build it (minified, React left out, brotli). Each setup is a small
+ * entry that imports what that use needs; its size is the files loaded at once.
  *
- * `bun run size` prints the table and writes `sizes.json`, which the
- * playground's copy and cost chart read, and the README figures between
- * `<!-- size:NAME -->` markers. `bun run size --check` only reports whether
- * they are up to date.
+ * `bun run size` prints the table and writes `sizes.json`, and the README
+ * figures between `<!-- size:NAME -->` markers. `bun run size --check` only
+ * reports whether they are up to date.
  */
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -21,27 +19,14 @@ const README_PATH = join(root, "README.md");
 
 /** One way of using the package, as the code a page would write. */
 const SETUPS = {
-  endpoint: {
-    label: "useHyphenate with an endpoint",
-    code: `import { configureSkiptingar, useHyphenate } from "${src}/client/index"; configureSkiptingar({ endpoint: "/api" }); console.log(useHyphenate);`,
-  },
-  client: {
-    label: "the full client entry",
-    code: `import * as client from "${src}/client/index"; console.log(client);`,
-  },
-  cleanCopy: {
-    label: "Clean copy only (CleanCopy)",
-    code: `import { CleanCopy } from "${src}/client/index"; console.log(CleanCopy);`,
-  },
-  browser: {
-    label: "useHyphenate in the browser, patterns included",
-    code: `import { useHyphenate } from "${src}/client/index"; console.log(useHyphenate);`,
-    lazy: true,
+  rag: {
+    label: "Settle rag only (SettledText)",
+    code: `import { SettledText } from "${src}/client/index"; console.log(SettledText);`,
   },
 } as const;
 
 export type Size = { brotli: number; gzip: number };
-export type Sizes = Record<keyof typeof SETUPS | "patterns", Size>;
+export type Sizes = Record<keyof typeof SETUPS, Size>;
 
 const kB = (bytes: number) => Math.round(bytes / 100) / 10;
 
@@ -59,22 +44,20 @@ function sizeOf(files: readonly Buffer[]): Size {
 }
 
 const STATIC_IMPORT = /(?:^|[;\s])(?:import|export)[^"'()]*?from\s*["']([^"']+)["']/g;
-const DYNAMIC_IMPORT = /import\(\s*["']([^"']+)["']\s*\)/g;
 
-/** The files a module pulls in, static and lazy, as paths relative to it. */
-function importsOf(code: string): { statics: string[]; lazies: string[] } {
-  const relative = (spec: string) => spec.startsWith(".");
-  return {
-    statics: [...code.matchAll(STATIC_IMPORT)].map(m => m[1] ?? "").filter(relative),
-    lazies: [...code.matchAll(DYNAMIC_IMPORT)].map(m => m[1] ?? "").filter(relative),
-  };
+/** The files a module pulls in, as paths relative to it. */
+function importsOf(code: string): string[] {
+  return [...code.matchAll(STATIC_IMPORT)]
+    .map(match => match[1] ?? "")
+    .filter(spec => spec.startsWith("."));
 }
 
-/** Bytes of the entry and everything it loads at once, and of what it loads lazily. */
-async function measureEntry(code: string): Promise<{ eager: Buffer[]; lazy: Buffer[] }> {
+/** Bytes of the entry and everything it loads at once. */
+async function measureEntry(code: string): Promise<Buffer[]> {
   // A fixed folder, not a random one: its path can end up in the output, and
-  // the sizes must not change from run to run.
-  const dir = join(tmpdir(), "skiptingar-size");
+  // the sizes must not change from run to run. Its own name, so another
+  // package's size run cannot clear it.
+  const dir = join(tmpdir(), "settle-rag-size");
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
   let previousNodeEnv: string | undefined;
@@ -100,31 +83,24 @@ async function measureEntry(code: string): Promise<{ eager: Buffer[]; lazy: Buff
     for (const output of result.outputs) {
       files.set(output.path, Buffer.from(await output.arrayBuffer()));
     }
-    const collect = (start: string, follow: "statics" | "all", seen: Set<string>) => {
-      const queue = [start];
-      while (queue.length > 0) {
-        const path = queue.pop() as string;
-        if (seen.has(path) || !files.has(path)) {
-          continue;
-        }
-        seen.add(path);
-        const { statics, lazies } = importsOf((files.get(path) as Buffer).toString());
-        const next = follow === "all" ? [...statics, ...lazies] : statics;
-        queue.push(...next.map(spec => join(dirname(path), spec)));
-      }
-      return seen;
-    };
     const entryPath = [...files.keys()].find(
       path => basename(path) === "entry.js"
     ) as string;
-    const eager = collect(entryPath, "statics", new Set());
-    const everything = collect(entryPath, "all", new Set());
-    const bytes = (paths: Iterable<string>) =>
-      [...paths].map(path => files.get(path) as Buffer);
-    return {
-      eager: bytes(eager),
-      lazy: bytes([...everything].filter(path => !eager.has(path))),
-    };
+    const seen = new Set<string>();
+    const queue = [entryPath];
+    while (queue.length > 0) {
+      const path = queue.pop() as string;
+      if (seen.has(path) || !files.has(path)) {
+        continue;
+      }
+      seen.add(path);
+      queue.push(
+        ...importsOf((files.get(path) as Buffer).toString()).map(spec =>
+          join(dirname(path), spec)
+        )
+      );
+    }
+    return [...seen].map(path => files.get(path) as Buffer);
   } finally {
     if (previousNodeEnv === undefined) {
       Reflect.deleteProperty(process.env, "NODE_ENV");
@@ -135,17 +111,11 @@ async function measureEntry(code: string): Promise<{ eager: Buffer[]; lazy: Buff
   }
 }
 
-/** Measures every setup. Sizes are per setup, so shared code is counted in each. */
+/** Measures every setup. */
 export async function measureSizes(): Promise<Sizes> {
   const sizes: Partial<Sizes> = {};
   for (const [name, setup] of Object.entries(SETUPS)) {
-    const { eager, lazy } = await measureEntry(setup.code);
-    if ("lazy" in setup && setup.lazy) {
-      sizes[name as keyof Sizes] = sizeOf([...eager, ...lazy]);
-      sizes.patterns = sizeOf(lazy);
-    } else {
-      sizes[name as keyof Sizes] = sizeOf(eager);
-    }
+    sizes[name as keyof Sizes] = sizeOf(await measureEntry(setup.code));
   }
   return sizes as Sizes;
 }
@@ -168,12 +138,8 @@ export function renderReadme(readme: string, sizes: Sizes): string {
 if (import.meta.main) {
   const sizes = await measureSizes();
   for (const [name, size] of Object.entries(sizes)) {
-    const label =
-      name === "patterns"
-        ? "the lazy pattern chunk"
-        : SETUPS[name as keyof typeof SETUPS].label;
     console.log(
-      label.padEnd(50),
+      SETUPS[name as keyof typeof SETUPS].label.padEnd(50),
       `brotli ${size.brotli} kB`.padEnd(16),
       `gzip ${size.gzip} kB`
     );

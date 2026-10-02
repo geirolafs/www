@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 /**
- * Geist, the text and UI face of /localhost/hyphenation. By Vercel, under the
+ * Geist, the text and UI face of the /localhost package pages. By Vercel, under the
  * SIL Open Font License. next/font downloads it at build time and serves it
  * from this site, so it is not a committed file. It is variable (`wght`
  * 100–900) and has a `tnum` feature, so it shows `tabular-nums` itself.
@@ -15,7 +15,7 @@ export const GeistSans = Geist({
 });
 
 /**
- * Geist Mono, the code face of /localhost/hyphenation: code blocks, code in a
+ * Geist Mono, the code face of the /localhost package pages: code blocks, code in a
  * sentence, and the break editor's exception line. Geist's monospace sibling,
  * also by Vercel under the SIL Open Font License, also variable (`wght`
  * 100–900). Each character has its own width and shape, so `l`, `I` and `1`
@@ -28,7 +28,7 @@ export const GeistMono = Geist_Mono({
 });
 
 /**
- * Bespoke Serif, the title face of /localhost/hyphenation: titles, the intro
+ * Bespoke Serif, the title face of the /localhost package pages: titles, the intro
  * and the editor text. By the Indian Type Foundry, from Fontshare, under the
  * ITF Free Font License. The license allows self-hosting on our own site but
  * not distributing the file through a public repository. The file is
@@ -40,7 +40,7 @@ export const GeistMono = Geist_Mono({
  * proportional but it has no `tnum` feature.
  *
  * Kept out of `fonts.ts` on purpose: the root layout imports that file, and a
- * font declared there would load on every page. Only /localhost/hyphenation
+ * font declared there would load on every page. Only the /localhost package pages
  * imports this one.
  */
 export const BespokeSerif = localFont({

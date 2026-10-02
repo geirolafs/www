@@ -43,13 +43,6 @@ export const localhostContent = {
       preview: "/localhost/previews/glass-sculpture.webp",
     },
     {
-      href: "/localhost/hyphenation",
-      title: "Hyphenation",
-      description:
-        "Soft hyphens and Icelandic typesetting, from the 2020 Árni Magnússon patterns.",
-      preview: "/localhost/previews/hyphenation.webp",
-    },
-    {
       href: "/localhost/particle-hover",
       title: "Particle hover",
       description: "Particles that gather where the cursor is.",

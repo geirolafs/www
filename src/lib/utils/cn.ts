@@ -42,7 +42,7 @@ export const THEME_SCALES = {
     "group",
     "project",
     "paragraph",
-    // /localhost/hyphenation's vertical rhythm.
+    // The /localhost package pages' vertical rhythm.
     "hysection",
     "hyhead",
     "hyblock",
@@ -61,7 +61,7 @@ const HYPHENATION_COLOURS: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * The `hy-*` text sizes belong only to /localhost/hyphenation, so they are one
+ * The `hy-*` text sizes belong only to the /localhost package pages, so they are one
  * rule here and not ten names in the site-wide `text` scale above.
  */
 export const isHyphenationText = (value: string) =>

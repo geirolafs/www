@@ -1,0 +1,54 @@
+{
+  "name": "settle-rag",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Paragraph rag composition for the web: it weighs every way to break a paragraph and keeps the best right edge, as a typesetter would. It knows no language; you pass the words and syllables that matter in yours.",
+  "license": "MIT",
+  "author": "Geir Ólafsson",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "size": "bun run scripts/size.ts",
+    "bench": "bun run scripts/bench.ts"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "typography",
+    "rag",
+    "line-breaking",
+    "text-wrap",
+    "typesetting"
+  ]
+}

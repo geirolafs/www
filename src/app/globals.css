@@ -37,7 +37,7 @@
   /* Eight values here and the stripe gradient in `:root`. That is the whole
      palette. The greys are warm, leaning from the foreground's brown (dark)
      to the background's cream (light), each at the luminance of the neutral
-     grey it replaced, so every contrast ratio below still holds. The two `hy-` values below belong to /localhost/hyphenation
+     grey it replaced, so every contrast ratio below still holds. The two `hy-` values below belong to the /localhost package pages
      only. */
 
   --color-background: #fffcf3; /* a warm white */
@@ -48,9 +48,9 @@
   --color-surface-footer: #dbd8d2; /* foreground on it is 10.6:1 */
   --color-selection: #ffe577; /* the stripe's last stop; foreground 12:1, muted 3.78:1 */
   --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
-  --color-hy-track: #e7e5df; /* /localhost/hyphenation: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
-  --color-hy-surface: #f7f5ef; /* /localhost/hyphenation: code blocks, a button's hover fill, a highlighted option */
-  /* /localhost/hyphenation: the two highlights. Signal is for what must be
+  --color-hy-track: #e7e5df; /* The /localhost package pages: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
+  --color-hy-surface: #f7f5ef; /* The /localhost package pages: code blocks, a button's hover fill, a highlighted option */
+  /* The /localhost package pages: the two highlights. Signal is for what must be
      seen: a break, the current section. It is 3.18:1 on the background, so
      it marks and draws but is never small text. Accent is the quieter one, a
      fill behind dark text (foreground on it is 14:1); on the background it is
@@ -64,10 +64,10 @@
      package changes in the hero's figures (Skiptingar). A mark, not body text. */
   --color-hy-fix: #0099ff;
 
-  /* /localhost/hyphenation: the one raised thing on the page, the settings
+  /* The /localhost package pages: the one raised thing on the page, the settings
      dock that floats over the specimens. */
   --shadow-hy-float: 0 1px 2px rgb(44 37 35 / 0.07), 0 8px 24px rgb(44 37 35 / 0.11);
-  /* /localhost/hyphenation: the hairline lift under a control (a field, a
+  /* The /localhost package pages: the hairline lift under a control (a field, a
      switch, the picked package manager), so it reads as something to press
      rather than a box drawn on the page. */
   --shadow-hy-control: 0 1px 2px rgb(44 37 35 / 0.06);
@@ -133,7 +133,7 @@
   --text-label--line-height: 1.6;
   --text-label--letter-spacing: 0.06em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. Its own scale, set in
+  /* Hyphenation playground — only the /localhost package pages. Its own scale, set in
      Geist and a serif for titles, all fluid 375 → 1440. `hy-hero` is Geist
      SemiBold, the page title "Skipt-ing-ar" with its hyphens typed in, sized
      from the width of its container (`cqi`), so the word fills the grid edge
@@ -149,14 +149,14 @@
   --text-hy-hero--line-height: 1;
   --text-hy-hero--letter-spacing: -0.065em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. The page name in
+  /* Hyphenation playground — only the /localhost package pages. The page name in
      the top bar, Geist SemiBold, 20 → 24: the hero's title made small, with
      the hero's tracking. */
   --text-hy-logo: clamp(1.25rem, 1.162rem + 0.376vw, 1.5rem);
   --text-hy-logo--line-height: 1.25;
   --text-hy-logo--letter-spacing: -0.065em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. The hero's one
+  /* Hyphenation playground — only the /localhost package pages. The hero's one
      sentence under the name, Bespoke Serif Regular, 28 → 68. */
   --text-hy-intro: clamp(1.75rem, 0.87rem + 3.756vw, 4.25rem);
   --text-hy-intro--line-height: 1.31;
@@ -168,19 +168,19 @@
   --text-hy-section--line-height: 1.088;
   --text-hy-section--letter-spacing: -0.049em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. Section titles and
+  /* Hyphenation playground — only the /localhost package pages. Section titles and
      large specimens, 28 → 44. */
   --text-hy-title: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
   --text-hy-title--line-height: 1.08;
   --text-hy-title--letter-spacing: -0.03em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. The hero lede and
+  /* Hyphenation playground — only the /localhost package pages. The hero lede and
      large secondary display text, 22 → 32. */
   --text-hy-lede: clamp(1.375rem, 1.155rem + 0.94vw, 2rem);
   --text-hy-lede--line-height: 1.3;
   --text-hy-lede--letter-spacing: -0.015em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. The hero stats' big
+  /* Hyphenation playground — only the /localhost package pages. The hero stats' big
      numbers, Bespoke Serif Light, 56 → 110. */
   --text-hy-stat: clamp(3.5rem, 2.312rem + 5.07vw, 6.875rem);
   --text-hy-stat--line-height: 1;
@@ -192,42 +192,42 @@
   --text-hy-hero-stat--line-height: 1;
   --text-hy-hero-stat--letter-spacing: -0.01em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. Small Geist labels:
+  /* Hyphenation playground — only the /localhost package pages. Small Geist labels:
      stat names and section numbers, 16, static. */
   --text-hy-label: 1rem;
   --text-hy-label--line-height: 1.72;
   --text-hy-label--letter-spacing: 0.04em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. Section
+  /* Hyphenation playground — only the /localhost package pages. Section
      explanations, 17 → 20. */
   --text-hy-body: clamp(1.0625rem, 0.996rem + 0.282vw, 1.25rem);
   --text-hy-body--line-height: 1.376;
   --text-hy-body--letter-spacing: 0.01em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. The nav links, 16,
+  /* Hyphenation playground — only the /localhost package pages. The nav links, 16,
      static and untracked: Geist is spaced for this size, and nine names have
      to fit in columns 5–12 from 1440px up. */
   --text-hy-nav: 1rem;
   --text-hy-nav--line-height: 1.25;
   --text-hy-nav--letter-spacing: 0;
 
-  /* Hyphenation playground — only /localhost/hyphenation. Control labels and
+  /* Hyphenation playground — only the /localhost package pages. Control labels and
      buttons (radios, switches, Copy), 14, static. */
-  /* Hyphenation playground — only /localhost/hyphenation. Running text under
+  /* Hyphenation playground — only the /localhost package pages. Running text under
      a section's header: the body of a step, a note or a link, 15 → 17. A
      step below the description, so a list reads as quieter than its intro. */
   --text-hy-copy: clamp(0.9375rem, 0.8933rem + 0.1878vw, 1.0625rem);
   --text-hy-copy--line-height: 1.55;
   --text-hy-copy--letter-spacing: 0.005em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. Small running
+  /* Hyphenation playground — only the /localhost package pages. Small running
      text: hints under a specimen, notes, credits. 14, untracked, with room
      between lines, since it is read, not scanned. */
   --text-hy-note: 0.875rem;
   --text-hy-note--line-height: 1.55;
   --text-hy-note--letter-spacing: 0.005em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. A caption in
+  /* Hyphenation playground — only the /localhost package pages. A caption in
      sentence case: Without, With, a column head, a code block's name. 13,
      set apart by weight, not capitals or tracking. */
   --text-hy-caption: 0.8125rem;
@@ -237,7 +237,7 @@
   --text-hy-control--line-height: 1.4286;
   --text-hy-control--letter-spacing: 0.02em;
 
-  /* Hyphenation playground — only /localhost/hyphenation. The text box and its
+  /* Hyphenation playground — only the /localhost package pages. The text box and its
      output in body mode, 20, static. */
   --text-hy-editor: 1.25rem;
   --text-hy-editor--line-height: 1.4;
@@ -266,7 +266,7 @@
     var(--spacing-group)
   ); /* 48 → 72 */
 
-  /* Hyphenation playground — only /localhost/hyphenation. Its vertical
+  /* Hyphenation playground — only the /localhost package pages. Its vertical
      rhythm, fluid 375 → 1440, looser than the site's so the page reads
      calmly. Single words, since Tailwind drops hyphenated spacing keys (see
      `--pill-inset` below). `hysection`: from a section's last specimen to the
@@ -277,7 +277,7 @@
   --spacing-hyhead: clamp(3rem, 2.4718rem + 2.2535vw, 4.5rem);
   --spacing-hyblock: clamp(4.5rem, 3.4437rem + 4.507vw, 7.5rem);
 
-  /* Hyphenation playground — only /localhost/hyphenation. The longest line
+  /* Hyphenation playground — only the /localhost package pages. The longest line
      of running English: 34em is about 65–70 characters of Geist at any
      size, where `max-w-prose` (65ch, counted in zeros) runs to about 85. */
   --container-measure: 34em;
@@ -367,8 +367,8 @@
   }
 }
 
-/* Geist (text), Bespoke Serif (titles) and Geist Mono (code) on
-   /localhost/hyphenation; ABC Areal on the fluid-typography pages (see
+/* Geist (text), Bespoke Serif (titles) and Geist Mono (code) by default;
+   ABC Areal on the fluid-typography pages (see
    `styles/fonts-licensed.ts`). Named by role, so a
    font change is one line here. `inline` so `font-hy-text`, `font-hy-title`
    and `font-hy-mono` write the next/font variables into the element's own
@@ -386,7 +386,7 @@
 }
 
 /* The role faces are set per page. A shell that sets none gets Geist and
-   Geist Mono (/localhost/hyphenation). `.hy-areal` is the fluid-typography
+   Geist Mono. `.hy-areal` is the fluid-typography
    shell: ABC Areal for text, and for code the same file with its `MONO` axis
    at 100. `--font-hy-mono-axes` is read by `font-hy-mono` and the code rules
    below; unset, it is `normal`, so Geist Mono is untouched. */
@@ -1092,7 +1092,7 @@ article a:active {
   }
 }
 
-/* /localhost/hyphenation: the bar comes right after the hero and sticks once
+/* The /localhost package pages: the bar comes right after the hero and sticks once
    it reaches the top. Its page name stays hidden until then: it fades in over
    the last 50px of scroll before the hero's bottom edge, which is the bar's
    top, leaves the screen. `timeline-scope` on the shell lets the bar, a
@@ -1106,7 +1106,7 @@ article a:active {
   font-synthesis: none;
 }
 
-/* /localhost/hyphenation: code, light and in greys. `.hy-code` is any code
+/* The /localhost package pages: code, light and in greys. `.hy-code` is any code
    on the page: the blocks, the chips inside a sentence and the diagram's
    HTML. It redefines sugar-high's `--sh-*` variables (typography.css sets
    the blog's colours at the root), so the tokens are told apart by lightness
@@ -1151,7 +1151,7 @@ article a:active {
   box-decoration-break: clone;
 }
 
-/* /localhost/hyphenation: a width slider, drawn as little as it can be: a
+/* The /localhost package pages: a width slider, drawn as little as it can be: a
    hairline track and a thin bar for the thumb, like the edge of a measure.
    The input stays 24px tall, so it is easy to catch; the box it moves is its
    own feedback, so there is no label or readout on screen. */
@@ -1196,7 +1196,7 @@ article a:active {
   outline-offset: 2px;
 }
 
-/* /localhost/hyphenation: the example picker, where the browser lets a
+/* The /localhost package pages: the example picker, where the browser lets a
    `select` be styled (`appearance: base-select`, Chromium 135+). The list
    opens as a panel under the field, the width of its longest example, with
    a tick by the current one. Elsewhere the same field opens the system's
@@ -1281,7 +1281,7 @@ article a:active {
   }
 }
 
-/* /localhost/hyphenation: the nav jumps between sections at once. The site
+/* The /localhost package pages: the nav jumps between sections at once. The site
    scrolls smoothly (reset.css), but on a long specimen page a smooth scroll
    past five sections is a wait, not a transition. */
 html:has(.hy-shell) {
@@ -1313,7 +1313,7 @@ html:has(.hy-shell) {
   background-blend-mode: multiply;
 }
 
-/* The hero figure's marks (`hyphenation/hero-figure.tsx`): the browser's faults get a red
+/* The hero figure's marks (on the hyphenation page, now removed): the browser's faults get a red
    wave, the package's fixes a yellow highlighter band through the foot of the
    letters, light enough that the text still reads as set. These classes mark
    the notes in the margin; the text carries the same marks as CSS custom

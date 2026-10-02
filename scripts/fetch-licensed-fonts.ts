@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Puts the licensed fonts in place before a build: Bespoke Serif
- * (/localhost/hyphenation and the fluid-typography pages) and ABC Areal by
+ * (the /localhost package pages and the fluid-typography pages) and ABC Areal by
  * Dinamo (the fluid-typography pages, a commercial licence).
  *
  * Bespoke Serif is a Fontshare font under the ITF Free Font License. It

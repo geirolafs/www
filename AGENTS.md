@@ -36,16 +36,11 @@ All exit 0, or it isn't finished. Say so plainly if they don't.
   for a word, a line or a lone sentence. Set the token; never rely on
   `font-weight: normal`. Nothing below 400 — muted text is colour, not weight.
 - **Type styles come from Figma.** If a value isn't there, ask.
-- **Exception: `/localhost/hyphenation`.** A standalone page set in three
-  variable faces, not Same Univers: Geist (text, UI), Bespoke Serif (titles,
-  lede, editor text) and Geist Mono (all code). It has its own `--text-hy-*`
-  scale and `font-hy-text` / `font-hy-title` / `font-hy-mono` families. The
-  two rules above don't apply there: it uses Geist's weight range (100–900)
-  on purpose.
-- **Exception: `/localhost/skiptingar` and `/localhost/settle-rag`.** The same
-  hy scale and families, but text and code are set in ABC Areal (Dinamo), one
-  variable file: `MONO` 0 for text, 100 for code (`.hy-areal` in globals.css
-  sets the role variables). Weights 400–700 only.
+- **Exception: `/localhost/skiptingar` and `/localhost/settle-rag`.** Standalone
+  pages with their own `--text-hy-*` scale and `font-hy-text` / `font-hy-title`
+  / `font-hy-mono` families, not Same Univers. Text and code are set in ABC
+  Areal (Dinamo), one variable file: `MONO` 0 for text, 100 for code
+  (`.hy-areal` in globals.css sets the role variables). Weights 400–700 only.
 - **`/localhost/*` experiments stand alone.** No site header, footer or back
   link; titles have no site suffix (`localhost/layout.tsx`). The `/localhost`
   index itself keeps the site look.
@@ -81,7 +76,7 @@ state.
   - A box that grows with what you type may transition its `height`, so it
     eases instead of snapping: the text field sizes itself (`field-sizing:
 content`), and a wrapper follows its height with a `ResizeObserver`
-    (`Composer` on /localhost/hyphenation). Short, ease-out, and none under
+    (`Composer` on /localhost/skiptingar). Short, ease-out, and none under
     reduced motion.
 - Respect reduced motion with `useLiveReducedMotion()` for anything JS-driven,
   `motion-reduce:` for pure CSS.
