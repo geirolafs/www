@@ -121,9 +121,9 @@ export const localhostSkiptingarClientContent = {
 
   tips: {
     softHyphen:
-      "A soft hyphen (U+00AD) is an invisible character. It shows a hyphen only when the line breaks right there.",
+      "A soft hyphen (U+00AD) is an invisible character. It shows a hyphen only when the line breaks there.",
     noBreakSpace:
-      "A no-break space (U+00A0) looks like a space but keeps the words on both sides of it on one line.",
+      "A no-break space (U+00A0) looks like a space. It keeps the words on both sides on one line.",
   },
 
   liveEditor: {
@@ -138,7 +138,7 @@ export const localhostSkiptingarClientContent = {
       use: "Use this text on the whole page",
       useShortcut: "Ctrl + Enter",
       used: "The page now uses this text",
-      unused: "Not used on the page yet",
+      unused: "The page does not use this text yet",
       words: (count: number) => `${count} ${count === 1 ? "word" : "words"}`,
     },
     /** What the editor starts with. The page renders the first output from these on the server. */
@@ -150,19 +150,19 @@ export const localhostSkiptingarClientContent = {
     hint: "Point at a setting, or tap it, to read what it does.",
     typographic: {
       label: "Typographic rules (new)",
-      tip: "On by default, and you can turn it off. These rules decide which breaks to keep: they drop legal breaks that read badly, such as ó-lán, the break before a linking syllable in sveitar-stjórnar-kosningum, and a break inside a foreign name like Icelandair. Off gives the official Ritreglur minimums only. They are new and under development, so turn them off if they give odd results. Not the same as Typeset, which is about spaces, quotes and dashes.",
+      tip: "On by default, and you can turn it off. These rules drop legal breaks that read badly, such as ó-lán, the break before a linking syllable in sveitar-stjórnar-kosningum, and a break inside a foreign name like Icelandair. Off gives the official Ritreglur minimums only. The rules are new and under development, so turn them off if they give odd results.",
     },
     typeset: {
       label: "Typeset",
-      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces, in 1.000 kr. and 30. september for example, straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another, except the dash rule, which also adds an invisible word joiner after the en dash.",
+      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr. and 30. september, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash.",
     },
     showBreaks: {
       label: "Show breaks",
-      tip: "Draws a red · for every soft hyphen, and puts every no-break space and non-breaking hyphen (U+2011) on an amber fill, so you can see what the components put in.",
+      tip: "Draws a red · for every soft hyphen. Puts an amber fill behind every no-break space and no-break hyphen (U+2011). This shows what the components put in.",
     },
     textWrap: {
       label: "text-wrap",
-      tip: "On by default, and you can turn it off. CSS you add to the page: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off wraps each line greedily. How it works shows each one with and without.",
+      tip: "On by default, and you can turn it off. It is CSS you add to the page: text-pretty (text-wrap: pretty) for body text and text-balance (text-wrap: balance) for titles. Off fills each line before it starts the next.",
     },
     /** The result box's width slider, in px. */
     width: { min: 120, max: 720, initial: 320 },
