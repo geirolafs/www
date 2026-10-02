@@ -23,7 +23,7 @@ export type SectionLayout = "side" | "wide" | "free";
 type SectionProps = {
   /** The anchor the top bar links to. */
   id: string;
-  /** The section's letter in the page, like `a`. It shows as `A·`. */
+  /** The section's letter in the page, like `a`. It shows as `A`. */
   number: string;
   label: string;
   /** One line under the title: what the specimen shows. */
@@ -39,7 +39,7 @@ type SectionProps = {
 
 /**
  * A lettered section of the playground on the site's `page-grid`. The header
- * is three rows 36px apart: the letter as `B·` in Areal Bold, the title (the
+ * is three rows 36px apart: the letter as `B` in Areal Bold, the title (the
  * section's `h2`) in Bespoke Serif Medium at the intro's size, and the
  * explanation in Areal at body size, muted. Specimens inside the section
  * caption themselves with `h3`.
@@ -88,7 +88,7 @@ export function Section({
         )}
       >
         <p aria-hidden="true" className="font-bold text-foreground text-hy-body">
-          {number.toUpperCase()}·
+          {number.toUpperCase()}
         </p>
         <h2
           className="text-balance font-hy-title font-medium text-foreground text-hy-section"
