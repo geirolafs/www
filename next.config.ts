@@ -17,7 +17,9 @@ const nextConfig: NextConfig = {
   // and Next refuses the HMR socket from any origin not listed here — which
   // leaves the client bundle waiting on it and the page never hydrates: no
   // errors, no effects, static HTML. Wildcards cover the DHCP range.
-  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "*.local"],
+  // `*.localhost` is the subsites in dev (`skiptingar.localhost:3000`, see
+  // src/lib/config/subsites.ts).
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "*.local", "*.localhost"],
 
   // `.wgsl` imports compile to vgpu shader sources (the glass-sculpture lab).
   turbopack: {

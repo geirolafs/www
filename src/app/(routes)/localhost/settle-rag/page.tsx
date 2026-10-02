@@ -3,6 +3,7 @@ import { Hero } from "@/app/components/localhost/fluid-typography/hero";
 import { Section } from "@/app/components/localhost/fluid-typography/section";
 import { Shell } from "@/app/components/localhost/fluid-typography/shell";
 import { NOTE_CLASS } from "@/app/components/localhost/fluid-typography/styles";
+import { subsites } from "@/lib/config/subsites";
 import { localhostSettleRagContent } from "@/lib/content/localhost-settle-rag";
 
 const {
@@ -18,6 +19,9 @@ export const metadata: Metadata = {
   // `absolute` drops the site's title suffix: this page stands on its own.
   title: { absolute: pageContent.title },
   description: pageContent.description,
+  // The page lives on its own host; without this it inherits the root
+  // layout's canonical, which points at the home page.
+  alternates: { canonical: subsites["settle-rag"].origin },
   robots: {
     index: false,
     follow: false,

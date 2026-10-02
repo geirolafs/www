@@ -1,4 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { siteConfig } from "@/lib/config/site";
+import { subsiteForHost, subsiteForPath } from "@/lib/config/subsites";
 
 /**
  * Markdown content negotiation (acceptmarkdown.com). A request whose Accept
@@ -19,7 +21,8 @@ import { type NextRequest, NextResponse } from "next/server";
  * The matcher keeps this away from everything that is not a page: Next
  * internals, the PostHog `/ingest` rewrites, `/api`, the `/rss` and
  * `/md` routes themselves, and any path with a dot (llms.txt, sitemap.xml,
- * cv.pdf, favicons).
+ * cv.pdf, favicons). Those paths answer the same on a subsite host, which is
+ * what keeps a subsite's own `/_next` assets and fonts loading from its root.
  */
 export default function proxy(request: NextRequest) {
   // A malformed escape makes Next throw while decoding route params, which
@@ -33,12 +36,43 @@ export default function proxy(request: NextRequest) {
     return new NextResponse("Bad request", { status: 400 });
   }
 
+  const { pathname } = request.nextUrl;
+  // The Host header, not `nextUrl.hostname`: the dev server builds `nextUrl`
+  // from its own hostname, so `skiptingar.localhost:3000` reads as `localhost`
+  // there. On Vercel the header is the domain that routed the request here.
+  const hostname = (request.headers.get("host") ?? "").split(":")[0].toLowerCase();
+
+  // A package page reached on the main site moves to its own host, so each
+  // page has one URL. Only the production hosts redirect: dev and preview
+  // deployments keep the /localhost path working. 307 until the subdomains
+  // have settled; a 308 is cached by browsers and hard to take back.
+  const onMainSite =
+    hostname === siteConfig.domain || hostname === `www.${siteConfig.domain}`;
+  const moved = onMainSite ? subsiteForPath(pathname) : undefined;
+  if (moved) {
+    const target = new URL(moved.rest, moved.subsite.origin);
+    target.search = request.nextUrl.search;
+    return NextResponse.redirect(target, 307);
+  }
+
+  // A subsite host serves its /localhost route at its root:
+  // `skiptingar.geir.studio/x` renders `/localhost/skiptingar/x`. Every other
+  // path on that host falls under the route too, so the rest of the site is
+  // not reachable there.
+  const subsite = subsiteForHost(hostname);
+  const page = subsite ? `${subsite.path}${pathname === "/" ? "" : pathname}` : pathname;
+
   const accept = request.headers.get("accept") ?? "";
 
   if (accept.includes("text/markdown")) {
     const url = request.nextUrl.clone();
-    url.pathname =
-      request.nextUrl.pathname === "/" ? "/md" : `/md${request.nextUrl.pathname}`;
+    url.pathname = page === "/" ? "/md" : `/md${page}`;
+    return NextResponse.rewrite(url);
+  }
+
+  if (subsite) {
+    const url = request.nextUrl.clone();
+    url.pathname = page;
     return NextResponse.rewrite(url);
   }
 
