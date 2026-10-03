@@ -33,7 +33,7 @@
     "bench": "bun run scripts/bench.ts"
   },
   "devDependencies": {
-    "skiptingar": "^0.3.0"
+    "skiptingar": "^0.4.0"
   },
   "peerDependencies": {
     "react": ">=18",

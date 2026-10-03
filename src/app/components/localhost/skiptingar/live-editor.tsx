@@ -98,7 +98,7 @@ export function LiveEditor({ initialOutputs }: LiveEditorProps) {
   const atInitial =
     text === content.initialText &&
     settings.localeDetails === DEFAULT_SETTINGS.localeDetails &&
-    settings.typographic === DEFAULT_SETTINGS.typographic;
+    settings.betterBreaks === DEFAULT_SETTINGS.betterBreaks;
 
   // At the page's own text and settings the server has already set every
   // block (`initialOutputs`), so nothing is asked for.

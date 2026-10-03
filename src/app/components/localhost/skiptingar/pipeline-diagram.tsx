@@ -10,8 +10,8 @@ const { word, line, stages } = diagram;
 
 // The word and the line are fixed copy, so the package sets them once at
 // module load and no render repeats it.
-const RITREGLUR = hyphenate(word, { rules: "ritreglur" });
-// The typographic rules are the default, so this is what the page ships.
+const RITREGLUR = hyphenate(word, { betterBreaks: false });
+// Better breaks are on by default, so this is what the page ships.
 const HYPHENATED = hyphenate(word);
 const LOCALE_DETAILS_SAMPLE = localeDetails(diagram.localeDetailsSample);
 const LINE = hyphenate(line);
@@ -90,8 +90,8 @@ function HtmlWord({ hyphenated }: { hyphenated: string }) {
 
 /**
  * How it works, as one word through seven stages: the word, its pattern
- * digits, the breaks the Ritreglur minimums keep, the breaks the typographic
- * rules keep, the locale details rules (on a phrase of
+ * digits, the breaks the Ritreglur minimums keep, the breaks better
+ * breaks keep, the locale details rules (on a phrase of
  * their own, since a single word has nothing for them to change), the HTML
  * with its soft hyphens and no-break spaces, and the line the browser sets.
  * Every value is computed by the package here on the server, so the diagram
@@ -136,9 +136,9 @@ export function PipelineDiagram() {
           <PatternWord word={word} />
         </Stage>
         <Stage
-          note={stages.rules.note}
+          note={stages.minimums.note}
           number={3}
-          title={stages.rules.title}
+          title={stages.minimums.title}
           where={diagram.server}
         >
           <span className={WORD_CLASS} lang="is">
@@ -146,9 +146,9 @@ export function PipelineDiagram() {
           </span>
         </Stage>
         <Stage
-          note={stages.typographic.note}
+          note={stages.betterBreaks.note}
           number={4}
-          title={stages.typographic.title}
+          title={stages.betterBreaks.title}
           where={diagram.server}
         >
           <span className={WORD_CLASS} lang="is">

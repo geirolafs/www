@@ -7,7 +7,7 @@
  *
  * The page presents version 1 as three layers, all on the server and on by
  * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
- * in as soft hyphens), better breaks (the experimental `rules: "typographic"`
+ * in as soft hyphens), better breaks (the experimental `betterBreaks`
  * option, which decides which breaks to keep) and locale details (no-break
  * spaces, Icelandic quotes and dashes). CSS text-wrap
  * (pretty for body text, balance for titles) is not a layer: it is the
@@ -121,7 +121,7 @@ export const localhostSkiptingarContent = {
       {
         // Measured over all 218.308 words of the list the 2020 patterns were
         // trained on (icelandic-lt/hyphenation-is, hyph_is_list.txt): 416.492
-        // breaks under `rules: "ritreglur"`, 294.460 under "typographic".
+        // breaks under `betterBreaks: false`, 294.460 under the default.
         // Counted per word in the list, not per word in running text.
         value: "29%",
         label: "Fewer breaks",
@@ -415,7 +415,11 @@ export default function Page() {
             },
             { text: "hyphenate()", code: true },
             {
-              text: ' takes a rules option ("typographic" for better breaks, the default, or "ritreglur" for the official minimums only), options for the limits and the hyphen character, and a dictionary of your own words.',
+              text: " takes a ",
+            },
+            { text: "betterBreaks", code: true },
+            {
+              text: " option (on by default, off for the official Ritreglur minimums only), options for the limits and the hyphen character, and a dictionary of your own words.",
             },
           ],
         },
@@ -572,7 +576,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
             {
               id: "markdown",
               title: "Markdown and HTML",
-              body: "A rehype plugin and a small CLI that hyphenate and typeset, for sites that are not built with React.",
+              body: "A rehype plugin and a small CLI that hyphenate and add the locale details, for sites that are not built with React.",
             },
             {
               id: "opinionated",
@@ -680,11 +684,11 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           title: "Letter patterns",
           note: "Each gap between letters takes the highest digit of any pattern that covers it.",
         },
-        rules: {
+        minimums: {
           title: "Minimums",
           note: "The Ritreglur minimums need room on both sides: at least 1 letter before a break and 2 after, in words of 4 letters or more.",
         },
-        typographic: {
+        betterBreaks: {
           title: "Better breaks",
           note: "It drops breaks that read badly, here the one inside fjarð-ar.",
         },
@@ -729,7 +733,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         ],
       },
       {
-        id: "typographic",
+        id: "better-breaks",
         title: "Better breaks (on by default)",
         body: [
           {
@@ -1012,14 +1016,14 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         {
           text: "The package sets each example; none is typed by hand. Each shows the same word with better breaks off (Ritreglur only) and on (the default). Better breaks are new and under development, so they may change. Turn them off in Try it, or with ",
         },
-        { text: 'rules: "ritreglur"', code: true },
+        { text: "betterBreaks: false", code: true },
         { text: ". " },
         { text: "How it works", href: "#how-it-works" },
         { text: " goes through each step." },
       ],
       // Every example word is set under both: better breaks off, then on.
       shown: [
-        { label: "Ritreglur", options: { rules: "ritreglur" } },
+        { label: "Ritreglur", options: { betterBreaks: false } },
         { label: "Better breaks (default)", options: {} },
       ],
       items: [
@@ -1312,7 +1316,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
       {
         id: "dates",
         measure: 9,
-        label: "Date",
+        label: "Day, month and year",
         tag: "dates",
         tip: "Keeps a day with its month, and a month with the year after it, so 30. sep. 2026 and sept. 2027 stay on one line.",
         input: "Opnað 30. sep. 2026 og lokað í sept. 2027.",
@@ -1326,25 +1330,25 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         input: "Hún lenti í 1. sæti í 2. umferð.",
       },
       {
-        id: "prefixes",
+        id: "abbreviations",
         measure: 11,
         label: "Abbreviation and number",
-        tag: "prefixes",
+        tag: "abbreviations",
         tip: "Keeps an abbreviation with the number after it, so nr. 5, bls. 12 and kl. 14.30 stay on one line. Standard abbreviations like t.d. and o.s.frv. have no spaces, so they never break.",
         input: "Sjá bls. 12, nr. 5 og kl. 14.30.",
       },
       {
-        id: "numbers",
+        id: "phoneNumbers",
         measure: 9.5,
         label: "Kennitala and phone",
-        tag: "numbers",
+        tag: "phoneNumbers",
         tip: "Kennitala and phone numbers stay on one line. The hyphen becomes a no-break hyphen (U+2011) and the spaces become no-break spaces. CleanCopy puts a normal hyphen back when you copy.",
         input: "Kennitala 011390-2939, sími 588-5522 eða +354 588 5522.",
       },
       {
         id: "titles",
         measure: 13.25,
-        label: "Titles",
+        label: "Title and initial",
         tag: "titles",
         tip: "Keeps dr., sr., próf. and hr. on the same line as the capitalised name after them.",
         input: "Fundur með dr. Jóni og sr. Önnu.",

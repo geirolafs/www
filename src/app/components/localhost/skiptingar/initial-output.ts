@@ -10,10 +10,10 @@ import {
  * loads in the browser.
  */
 export function initialOutput(text: string): string {
-  const { rules, localeDetails } = outputOptions(DEFAULT_SETTINGS);
+  const { betterBreaks, localeDetails } = outputOptions(DEFAULT_SETTINGS);
   const [output = text] = processSegments([text], {
     localeDetails,
-    hyphenate: { rules },
+    hyphenate: { betterBreaks },
   });
   return output;
 }

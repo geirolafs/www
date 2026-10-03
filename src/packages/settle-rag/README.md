@@ -6,7 +6,7 @@ the way a typesetter would, and keeps the cheapest right edge.
 
 It knows no language. You pass it the words and syllables that matter in
 yours (see "Language"). For Icelandic, `skiptingar` ships them as
-`RAG_LANGUAGE`.
+`SETTLE_RAG_LANGUAGE`.
 
 ## Status
 
@@ -36,12 +36,12 @@ in it and adds none. Icelandic text from `skiptingar` works as it is.
 ```tsx
 "use client";
 import { SettledText } from "settle-rag/client";
-import { RAG_LANGUAGE } from "skiptingar/client";
+import { SETTLE_RAG_LANGUAGE } from "skiptingar/client";
 
 <SettledText
   as="p"
   text={hyphenatedOnTheServer}
-  options={{ language: RAG_LANGUAGE, overhang: 0.5 }}
+  options={{ language: SETTLE_RAG_LANGUAGE, overhang: 0.5 }}
 />;
 ```
 
@@ -67,8 +67,8 @@ const language = {
 };
 ```
 
-All three are optional. For Icelandic, import `RAG_LANGUAGE` from
-`skiptingar/client` in a client component (0.1.3 or newer), so Skiptingar's
+All three are optional. For Icelandic, import `SETTLE_RAG_LANGUAGE` from
+`skiptingar/client` in a client component (0.4.0 or newer), so Skiptingar's
 pattern data stays out of the browser, or from `skiptingar` on the server. It
 is a plain object with these three keys, so neither package needs the other.
 

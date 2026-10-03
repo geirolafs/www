@@ -4,7 +4,7 @@
  * included). Run from the package folder: `bun run bench`.
  */
 import { bestBreaks, SOFT_HYPHEN } from "../src";
-import { hyphenate, RAG_LANGUAGE } from "../test/hyphenate";
+import { hyphenate, SETTLE_RAG_LANGUAGE } from "../test/hyphenate";
 
 const SENTENCE =
   "Mörður hét maður er kallaður var gígja. Hann var sonur Sighvats hins rauða. Hann bjó á Velli á Rangárvöllum. Hann var ríkur höfðingi og málafylgjumaður mikill og svo mikill lögmaður að engir þóttu löglegir dómar dæmdir nema hann væri við.";
@@ -34,7 +34,11 @@ for (const count of [50, 200, 1000]) {
   }
   for (const measure of [320, 640]) {
     const ms = time(() =>
-      bestBreaks(text, { x, hyphen: 7, measure, overhang: 0 }, { language: RAG_LANGUAGE })
+      bestBreaks(
+        text,
+        { x, hyphen: 7, measure, overhang: 0 },
+        { language: SETTLE_RAG_LANGUAGE }
+      )
     );
     console.log(`bestBreaks: ${count} words at ${measure}px: ${ms.toFixed(1)} ms`);
   }

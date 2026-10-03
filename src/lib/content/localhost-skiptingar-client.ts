@@ -142,13 +142,13 @@ export const localhostSkiptingarClientContent = {
       words: (count: number) => `${count} ${count === 1 ? "word" : "words"}`,
     },
     /** What the editor starts with. The page renders the first output from these on the server. */
-    initial: { typographic: true, localeDetails: true },
+    initial: { betterBreaks: true, localeDetails: true },
     options: {
       label: "Options",
     },
     /** Under the settings, until one is pointed at, focused or tapped. */
     hint: "Point at a setting, or tap it, to read what it does.",
-    typographic: {
+    betterBreaks: {
       label: "Better breaks",
       tip: "On by default, and you can turn it off. These rules drop legal breaks that read badly, such as ó-lán, the break before a linking syllable in sveitar-stjórnar-kosningum, and a break inside a foreign name like Icelandair. Off gives the official Ritreglur minimums only. The rules are new and under development, so turn them off if they give odd results.",
     },

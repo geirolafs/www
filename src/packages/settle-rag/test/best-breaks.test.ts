@@ -10,7 +10,7 @@ import {
   splitSettled,
   type Tightened,
 } from "../src/rag";
-import { hyphenate, RAG_LANGUAGE } from "./hyphenate";
+import { hyphenate, SETTLE_RAG_LANGUAGE } from "./hyphenate";
 
 const SHY = "­";
 
@@ -19,7 +19,7 @@ const SHY = "­";
  * language is passed unless a test says otherwise (`language: undefined`).
  */
 function bestBreaks(text: string, metrics: Metrics, options: RagOptions = {}) {
-  return bestBreaksWith(text, metrics, { language: RAG_LANGUAGE, ...options });
+  return bestBreaksWith(text, metrics, { language: SETTLE_RAG_LANGUAGE, ...options });
 }
 
 /** Every character 10px wide, a soft hyphen 0 (it draws nothing until a break). */
@@ -478,7 +478,7 @@ describe("language is an input", () => {
     const plan = bestBreaksWith(text, metrics, { balance: true });
     const withLanguage = bestBreaksWith(text, metrics, {
       balance: true,
-      language: RAG_LANGUAGE,
+      language: SETTLE_RAG_LANGUAGE,
     });
     const firstOf = (found: typeof plan) => text.slice(found?.ends[0]?.after ?? 0);
     expect(firstOf(withLanguage)).toStartWith("byggð");
@@ -502,7 +502,7 @@ describe("language is an input", () => {
     expect(short.slice(plan?.ends[0]?.after ?? 0)).not.toStartWith("og ");
     const withLanguage = bestBreaksWith(short, metrics, {
       balance: true,
-      language: RAG_LANGUAGE,
+      language: SETTLE_RAG_LANGUAGE,
     });
     expect(short.slice(withLanguage?.ends[0]?.after ?? 0)).toStartWith("og ");
   });

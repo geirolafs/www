@@ -1,4 +1,4 @@
-import { NO_BREAK_SPACE, NON_BREAKING_HYPHEN, SOFT_HYPHEN } from "skiptingar";
+import { NO_BREAK_HYPHEN, NO_BREAK_SPACE, SOFT_HYPHEN } from "skiptingar";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
 
 const { marks } = localhostSkiptingarClientContent;
@@ -46,7 +46,7 @@ export function MarkedText({ text }: { text: string }) {
         </span>
       );
     }
-    if (piece.text === NON_BREAKING_HYPHEN || piece.text === NO_BREAK_SPACE) {
+    if (piece.text === NO_BREAK_HYPHEN || piece.text === NO_BREAK_SPACE) {
       // The real character, on an amber fill: it keeps its width and its
       // meaning for screen readers and copying, and the fill shows it.
       return (

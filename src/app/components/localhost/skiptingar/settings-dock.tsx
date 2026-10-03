@@ -95,7 +95,7 @@ export function SettingsDock() {
 
   // Label, and whether it is on.
   const switches = [
-    [liveEditor.typographic.label, settings.typographic],
+    [liveEditor.betterBreaks.label, settings.betterBreaks],
     [liveEditor.localeDetails.label, settings.localeDetails],
     [liveEditor.textWrap.label, settings.pretty],
     [liveEditor.showBreaks.label, settings.showBreaks],

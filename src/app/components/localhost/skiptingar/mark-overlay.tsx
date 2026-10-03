@@ -2,7 +2,7 @@
 
 import type { ReactNode, RefObject } from "react";
 import { useLayoutEffect, useRef, useState } from "react";
-import { NO_BREAK_SPACE, NON_BREAKING_HYPHEN, SOFT_HYPHEN } from "skiptingar/client";
+import { NO_BREAK_HYPHEN, NO_BREAK_SPACE, SOFT_HYPHEN } from "skiptingar/client";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
 
 const { marks: markContent } = localhostSkiptingarClientContent;
@@ -83,7 +83,7 @@ function readMarks(target: HTMLElement, root: HTMLElement): Mark[] {
             height: round(rect.height),
           });
         }
-      } else if (character === NO_BREAK_SPACE || character === NON_BREAKING_HYPHEN) {
+      } else if (character === NO_BREAK_SPACE || character === NO_BREAK_HYPHEN) {
         const rect = characterRect(range, node, index);
         if (rect) {
           found.push({

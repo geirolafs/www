@@ -8,11 +8,11 @@ const { liveEditor: content } = localhostSkiptingarClientContent;
 
 export type Settings = {
   /**
-   * The typographic rules: which breaks to keep (`rules: "typographic"`), as
-   * against the official Ritreglur minimums alone. New and under development.
+   * Better breaks: which breaks to keep (`betterBreaks: true`), as against
+   * the official Ritreglur minimums alone. New and under development.
    * Not the same as `localeDetails`, which is about spaces, quotes and dashes.
    */
-  typographic: boolean;
+  betterBreaks: boolean;
   localeDetails: boolean;
   showBreaks: boolean;
   /** `text-pretty` for body text and `text-balance` for titles; off wraps greedily. */
@@ -26,11 +26,6 @@ export const DEFAULT_SETTINGS: Settings = {
   pretty: true,
 };
 
-/** The `rules` option of `hyphenate()` that the Better breaks setting asks for. */
-function rulesFor(settings: Pick<Settings, "typographic">): "typographic" | "ritreglur" {
-  return settings.typographic ? "typographic" : "ritreglur";
-}
-
 /**
  * The rules the Locale details setting turns on: the defaults plus a no-break
  * space after a one-letter word, so "í" never ends a line. That rule is off by
@@ -40,13 +35,13 @@ export const PAGE_LOCALE_DETAILS = { singleLetter: true } as const;
 
 /** The options `hyphenate()` and the client hook take for the settings that change the output string. */
 export function outputOptions(
-  settings: Pick<Settings, "typographic" | "localeDetails">
+  settings: Pick<Settings, "betterBreaks" | "localeDetails">
 ): {
-  rules: ReturnType<typeof rulesFor>;
+  betterBreaks: boolean;
   localeDetails: typeof PAGE_LOCALE_DETAILS | false;
 } {
   return {
-    rules: rulesFor(settings),
+    betterBreaks: settings.betterBreaks,
     localeDetails: settings.localeDetails ? PAGE_LOCALE_DETAILS : false,
   };
 }

@@ -36,10 +36,10 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
         >
           <ControlGroup label={content.options.label}>
             <Switch
-              checked={settings.typographic}
-              label={content.typographic.label}
-              onChange={value => setSetting("typographic", value)}
-              tip={content.typographic.tip}
+              checked={settings.betterBreaks}
+              label={content.betterBreaks.label}
+              onChange={value => setSetting("betterBreaks", value)}
+              tip={content.betterBreaks.tip}
             />
             <Switch
               checked={settings.localeDetails}
@@ -65,7 +65,7 @@ export function SettingsPanel({ layout }: { layout: "column" | "row" }) {
           className="max-w-80"
           placeholder={content.hint}
           reserve={[
-            content.typographic.tip,
+            content.betterBreaks.tip,
             content.localeDetails.tip,
             content.showBreaks.tip,
             content.textWrap.tip,
