@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CodeBlock, InlineCode } from "@/app/components/localhost/fluid-typography/code";
+import { InstallCommand } from "@/app/components/localhost/fluid-typography/install-command";
 import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
 import {
   BODY_CLASS,
@@ -41,17 +42,22 @@ function Part({
 }
 
 /**
- * How to install the package and start: a first page, the three entry points,
- * what each setup costs a browser, and what is planned before and after v1.
- * The first line says which version is on npm and that the API may still
- * change before 1.0.
+ * How to install the package and start: the install line for the package
+ * manager you pick (bun first), a first page, the three entry points, what
+ * each setup costs a browser, and what is planned. Under the install line, a
+ * link to the package on npm and a note that the API may still change.
  */
 export function Install() {
   const { quickStart, entries, cost, roadmap } = install;
 
   return (
     <>
-      <p className={cn(NOTE_CLASS, "max-w-measure")}>{install.status}</p>
+      <div className="flex flex-col gap-xs">
+        <InstallCommand label={install.commandLabel} managers={install.managers} />
+        <p className={cn(NOTE_CLASS, "max-w-measure")}>
+          <RichText parts={install.status} />
+        </p>
+      </div>
 
       <Part
         id={quickStart.id}

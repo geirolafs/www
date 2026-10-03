@@ -354,7 +354,11 @@ export const localhostSkiptingarContent = {
 
   install: {
     ...localhostSkiptingarClientContent.install,
-    status: "On npm. The API may still change before 1.0.",
+    status: [
+      { text: "On " },
+      { text: "npm", href: "https://www.npmjs.com/package/skiptingar" },
+      { text: ". The API may still change before 1.0." },
+    ],
     commandLabel: "Install",
     managers: [
       { id: "bun", label: "bun", command: "bun add skiptingar" },
