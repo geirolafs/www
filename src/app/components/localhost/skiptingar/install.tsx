@@ -43,12 +43,13 @@ function Part({
 
 /**
  * How to install the package and start: the install line for the package
- * manager you pick (bun first), a first page, the three entry points, what
- * each setup costs a browser, and what is planned. Under the install line, a
- * link to the package on npm and a note that the API may still change.
+ * manager you pick (bun first), a first page, what `<Hyphenate>` changes, the
+ * three entry points, what each setup costs a browser, and what is planned.
+ * Under the install line, the version, the project links and a note that the
+ * API may still change.
  */
 export function Install() {
-  const { quickStart, entries, cost, roadmap } = install;
+  const { quickStart, changes, entries, cost, roadmap } = install;
 
   return (
     <>
@@ -65,6 +66,22 @@ export function Install() {
         title={quickStart.title}
       >
         <CodeBlock code={quickStart.source} label={quickStart.label} />
+      </Part>
+
+      <Part id={changes.id} intro={changes.intro} title={changes.title}>
+        <ul className="flex flex-col">
+          {changes.items.map(item => (
+            <li
+              className="flex flex-col gap-1 border-border border-t py-md md:grid md:grid-cols-3 md:gap-x-md"
+              key={item.id}
+            >
+              <p className={ITEM_TITLE_CLASS}>{item.title}</p>
+              <p className={cn(BODY_CLASS, "max-w-measure md:col-span-2")}>
+                <RichText parts={item.body} />
+              </p>
+            </li>
+          ))}
+        </ul>
       </Part>
 
       <Part id={entries.id} intro={entries.intro} title={entries.title}>

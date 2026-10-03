@@ -50,6 +50,22 @@ export const metadata: Metadata = {
   // The page lives on its own host; without this it inherits the root
   // layout's canonical, which points at the home page.
   alternates: { canonical: subsites.skiptingar.origin },
+  // A page's `openGraph` and `twitter` replace the root layout's whole objects
+  // (the merge is shallow), so each carries every field it needs. There is no
+  // image yet: the only preview in `public/` is shared and shows another demo.
+  openGraph: {
+    title: pageContent.title,
+    description: pageContent.description,
+    url: subsites.skiptingar.origin,
+    siteName: hero.name,
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: pageContent.title,
+    description: pageContent.description,
+  },
 };
 
 /**

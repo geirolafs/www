@@ -154,11 +154,11 @@ export const localhostSkiptingarClientContent = {
     },
     localeDetails: {
       label: "Locale details",
-      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr. and 30. september, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010 for an en dash. This page also keeps a one-letter word like í with the word after it, a rule that is off by default. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash.",
+      tip: "On by default, and you can turn it off. Swaps some spaces for no-break spaces (in 1.000 kr. and 30. september, for example), straight quotes for Icelandic quotes, and the hyphen in a range like 1990-2010, or a spaced hyphen, for an en dash. This page also keeps a one-letter word like í with the word after it, a rule that is off by default. Each change swaps one character for another. The dash rule also adds an invisible word joiner after the en dash of a range.",
     },
     showBreaks: {
       label: "Show breaks",
-      tip: "Draws a red · for every soft hyphen. Puts an amber fill behind every no-break space and no-break hyphen (U+2011). This shows what the components put in.",
+      tip: "Draws a red · for every soft hyphen. Puts an amber fill behind every no-break space and no-break hyphen (U+2011). This shows what the components put in, except the invisible word joiner.",
     },
     textWrap: {
       label: "CSS text-wrap",

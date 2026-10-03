@@ -19,6 +19,7 @@
  * roadmap item.
  */
 
+import pkg from "skiptingar/package.json";
 import sizes from "skiptingar/sizes.json";
 import { localhostSkiptingarClientContent } from "@/lib/content/localhost-skiptingar-client";
 
@@ -45,7 +46,7 @@ export const localhostSkiptingarContent = {
     name: "Skiptingar",
     title: "Skipt-ing-ar",
     tagline: "Icelandic text, set well.",
-    lede: "Letter patterns, better breaks and locale details, all on the server. Pair them with CSS text-wrap. The browser runs no hyphenation code, and copied text comes out clean.",
+    lede: "Letter patterns, better breaks and locale details, all on the server. Pair them with CSS text-wrap. On a server-rendered page the browser runs no hyphenation code, and copied text comes out clean.",
 
     /**
      * The problems as numbered figures, drawn like a technical manual: each
@@ -137,8 +138,8 @@ export const localhostSkiptingarContent = {
       },
       {
         value: "0 kB",
-        label: "Hyphenation JavaScript in the browser",
-        caption: `The server puts in the soft hyphens and no-break spaces, so every browser gets the same break points. Only CleanCopy, for clean copied text, runs in the browser: ${kB("cleanCopy")}.`,
+        label: "Hyphenation JavaScript on a server-rendered page",
+        caption: `With <Hyphenate>, the server puts in the soft hyphens and no-break spaces, so every browser gets the same break points. Only CleanCopy, for clean copied text, runs in the browser: ${kB("cleanCopy")}. Text made in the browser, like the editor in Try it, asks your server for ${kB("endpoint")}.`,
       },
     ],
   },
@@ -187,7 +188,11 @@ export const localhostSkiptingarContent = {
             term: "Browsers and Node",
             body: [
               {
-                text: "The locale details use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 support it earlier, so Safari sets the limit. The client entry has the same limit. On the server there is no browser limit, and you need Node 18 or newer.",
+                text: "The locale details use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 support it earlier, so Safari sets the limit. In the browser only the patterns that the client loads lazily need it. ",
+              },
+              { text: "<CleanCopy />", code: true },
+              {
+                text: " and endpoint mode do not. On the server there is no browser limit, and you need Node 18 or newer.",
               },
             ],
           },
@@ -201,6 +206,15 @@ export const localhostSkiptingarContent = {
               { text: "localeDetails()", code: true },
               {
                 text: " puts U+2011 in kennitala and phone numbers. Many fonts have no U+2011. ABC Areal and Bespoke Serif, the faces on this page, lack it. The browser draws that hyphen from a fallback font.",
+              },
+            ],
+          },
+          {
+            id: "screen-readers",
+            term: "Screen readers",
+            body: [
+              {
+                text: "Screen readers differ on soft hyphens. NVDA has been reported to announce them, so test with yours.",
               },
             ],
           },
@@ -283,6 +297,11 @@ export const localhostSkiptingarContent = {
         { text: "CC BY 4.0", href: "https://creativecommons.org/licenses/by/4.0/" },
         { text: "." },
       ],
+      [
+        {
+          text: "Skiptingar © 2026 Geir Ólafsson. MIT code, CC BY 4.0 patterns, CC0 word data.",
+        },
+      ],
     ],
   },
 
@@ -309,7 +328,7 @@ export const localhostSkiptingarContent = {
       nav: "No breaks",
       label: "Where Icelandic doesn’t break",
       explanation:
-        "Good line breaking also means knowing where not to break. Locale details keep these words together with no-break spaces.",
+        "Good line breaking also means knowing where not to break. Locale details keep these words together with no-break spaces and word joiners, and set Icelandic quotes and dashes.",
     },
     interfaces: {
       id: "interfaces",
@@ -354,9 +373,24 @@ export const localhostSkiptingarContent = {
 
   install: {
     ...localhostSkiptingarClientContent.install,
+    // The version is read from the installed package, so it cannot go stale.
     status: [
-      { text: "On " },
+      { text: `Version ${pkg.version} on ` },
       { text: "npm", href: "https://www.npmjs.com/package/skiptingar" },
+      { text: " · " },
+      { text: "GitHub", href: "https://github.com/geirolafs/skiptingar" },
+      { text: " · " },
+      {
+        text: "Changelog",
+        href: "https://github.com/geirolafs/skiptingar/blob/master/CHANGELOG.md",
+      },
+      { text: " · " },
+      { text: "Issues", href: "https://github.com/geirolafs/skiptingar/issues" },
+      { text: " · " },
+      {
+        text: "MIT licence",
+        href: "https://github.com/geirolafs/skiptingar/blob/master/LICENSE",
+      },
       { text: ". The API may still change before 1.0." },
     ],
     commandLabel: "Install",
@@ -397,6 +431,88 @@ export default function Page() {
     </main>
   );
 }`,
+    },
+    /** What `<Hyphenate>` touches and what it leaves alone, after the first page. */
+    changes: {
+      id: "what-changes",
+      title: "What <Hyphenate> changes",
+      intro:
+        "It changes only the text in the JSX it is given. Everything else stays as you wrote it.",
+      items: [
+        {
+          id: "skipped",
+          title: "Skipped",
+          body: [
+            { text: "code", code: true },
+            { text: ", " },
+            { text: "pre", code: true },
+            { text: ", " },
+            { text: "kbd", code: true },
+            { text: ", " },
+            { text: "samp", code: true },
+            { text: ", " },
+            { text: "var", code: true },
+            { text: ", " },
+            { text: "script", code: true },
+            { text: ", " },
+            { text: "style", code: true },
+            { text: ", " },
+            { text: "textarea", code: true },
+            { text: ", " },
+            { text: "svg", code: true },
+            { text: ", " },
+            { text: "math", code: true },
+            { text: " and any element with " },
+            { text: 'translate="no"', code: true },
+            { text: "." },
+          ],
+        },
+        {
+          id: "off",
+          title: "Switched off",
+          body: [
+            { text: 'data-skiptingar="off"', code: true },
+            { text: " on an element or a component turns its whole subtree off." },
+          ],
+        },
+        {
+          id: "inline-block",
+          title: "Inline or block",
+          body: [
+            {
+              text: "A component counts as inline when it sits among text, and as a block otherwise. ",
+            },
+            { text: 'data-skiptingar="inline"', code: true },
+            { text: " or " },
+            { text: '"block"', code: true },
+            { text: " on it decides instead." },
+          ],
+        },
+        {
+          id: "components",
+          title: "Child components",
+          body: [
+            {
+              text: "It cannot see text that a child component renders on its own. Wrap that text in its own ",
+            },
+            { text: "<Hyphenate>", code: true },
+            { text: ", or pass the component a string from " },
+            { text: "hyphenate()", code: true },
+            { text: "." },
+          ],
+        },
+        {
+          id: "other-languages",
+          title: "Other languages",
+          body: [
+            { text: "Text under a nested " },
+            { text: "lang", code: true },
+            { text: " other than Icelandic is left alone. A nested " },
+            { text: 'lang="is"', code: true },
+            { text: " turns it back on." },
+          ],
+        },
+      ],
     },
     entries: {
       id: "entry-points",
@@ -463,7 +579,7 @@ export default function Page() {
           { text: "Mount the handler on a POST route and point the client at it once. " },
           { text: "useHyphenate()", code: true },
           {
-            text: " and its sibling hooks then send their text to your server and get it back hyphenated, so the browser downloads no patterns. A request holds up to 200 texts and 50.000 characters. If the endpoint fails, the hooks load the patterns in the browser instead.",
+            text: " and its sibling hooks then send their text to your server and get it back hyphenated, so the browser downloads no patterns. By default a request holds up to 200 items and 50.000 characters, and no word may be longer than 200 characters. A request with a longer word is refused. If the endpoint fails, the hooks load the patterns in the browser instead.",
           },
         ],
         label: "Route and client setup",
@@ -546,7 +662,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
             },
             {
               id: "typeset-js",
-              label: "Typeset.js",
+              label: "Typeset",
               kB: 29.7,
               own: false,
               method: "rewrites the markup",
@@ -590,14 +706,14 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
             {
               id: "smaller-patterns",
               title: "Smaller patterns, maybe",
-              body: "Train a smaller pattern set from the same 218.000-word list. It gives up a little accuracy for size, for pages that must hyphenate in the browser without a server. Only if size matters.",
+              body: "Train a smaller pattern set from the same 218.308-word list. It gives up a little accuracy for size, for pages that must hyphenate in the browser without a server. Only if size matters.",
             },
           ],
         },
       ],
     },
     requirements:
-      "No runtime dependencies. Only skiptingar/react and skiptingar/client need React 18 or newer (tested with React 19). MIT licence. The hyphenation patterns are CC BY 4.0, so keep their credit.",
+      "No runtime dependencies. ESM only. Only skiptingar/react and skiptingar/client need React 18 or newer (tested with React 19). MIT licence. The hyphenation patterns are CC BY 4.0, so keep their credit. The word data is CC0.",
   },
 
   sizes: {
@@ -741,7 +857,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         title: "Better breaks (on by default)",
         body: [
           {
-            text: "Better breaks keep only some of the legal breaks. Body words need 6 or more letters, with 2 before a break and 3 after, so ",
+            text: "Better breaks keep only some of the legal breaks. Words need 6 or more letters, with 2 before a break and 3 after, so ",
           },
           { text: "ólán", sample: true },
           {
@@ -816,7 +932,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           },
           { text: "<CleanCopy />", code: true },
           {
-            text: " keeps copied text clean: it removes the soft hyphens and turns no-break spaces and no-break hyphens back into normal ones. Icelandic quotes and dashes stay, because they are the right characters.",
+            text: " keeps copied text clean: it removes the soft hyphens and the invisible word joiner (U+2060), and turns no-break spaces and no-break hyphens back into normal ones. Icelandic quotes and dashes stay, because they are the right characters.",
           },
         ],
       },
@@ -831,7 +947,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
       },
       {
         id: "care",
-        title: "Languages, names and numbers",
+        title: "Languages and letters",
         body: [
           { text: "<Hyphenate>", code: true },
           { text: " leaves text alone inside a non-Icelandic " },
@@ -1048,7 +1164,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           title: "Room",
           body: [
             {
-              text: "Body words need 6 or more letters, with 2 before a break and 3 after. A break after one letter is legal but reads badly.",
+              text: "Words need 6 or more letters, with 2 before a break and 3 after. A break after one letter is legal but reads badly.",
             },
           ],
           word: "ólán",
@@ -1354,7 +1470,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         measure: 13.25,
         label: "Title and initial",
         tag: "titles",
-        tip: "Keeps dr., sr., próf. and hr. on the same line as the capitalised name after them.",
+        tip: "Keeps dr., sr., próf. and hr. on the same line as the capitalised name after them. An initial, as in Jón G. Sigurðsson, stays with the name after it.",
         input: "Fundur með dr. Jóni og sr. Önnu.",
       },
       {
@@ -1375,6 +1491,43 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         input: "Þau fóru saman til Akureyrar",
         options: { lastWords: true },
       },
+      {
+        id: "quotes",
+        label: "Quotes",
+        tag: "quotes",
+        tip: "Straight double quotes become „…“. A pair of straight single quotes, the mark for a word’s meaning, becomes ‚…‘. A quote with no partner stays as typed.",
+        input: "Hann sagði \"komdu\" og orðið fákur merkir 'hestur'.",
+      },
+      {
+        id: "dashes",
+        label: "Dashes",
+        tag: "dashes",
+        tip: "A hyphen in a range becomes an en dash, with an invisible word joiner after it, so the range stays on one line. A spaced hyphen becomes a spaced en dash, with a no-break space before it.",
+        input: "Opið 1990-2010 og kl. 14.30-16.00, lokað 18.-21. ágúst - nema um helgar.",
+      },
     ],
+    /** Under the list: how to turn a rule on or off. */
+    switch: {
+      label: "Switching rules",
+      intro: [
+        { text: "Every rule is a " },
+        { text: "localeDetails", code: true },
+        {
+          text: " option: false turns one off, and true turns on one that is off by default. Pass the options to ",
+        },
+        { text: "<Hyphenate>", code: true },
+        { text: ", or to " },
+        { text: "localeDetails()", code: true },
+        { text: " on a string." },
+      ],
+      source: `import { localeDetails } from "skiptingar";
+import { Hyphenate } from "skiptingar/react";
+
+<Hyphenate localeDetails={{ units: false, singleLetter: true }}>
+  <p>Verð 1.000 kr. og 5 km leið.</p>
+</Hyphenate>;
+
+localeDetails("Þau fóru saman til Akureyrar", { lastWords: true });`,
+    },
   },
 } as const;

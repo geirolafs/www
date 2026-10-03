@@ -1,5 +1,10 @@
 import { localeDetails } from "skiptingar";
-import { LABEL_CLASS } from "@/app/components/localhost/fluid-typography/styles";
+import { CodeBlock } from "@/app/components/localhost/fluid-typography/code";
+import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
+import {
+  LABEL_CLASS,
+  NOTE_CLASS,
+} from "@/app/components/localhost/fluid-typography/styles";
 import { MarkedText } from "@/app/components/localhost/skiptingar/marked-text";
 import { TypographyFeature } from "@/app/components/localhost/skiptingar/typography-feature";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
@@ -11,10 +16,10 @@ const { noBreak } = localhostSkiptingarContent;
  * The typesetting rules where Icelandic doesn't break, as rows, Off beside On, across the section's
  * `wide` layout. The locale details text is computed here, with each no-break space
  * shown as a mark. A rule with `options` turns on only that option; the rest
- * are on by default.
+ * are on by default. Under the list, a snippet shows how to switch rules.
  */
 export function Typography() {
-  const { off, on, rules } = noBreak;
+  const { off, on, rules, switch: switching } = noBreak;
 
   return (
     <div className="col-span-full flex flex-col lg:grid lg:grid-cols-subgrid">
@@ -46,6 +51,14 @@ export function Typography() {
           tip={rule.tip}
         />
       ))}
+      <div className="col-span-full flex flex-col gap-y-sm border-border border-t pt-md lg:grid lg:grid-cols-subgrid">
+        <p className={cn(NOTE_CLASS, "lg:col-span-4 lg:pr-xl")}>
+          <RichText parts={switching.intro} />
+        </p>
+        <div className="min-w-0 lg:col-span-8">
+          <CodeBlock code={switching.source} label={switching.label} />
+        </div>
+      </div>
     </div>
   );
 }
