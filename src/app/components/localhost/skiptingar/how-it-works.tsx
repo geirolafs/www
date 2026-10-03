@@ -1,5 +1,4 @@
 import { hyphenate, PATTERN_COUNT } from "skiptingar";
-import { CodeBlock } from "@/app/components/localhost/fluid-typography/code";
 import {
   type Part,
   RichText,
@@ -30,10 +29,11 @@ function withCounts(parts: readonly Part[]): Part[] {
 }
 
 /**
- * The diagram across the full width, then the steps, one usage example with
- * its real output, the CSS it pairs with and the platform notes in the
- * content column (5–12), in the section's `wide` layout. The output is
- * computed here on the server, the same way the package does it for a page.
+ * The diagram across the full width, then the explanation of each layer, the
+ * real output for the first-page heading and the CSS it pairs with in the
+ * content column (5–12), in the section's `wide` layout. Only the diagram is
+ * numbered. The output is computed here on the server, the same way the
+ * package does it for a page.
  */
 export function HowItWorks() {
   const { example } = content;
@@ -44,30 +44,24 @@ export function HowItWorks() {
       <PipelineDiagram />
 
       <div className="col-span-full flex min-w-0 flex-col gap-hyblock lg:col-span-8 lg:col-start-5">
-        <ol className="flex flex-col">
-          {content.steps.map((step, index) => (
+        <ul className="flex flex-col">
+          {content.steps.map(step => (
             <li
-              // 2rem for the step number: no spacing token is that wide.
-              className="grid grid-cols-[2rem_1fr] gap-x-xs border-border border-t py-md"
+              className="flex min-w-0 max-w-measure flex-col gap-1 border-border border-t py-md"
               key={step.id}
             >
-              {/* Tabular figures keep the step numbers the same width. */}
-              <span className="font-medium text-hy-copy text-muted tabular-nums">
-                {index + 1}
-              </span>
-              <div className="flex min-w-0 max-w-measure flex-col gap-1">
-                <h3 className={ITEM_TITLE_CLASS}>{step.title}</h3>
-                <p className={BODY_CLASS}>
-                  <RichText parts={withCounts(step.body)} />
-                </p>
-              </div>
+              <h3 className={ITEM_TITLE_CLASS}>{step.title}</h3>
+              <p className={BODY_CLASS}>
+                <RichText parts={withCounts(step.body)} />
+              </p>
             </li>
           ))}
-        </ol>
+        </ul>
 
-        <CodeBlock code={example.source} label={example.label} />
-
-        <Specimen hint={example.resultHint} label={example.resultLabel}>
+        <Specimen
+          hint={<RichText parts={example.resultHint} />}
+          label={example.resultLabel}
+        >
           <p
             className={cn(
               TITLE_CLASS,

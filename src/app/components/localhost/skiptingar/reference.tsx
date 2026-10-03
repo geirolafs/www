@@ -5,7 +5,9 @@ import {
   ITEM_TITLE_CLASS,
   LABEL_CLASS,
 } from "@/app/components/localhost/fluid-typography/styles";
+import { CostChart } from "@/app/components/localhost/skiptingar/cost-chart";
 import { NUMBER } from "@/app/components/localhost/skiptingar/format";
+import { Part } from "@/app/components/localhost/skiptingar/part";
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 
@@ -36,15 +38,21 @@ function testsLine(): string {
 }
 
 /**
- * What is left of section H's reference after the pattern table, the install
- * requirements and the cost chart: the source of the one-letter rules, what
- * the browser and the font must support, and how the numbers on this page
- * were measured. The same rows as `Related`: a name
- * on the left and a plain line on the right, in groups.
+ * The reference at the end of section H, after the pattern table and the
+ * related work: what each setup costs a browser, then the notes (data and
+ * rules, support, how it is checked), then what is planned. The notes use the
+ * same rows as `Related`: a name on the left and a plain line on the right,
+ * in groups.
  */
 export function Reference() {
+  const { cost, roadmap } = reference;
+
   return (
     <div className="flex flex-col gap-hyblock">
+      <Part id={cost.id} intro={<RichText parts={cost.intro} />} title={cost.title}>
+        <CostChart />
+      </Part>
+
       {reference.groups.map(group => (
         <section
           aria-labelledby={`reference-${group.id}`}
@@ -70,6 +78,35 @@ export function Reference() {
           </ul>
         </section>
       ))}
+
+      <Part id={roadmap.id} intro={roadmap.intro} title={roadmap.title}>
+        <div className="flex flex-col gap-xl">
+          {roadmap.groups.map(group => (
+            <section
+              aria-labelledby={`${roadmap.id}-${group.id}`}
+              className="flex flex-col gap-sm"
+              key={group.id}
+            >
+              <h4 className={LABEL_CLASS} id={`${roadmap.id}-${group.id}`}>
+                {group.label}
+              </h4>
+              <ul className="flex flex-col">
+                {group.items.map(item => (
+                  <li
+                    className="flex flex-col gap-1 border-border border-t py-md md:grid md:grid-cols-3 md:gap-x-md"
+                    key={item.id}
+                  >
+                    <p className={ITEM_TITLE_CLASS}>{item.title}</p>
+                    <p className={cn(BODY_CLASS, "max-w-measure md:col-span-2")}>
+                      {item.body}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </Part>
     </div>
   );
 }

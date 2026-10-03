@@ -1,3 +1,4 @@
+import { RichText } from "@/app/components/localhost/fluid-typography/rich-text";
 import {
   ITEM_TITLE_CLASS,
   LABEL_CLASS,
@@ -6,7 +7,7 @@ import {
 import { localhostSkiptingarContent } from "@/lib/content/localhost-skiptingar";
 import { cn } from "@/lib/utils";
 
-const { cost } = localhostSkiptingarContent.install;
+const { cost } = localhostSkiptingarContent.reference;
 
 /** One scale for every group, so the bars compare across jobs too. */
 const MAX_KB = Math.max(
@@ -80,7 +81,9 @@ export function CostChart() {
           </ul>
         </section>
       ))}
-      <p className={cn(NOTE_CLASS, "max-w-measure")}>{cost.note}</p>
+      <p className={cn(NOTE_CLASS, "max-w-measure")}>
+        <RichText parts={cost.note} />
+      </p>
     </div>
   );
 }

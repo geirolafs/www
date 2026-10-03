@@ -149,18 +149,150 @@ export const localhostSkiptingarContent = {
   },
 
   /**
-   * Section I, under the pattern table and the related work. The pattern
-   * sources, the licences and the sizes themselves are already shown (the
-   * colophon, the install requirements, the cost chart), so this holds the
-   * rest. The test line is built from `tests.json` in the component:
-   * `testsAllPass` when nothing failed, `testsSomeFail` otherwise, with
-   * `{n}` the total and `{pass}` the passing count.
+   * Section H, under the pattern table and the related work. It starts with
+   * what each setup costs a browser, then holds the notes (data and rules,
+   * support, how it is checked) and ends with what is planned. The pattern
+   * sources and the licences are already shown (the colophon, the install
+   * requirements), so they are not repeated. The test line is built from
+   * `tests.json` in the component: `testsAllPass` when nothing failed,
+   * `testsSomeFail` otherwise, with `{n}` the total and `{pass}` the passing
+   * count.
    */
   reference: {
     testsAllPass: "{n} tests.",
     testsSomeFail: "{pass} of {n} tests pass.",
     testsErrorOne: "{n} error outside any test.",
     testsErrorMany: "{n} errors outside any test.",
+    cost: {
+      id: "cost",
+      title: "What it costs a browser",
+      intro: [
+        {
+          text: "What a page downloads for each job, with Skiptingar and with the common alternatives. With ",
+        },
+        { text: "the endpoint", href: "#entry-points-endpoint" },
+        {
+          text: ", the browser downloads the patterns only if it can’t reach your server. This page uses it.",
+        },
+      ],
+      unit: "kB",
+      groups: [
+        {
+          id: "hyphenate",
+          label: "Hyphenate Icelandic",
+          items: [
+            {
+              id: "sk-server",
+              label: "Skiptingar on the server",
+              kB: 0,
+              own: true,
+              method: "soft hyphens in the HTML",
+              note: "Hyphens go in while the page renders.",
+            },
+            {
+              id: "sk-endpoint",
+              label: "Skiptingar via your server",
+              kB: sizes.endpoint.brotli,
+              own: true,
+              method: "soft hyphens from your server",
+              note: "useHyphenate with an endpoint: the browser sends the text and gets it back hyphenated.",
+            },
+            {
+              id: "hyphen",
+              label: "hyphen/is",
+              kB: 12.9,
+              own: false,
+              method: "adds soft hyphens in the browser",
+              note: "The old TeX patterns.",
+            },
+            {
+              id: "hyphenopoly",
+              label: "Hyphenopoly",
+              kB: 14.8,
+              own: false,
+              method: "adds soft hyphens in the browser",
+              note: "The old TeX patterns as WebAssembly. It loads where the browser cannot hyphenate.",
+            },
+            {
+              id: "sk-client",
+              label: "Skiptingar in the browser",
+              kB: sizes.browser.brotli,
+              own: true,
+              method: "adds soft hyphens in the browser",
+              note: "The 2020 data, for a page with no server to ask. It loads on first use. It is larger than the old patterns because it breaks better.",
+            },
+          ],
+        },
+        {
+          id: "locale-details",
+          label: "Locale details",
+          items: [
+            {
+              id: "sk-locale-details",
+              label: "Skiptingar on the server",
+              kB: 0,
+              own: true,
+              method: "swaps characters in the HTML",
+              note: "Icelandic numbers, dates, abbreviations and quotes.",
+            },
+            {
+              id: "typeset-js",
+              label: "Typeset",
+              kB: 29.7,
+              own: false,
+              method: "rewrites the markup",
+              note: "English rules. It runs in the browser here.",
+            },
+          ],
+        },
+      ],
+      note: [
+        {
+          text: "The Skiptingar rows come from bun run size and change with each run. The other packages were measured on 1 October 2026. Each row shows only what that setup downloads for its job, so the scope differs: some rows include hyphenation, and some leave it to the server. All sizes are brotli. How they are measured: ",
+        },
+        { text: "Sizes", href: "#reference-checks" },
+        { text: ", under How it is checked." },
+      ],
+    },
+    roadmap: {
+      id: "roadmap",
+      title: "Planned",
+      intro: "What comes next, and what can wait. Nothing here is promised.",
+      groups: [
+        {
+          id: "next",
+          label: "Next",
+          items: [
+            {
+              id: "docs",
+              title: "This page as the documentation",
+              body: "Every option live, with the API reference beside it.",
+            },
+          ],
+        },
+        {
+          id: "later",
+          label: "Later",
+          items: [
+            {
+              id: "markdown",
+              title: "Markdown and HTML",
+              body: "A rehype plugin and a small CLI that hyphenate and add the locale details, for sites that are not built with React.",
+            },
+            {
+              id: "opinionated",
+              title: "More opinionated breaks",
+              body: "The first version follows the official spelling rules and adds better breaks. Later: a list of words with corrected breaks, a skip for all-caps acronyms such as UNESCO, and a heading mode that breaks a title where its compounds join.",
+            },
+            {
+              id: "smaller-patterns",
+              title: "Smaller patterns, maybe",
+              body: "Train a smaller pattern set from the same 218.308-word list. It gives up a little accuracy for size, for pages that must hyphenate in the browser without a server. Only if size matters.",
+            },
+          ],
+        },
+      ],
+    },
     groups: [
       {
         id: "data",
@@ -177,6 +309,28 @@ export const localhostSkiptingarContent = {
               { text: ", the Python package." },
             ],
           },
+          {
+            id: "safety",
+            term: "Safety",
+            body: [
+              {
+                text: "The three layers never touch URLs, email addresses or domains. Running any of them twice gives the same result.",
+              },
+            ],
+          },
+          {
+            id: "languages",
+            term: "Languages and letters",
+            body: [
+              { text: "Other languages: see " },
+              { text: "What <Hyphenate> changes", href: "#what-changes" },
+              { text: ". A page in another language passes its own " },
+              { text: "lang", code: true },
+              {
+                text: " prop. Input becomes NFC first, so decomposed letters, like those in macOS file names, still hyphenate.",
+              },
+            ],
+          },
         ],
       },
       {
@@ -187,13 +341,9 @@ export const localhostSkiptingarContent = {
             id: "browsers",
             term: "Browsers and Node",
             body: [
-              {
-                text: "The locale details use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 support it earlier, so Safari sets the limit. In the browser only the patterns that the client loads lazily need it. ",
-              },
-              { text: "<CleanCopy />", code: true },
-              {
-                text: " and endpoint mode do not. On the server there is no browser limit, and you need Node 18 or newer.",
-              },
+              { text: "The Node and browser versions are listed with the " },
+              { text: "requirements", href: "#entry-points" },
+              { text: " under Entry points." },
             ],
           },
           {
@@ -244,20 +394,10 @@ export const localhostSkiptingarContent = {
             body: [
               { text: "bun run size", code: true },
               {
-                text: " builds a small entry for each way to use the package. Like a site’s bundler, it minifies the code, splits it into chunks and leaves React out. It adds up the files that load at once and, for the browser setup, the chunks that load later. It compresses each file on its own with brotli (quality 11) and gzip (level 9), as a browser downloads it, and rounds the sum to 0.1 kB. Shared code counts in every setup that uses it. The sizes on this page come from ",
+                text: " builds a small entry for each way to use the package. Like a site’s bundler, it minifies the code, splits it into chunks and leaves React out. It adds up the files that load at once and, for the browser setup, the chunks that load later. It compresses each file on its own with brotli (quality 11) and gzip (level 9), as a browser downloads it, and rounds the sum to 0.1 kB. Shared code counts in every setup that uses it. The other packages in the chart are bundled the same way, each with a minimal use. The sizes of Skiptingar come from ",
               },
               { text: "sizes.json", code: true },
               { text: ", which the script writes." },
-            ],
-          },
-          {
-            id: "speed",
-            term: "Speed",
-            body: [
-              { text: "bun run bench", code: true },
-              {
-                text: " times hyphenate() and localeDetails() each on its own, on a text of 20.000 words. Each one repeats for about 300 ms, and the script prints words per second. It prints the results but saves none, so this page shows no speed figures.",
-              },
             ],
           },
           {
@@ -351,7 +491,7 @@ export const localhostSkiptingarContent = {
       nav: "How",
       label: "How it works",
       explanation:
-        "Three layers on the server: letter patterns, better breaks and locale details. I recommend pairing them with CSS text-wrap, so the browser sets the lines well.",
+        "Three layers on the server: letter patterns, better breaks and locale details. CSS text-wrap, below, sets the lines.",
     },
     install: {
       id: "install",
@@ -367,7 +507,7 @@ export const localhostSkiptingarContent = {
       nav: "Reference",
       label: "Reference",
       explanation:
-        "Pattern sources, licences, browser support, sizes and how they are measured.",
+        "What each setup costs a browser, the pattern sources, how the sizes are measured and what is planned.",
     },
   },
 
@@ -411,7 +551,7 @@ export const localhostSkiptingarContent = {
         },
         { text: "localeDetails={false}", code: true },
         {
-          text: " to leave out the locale details. Pair it with CSS text-wrap: here Tailwind’s text-balance for the title and text-pretty for the paragraph. Add ",
+          text: " to leave out the locale details. The CSS text-wrap here is Tailwind’s text-balance for the title and text-pretty for the paragraph. Add ",
         },
         { text: "<CleanCopy />", code: true },
         { text: " once, so copied text has no soft hyphens." },
@@ -517,8 +657,13 @@ export default function Page() {
     entries: {
       id: "entry-points",
       title: "Entry points",
-      intro:
-        "Import only what the page needs. The first two run on the server and send nothing to the browser.",
+      intro: [
+        {
+          text: "Import only what the page needs. The first two run on the server and send nothing to the browser. What each setup costs a browser is in ",
+        },
+        { text: "Reference", href: "#cost" },
+        { text: "." },
+      ],
       items: [
         {
           id: "core",
@@ -563,18 +708,18 @@ export default function Page() {
           body: [
             { text: "useHyphenate()", code: true },
             {
-              text: " for text that exists only in the browser. It can ask your server instead of loading the patterns. The entry also holds ",
+              text: " for text that exists only in the browser. It can ask your server, set up below, instead of loading the patterns. The entry also holds ",
             },
             { text: "<CleanCopy />", code: true },
             {
-              text: `. The hyphenation core loads on first use and is ${kB("patterns")} brotli.`,
+              text: `. The hyphenation core loads on first use and is ${kB("patterns")} brotli, or ${kB("browser")} with the client entry.`,
             },
           ],
         },
       ],
       endpoint: {
         id: "entry-points-endpoint",
-        title: "Hyphenation in the browser, done on the server",
+        title: "Browser text, hyphenated by your server",
         body: [
           { text: "Mount the handler on a POST route and point the client at it once. " },
           { text: "useHyphenate()", code: true },
@@ -595,125 +740,16 @@ import { configureSkiptingar } from "skiptingar/client";
 configureSkiptingar({ endpoint: "/api/skiptingar" });`,
       },
     },
-    cost: {
-      id: "cost",
-      title: "What it costs a browser",
-      intro:
-        "What a page downloads for each job, with Skiptingar and with the common alternatives. Your server can hyphenate text that exists only in the browser, so the browser downloads the patterns only if it can’t reach the server. This page does that.",
-      unit: "kB",
-      groups: [
-        {
-          id: "hyphenate",
-          label: "Hyphenate Icelandic",
-          items: [
-            {
-              id: "sk-server",
-              label: "Skiptingar on the server",
-              kB: 0,
-              own: true,
-              method: "soft hyphens in the HTML",
-              note: "Hyphens go in while the page renders.",
-            },
-            {
-              id: "sk-endpoint",
-              label: "Skiptingar via your server",
-              kB: sizes.endpoint.brotli,
-              own: true,
-              method: "soft hyphens from your server",
-              note: "useHyphenate with an endpoint: the browser sends the text and gets it back hyphenated.",
-            },
-            {
-              id: "hyphen",
-              label: "hyphen/is",
-              kB: 12.9,
-              own: false,
-              method: "adds soft hyphens in the browser",
-              note: "The old TeX patterns.",
-            },
-            {
-              id: "hyphenopoly",
-              label: "Hyphenopoly",
-              kB: 14.8,
-              own: false,
-              method: "adds soft hyphens in the browser",
-              note: "The old TeX patterns as WebAssembly. It loads where the browser cannot hyphenate.",
-            },
-            {
-              id: "sk-client",
-              label: "Skiptingar in the browser",
-              kB: sizes.browser.brotli,
-              own: true,
-              method: "adds soft hyphens in the browser",
-              note: "The 2020 data, for a page with no server to ask. It loads on first use. It is larger than the old patterns because it breaks better.",
-            },
-          ],
-        },
-        {
-          id: "locale-details",
-          label: "Locale details",
-          items: [
-            {
-              id: "sk-locale-details",
-              label: "Skiptingar on the server",
-              kB: 0,
-              own: true,
-              method: "swaps characters in the HTML",
-              note: "Icelandic numbers, dates, abbreviations and quotes.",
-            },
-            {
-              id: "typeset-js",
-              label: "Typeset",
-              kB: 29.7,
-              own: false,
-              method: "rewrites the markup",
-              note: "English rules. It runs in the browser here.",
-            },
-          ],
-        },
-      ],
-      note: "The Skiptingar rows come from bun run size and change with each run. The other packages were measured on 1 October 2026. Each package is bundled with a minimal use, minified, React left out, brotli. Each row shows only what that setup downloads for its job, so the scope differs: some rows include hyphenation, and some leave it to the server.",
-    },
-    roadmap: {
-      id: "roadmap",
-      title: "Planned",
-      intro: "What comes next, and what can wait. Nothing here is promised.",
-      groups: [
-        {
-          id: "next",
-          label: "Next",
-          items: [
-            {
-              id: "docs",
-              title: "This page as the documentation",
-              body: "Every option live, with the API reference beside it.",
-            },
-          ],
-        },
-        {
-          id: "later",
-          label: "Later",
-          items: [
-            {
-              id: "markdown",
-              title: "Markdown and HTML",
-              body: "A rehype plugin and a small CLI that hyphenate and add the locale details, for sites that are not built with React.",
-            },
-            {
-              id: "opinionated",
-              title: "More opinionated breaks",
-              body: "The first version follows the official spelling rules and adds better breaks. Later: a list of words with corrected breaks, a skip for all-caps acronyms such as UNESCO, and a heading mode that breaks a title where its compounds join.",
-            },
-            {
-              id: "smaller-patterns",
-              title: "Smaller patterns, maybe",
-              body: "Train a smaller pattern set from the same 218.308-word list. It gives up a little accuracy for size, for pages that must hyphenate in the browser without a server. Only if size matters.",
-            },
-          ],
-        },
-      ],
-    },
-    requirements:
-      "No runtime dependencies. ESM only. Only skiptingar/react and skiptingar/client need React 18 or newer (tested with React 19). MIT licence. The hyphenation patterns are CC BY 4.0, so keep their credit. The word data is CC0.",
+    /** The one full statement of what the package needs, from the Node version to the licences. */
+    requirements: [
+      {
+        text: "On the server you need Node 18 or newer, and there is no browser limit. No runtime dependencies. ESM only. Only skiptingar/react and skiptingar/client need React 18 or newer (tested with React 19). The locale details use regular expression lookbehind, so a browser needs Safari 16.4 or newer. Chrome 62 and Firefox 78 support it earlier, so Safari sets the limit. In the browser only the patterns that the client loads lazily need it. ",
+      },
+      { text: "<CleanCopy />", code: true },
+      {
+        text: " and endpoint mode do not. MIT licence. The hyphenation patterns are CC BY 4.0, so keep their credit. The word data is CC0.",
+      },
+    ],
   },
 
   sizes: {
@@ -822,7 +858,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         },
         line: {
           title: "Line",
-          note: "The browser picks the break that fits and draws the hyphen only there. CSS text-wrap, which I recommend, shapes the choice: pretty for body text, balance for titles.",
+          note: "The browser picks the break that fits and draws the hyphen only there. CSS text-wrap shapes the choice, as CSS it pairs with explains.",
         },
       },
       softHyphen: "&shy;",
@@ -838,13 +874,11 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           },
           { text: ".af4lið.", code: true },
           {
-            text: " (the dots mark the start and end of the word). An odd number allows a break and an even number forbids one. The highest number at each spot wins. The 2020 patterns break ",
+            text: " (the dots mark the start and end of the word). An odd number allows a break and an even number forbids one. The highest number at each spot wins. The 2020 patterns break some words better than the older TeX patterns: the ",
           },
-          { text: "þjóð-fé-lags-um-ræða", sample: true },
-          { text: ", where the older TeX patterns gave " },
-          { text: "þjóð-fé-lagsum-ræða", sample: true },
+          { text: "table in Reference", href: "#reference" },
           {
-            text: ". The official spelling rules (Ritreglur) then ask for room on both sides of a break: at least 1 letter before it and 2 after, in words of 4 letters or more. These minimums alone still allow breaks that read badly, such as ",
+            text: " shows where. The official spelling rules (Ritreglur) then ask for room on both sides of a break, the Minimums stage above. These minimums alone still allow breaks that read badly, such as ",
           },
           { text: "ó-lán", sample: true },
           {
@@ -871,7 +905,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
       },
       {
         id: "locale-details",
-        title: "Locale details (on by default)",
+        title: "Locale details",
         body: [
           {
             text: "Locale details are on by default in the components and the hooks. Pass ",
@@ -900,26 +934,11 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         body: [
           { text: "hyphenate()", code: true },
           {
-            text: " puts a soft hyphen (U+00AD) at each allowed break while the page renders, in a React Server Component called ",
+            text: " puts the soft hyphens in while the page renders, in a React Server Component called ",
           },
           { text: "<Hyphenate>", code: true },
           {
             text: ". The browser still picks which break to use on each line.",
-          },
-        ],
-      },
-      {
-        id: "wrapping",
-        title: "CSS text-wrap (recommended)",
-        body: [
-          {
-            text: "Soft hyphens only say where a line may break. I recommend pairing the three layers with CSS ",
-          },
-          { text: "text-wrap: pretty", code: true },
-          { text: " for body text and " },
-          { text: "balance", code: true },
-          {
-            text: " for titles. They help the browser choose. This is your CSS, not package code. It is on by default on this page, and you can leave it out.",
           },
         ],
       },
@@ -936,37 +955,21 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           },
         ],
       },
-      {
-        id: "safety",
-        title: "Safety",
-        body: [
-          {
-            text: "The three layers never touch URLs, email addresses or domains. Running any of them twice gives the same result.",
-          },
-        ],
-      },
-      {
-        id: "care",
-        title: "Languages and letters",
-        body: [
-          { text: "<Hyphenate>", code: true },
-          { text: " leaves text alone inside a non-Icelandic " },
-          { text: "lang", code: true },
-          {
-            text: ": no Icelandic hyphenation and no locale details. A nested ",
-          },
-          { text: 'lang="is"', code: true },
-          {
-            text: " turns them back on. A page in another language passes its own lang prop. Input becomes NFC first, so decomposed letters, like those in macOS file names, still hyphenate.",
-          },
-        ],
-      },
     ],
     css: {
       id: "css-pairs",
       title: "CSS it pairs with",
-      intro:
-        "These CSS properties decide how the browser uses the breaks. They are optional. Each pair sets the same text at the same width, without and with the property. Drag the width: at some widths the two agree, at others they differ.",
+      intro: [
+        {
+          text: "These CSS properties decide how the browser uses the breaks. I recommend ",
+        },
+        { text: "text-wrap: pretty", code: true },
+        { text: " for body text and " },
+        { text: "balance", code: true },
+        {
+          text: " for titles. This is your CSS, not package code, and it is optional. Each pair sets the same text at the same width, without and with the property. Drag the width: at some widths the two agree, at others they differ.",
+        },
+      ],
       without: "Without",
       with: "With",
       usedLabel: "Used here",
@@ -1009,13 +1012,13 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
         {
           id: "hyphens",
           property: "hyphens: manual and auto",
-          what: "manual, the CSS default, adds a hyphen only at a soft hyphen. Skiptingar puts those in. auto asks the browser’s own dictionary. Only Firefox has an Icelandic one.",
+          what: "manual, the CSS default, adds a hyphen only at a soft hyphen. Skiptingar puts those in. auto asks the browser’s own dictionary.",
           used: [
             {
               text: "Every hyphenated text on this page uses manual. The Browser column in ",
             },
             { text: "Same text, every browser", href: "#browsers" },
-            { text: " uses auto on purpose." },
+            { text: " uses auto on purpose, and says what that does for Icelandic." },
           ],
           withoutCaption: "hyphens: auto",
           withCaption: "hyphens: manual, with Skiptingar",
@@ -1034,22 +1037,21 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
       ],
       balanceHeading: "Nýr vegur opnaður á milli bæjanna",
     },
+    /** The real output of the heading in the first-page snippet (Install). */
     example: {
-      label: "Usage",
-      source: `import { Hyphenate } from "skiptingar/react";
-
-<Hyphenate>
-  <h1>Sveitarstjórnarkosningar á landsbyggðinni</h1>
-</Hyphenate>`,
       resultLabel: "Result",
-      resultHint: "The real output for the heading above. Each · is a soft hyphen.",
+      resultHint: [
+        { text: "The real output for the heading in " },
+        { text: "A first page", href: "#first-page" },
+        { text: ". Each · is a soft hyphen." },
+      ],
       heading: "Sveitarstjórnarkosningar á landsbyggðinni",
     },
   },
 
   samplesSection: {
     sizes: {
-      label: "Sizes",
+      label: "Type sizes",
       hint: [
         {
           text: "The first paragraph of your text at three sizes, in the same width. Smaller type fits more letters on a line, so the breaks change.",
@@ -1261,10 +1263,8 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
           term: "Phone numbers",
           body: [
             { text: "588-5522", sample: true },
-            { text: " and " },
-            { text: "588 5522", sample: true },
             {
-              text: " stay together with the locale details. Browsers otherwise break after the hyphen.",
+              text: " breaks after the hyphen in a browser. The locale details keep it whole.",
             },
           ],
         },
@@ -1282,7 +1282,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
             href: "https://webkit.org/blog/16547/better-typography-with-text-wrap-pretty/",
             body: [
               {
-                text: "What makes the uneven right edge of a paragraph look good: no short last line, an even right edge, hyphens where they help. A live demo draws the plain text faintly behind the improved one.",
+                text: "What makes the uneven right edge of a paragraph look good, with hyphens where they help. A live demo draws the plain text faintly behind the improved one.",
               },
             ],
           },
@@ -1293,7 +1293,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
             href: "https://developer.chrome.com/blog/css-text-wrap-pretty",
             body: [
               {
-                text: "Chrome’s version. It stops a paragraph from ending on one word. Near the end it adjusts hyphenation and earlier lines, so its effect shows at some widths and not at others.",
+                text: "Chrome’s version. Near the end of a paragraph it adjusts hyphenation and earlier lines, so its effect shows at some widths and not at others.",
               },
             ],
           },
@@ -1304,7 +1304,7 @@ configureSkiptingar({ endpoint: "/api/skiptingar" });`,
             href: "https://developer.chrome.com/docs/css-ui/css-text-wrap-balance",
             body: [
               {
-                text: "When to balance a title. Browsers balance only blocks of a few lines, so use it for titles and captions, not paragraphs.",
+                text: "When to balance a title. Use it for titles and captions, not paragraphs.",
               },
             ],
           },

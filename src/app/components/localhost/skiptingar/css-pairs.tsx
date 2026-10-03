@@ -139,7 +139,9 @@ export function CssPairs() {
         <h3 className={cn(SUBTITLE_CLASS, "scroll-mt-project")} id={css.id}>
           {css.title}
         </h3>
-        <p className={cn(INTRO_CLASS, "max-w-measure")}>{css.intro}</p>
+        <p className={cn(INTRO_CLASS, "max-w-measure")}>
+          <RichText parts={css.intro} />
+        </p>
       </div>
 
       <div className="flex flex-col">
