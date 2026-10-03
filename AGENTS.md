@@ -1,7 +1,7 @@
 # AGENTS.md
 
-Guidance for coding agents (Claude Code, Codex, Cursor, Zed). `CLAUDE.md` only
-points here, so add guidance to this file.
+Guidance for coding agents (Claude Code, Codex, Cursor, Zed). Every harness
+reads this file, so add guidance here.
 
 Personal portfolio and notes. Next.js 16, React 19, Tailwind 4, Bun.
 
