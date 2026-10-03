@@ -8,7 +8,7 @@
  * The page presents version 1 as three layers, all on the server and on by
  * default: letter patterns (the 2020 patterns and the Ritreglur minimums, put
  * in as soft hyphens), better breaks (the experimental `rules: "typographic"`
- * preset, which decides which breaks to keep) and locale details (no-break
+ * option, which decides which breaks to keep) and locale details (no-break
  * spaces, Icelandic quotes and dashes). CSS text-wrap
  * (pretty for body text, balance for titles) is not a layer: it is the
  * reader's own CSS, which the page recommends pairing with the layers. Better
