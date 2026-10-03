@@ -34,6 +34,16 @@ const nextConfig: NextConfig = {
   // Required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
 
+  // The markdown route reads the README of each package page at runtime
+  // (src/lib/package-readme.ts). The tracer cannot see a built path, so name
+  // the files. The key is the route, escaped for picomatch.
+  outputFileTracingIncludes: {
+    "/md/\\[\\[\\.\\.\\.path\\]\\]": [
+      "./node_modules/skiptingar/README.md",
+      "./src/packages/settle-rag/README.md",
+    ],
+  },
+
   // Aliases for the paths agents and people guess. Agents walking the site
   // try /work and /contact cold, then fall back to web search when they 404 —
   // a 308 to the right place keeps that visit on-site. Config redirects run before the

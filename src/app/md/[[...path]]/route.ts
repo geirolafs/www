@@ -7,6 +7,7 @@ import {
   tagIndexMarkdown,
   trustPageMarkdown,
 } from "@/lib/markdown";
+import { packageReadme } from "@/lib/package-readme";
 
 /**
  * Markdown renditions of the site's pages. Agents reach these transparently:
@@ -15,6 +16,9 @@ import {
  * Direct hits on `/md/*` work too but are kept out of the index —
  * `robots.ts` disallows the prefix, and every response says `Vary: Accept`
  * so caches keep the two renditions of one URL apart.
+ *
+ * The package pages under `/localhost` render as their package README, so an
+ * agent on `skiptingar.geir.studio` reads the docs for the installed version.
  *
  * Unknown paths get a real 404 with a markdown body pointing at the sitemap
  * and llms.txt — an agent that guessed a URL should learn where to look, not
@@ -64,6 +68,13 @@ export async function GET(
     const tagIndex = tagIndexMarkdown(path[2]);
     if (tagIndex) {
       return markdownResponse(tagIndex);
+    }
+  }
+
+  if (path.length === 2 && path[0] === "localhost") {
+    const readme = await packageReadme(path[1]);
+    if (readme) {
+      return markdownResponse(readme);
     }
   }
 
