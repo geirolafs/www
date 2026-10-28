@@ -39,6 +39,7 @@ function DescriptionText({ description }: { description: Description }) {
 export function EntryRow({
   year,
   title,
+  accessibleTitle,
   subtitle,
   description,
   index,
@@ -90,7 +91,16 @@ export function EntryRow({
             27.52 + 36 — the frame's 64 — instead of two shrink-wrapped
             columns. */}
         <div className="flex flex-col lg:min-h-row lg:flex-row lg:flex-wrap lg:items-baseline lg:gap-x-2xs lg:gap-y-0">
-          <p className="text-balance font-medium text-body text-foreground">{title}</p>
+          <p className="text-balance font-medium text-body text-foreground">
+            {accessibleTitle ? (
+              <>
+                <span aria-hidden="true">{title}</span>
+                <span className="sr-only">{accessibleTitle}</span>
+              </>
+            ) : (
+              title
+            )}
+          </p>
           {subtitle ? (
             <p className="text-balance font-regular text-body text-muted lg:min-h-row">
               {subtitle}

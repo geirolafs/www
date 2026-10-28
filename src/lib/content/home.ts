@@ -97,6 +97,12 @@ export type Description = string | readonly DescriptionSegment[];
 export interface Entry {
   year: YearRange;
   title: string;
+  /**
+   * Read out, and used in the markdown, instead of `title` when the title is
+   * set for the eye. `Skipt-ing-ar` shows its own break points; a screen
+   * reader should still say the word.
+   */
+  accessibleTitle?: string;
   subtitle?: string;
   description?: Description;
 }
@@ -125,6 +131,25 @@ export const selectedWorkContent: WorkSectionContent = {
           kind: "link",
           label: "magni-app.is",
           href: "https://magni-app.is",
+          external: true,
+        },
+      ],
+    },
+    {
+      year: { display: "2026 ▸", accessible: "2026 to present" },
+      title: "Skipt-ing-ar",
+      accessibleTitle: "Skiptingar",
+      subtitle: "open-source package for Icelandic typesetting",
+      description: [
+        {
+          kind: "text",
+          value:
+            "Hyphenation from the Árni Magnússon Institute’s patterns, numbers kept with their units, Icelandic quotes and en dashes in ranges. Runs on the server, so the browser gets plain text. ",
+        },
+        {
+          kind: "link",
+          label: "skiptingar.geir.studio",
+          href: "https://skiptingar.geir.studio",
           external: true,
         },
       ],

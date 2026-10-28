@@ -38,7 +38,8 @@ function descriptionToMarkdown(description: Description): string {
 }
 
 function entryToMarkdown(entry: Entry): string {
-  const title = entry.subtitle ? `${entry.title} — ${entry.subtitle}` : entry.title;
+  const name = entry.accessibleTitle ?? entry.title;
+  const title = entry.subtitle ? `${name} — ${entry.subtitle}` : name;
   const description = entry.description
     ? ` ${descriptionToMarkdown(entry.description)}`
     : "";
