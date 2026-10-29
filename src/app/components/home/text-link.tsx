@@ -164,12 +164,12 @@ const ARROW_CLASSES = {
  * above the cap height; on a device that can hover it waits there, hidden,
  * so leaving fades it out in place. `flight="arch"` flies it from `↗` on the
  * baseline, over an arch below the cap height, to `↘` on the baseline
- * (`animate-paper-plane`). `leading-none` fixes the box the turn's origin is
+ * (`animate-paper-plane`), and likewise rests hidden at `↘`. `leading-none` fixes the box the turn's origin is
  * measured in. On leaving it fades out in place. Under reduced motion it only
  * fades.
  */
 const MAIL_REVEAL_GLYPH_CLASSES = {
-  arch: "inline-block leading-none origin-(--paper-plane-origin) transition-opacity duration-[var(--duration-arrow)] ease-(--ease-out) [@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-hover:animate-paper-plane group-focus-visible:opacity-100 group-focus-visible:animate-paper-plane motion-reduce:animate-none!",
+  arch: "inline-block leading-none origin-(--paper-plane-origin) [@media(hover:hover)]:translate-y-(--paper-plane-ground) [@media(hover:hover)]:rotate-[calc(var(--paper-plane-pitch)*-1)] motion-reduce:translate-none! motion-reduce:rotate-none! transition-opacity duration-[var(--duration-arrow)] ease-(--ease-out) [@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-hover:animate-paper-plane group-focus-visible:opacity-100 group-focus-visible:animate-paper-plane motion-reduce:animate-none!",
   loop: "inline-block leading-none origin-(--paper-plane-origin) [@media(hover:hover)]:translate-x-(--paper-loop-end-x) [@media(hover:hover)]:translate-y-(--paper-loop-end-y) [@media(hover:hover)]:rotate-(--paper-loop-end-rotate) motion-reduce:translate-none! motion-reduce:rotate-none! transition-opacity duration-[var(--duration-arrow)] ease-(--ease-out) [@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-hover:animate-paper-loop group-focus-visible:opacity-100 group-focus-visible:animate-paper-loop motion-reduce:animate-none!",
 } as const;
 
