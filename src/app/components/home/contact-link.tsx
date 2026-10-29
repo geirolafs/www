@@ -15,6 +15,7 @@ type ContactLinkProps = {
    * the next time a third one is added.
    */
   location: "intro" | "footer";
+  underline?: "always" | "hover";
 };
 
 /**
@@ -45,6 +46,7 @@ export function ContactLink({
   external,
   className,
   location,
+  underline,
 }: ContactLinkProps) {
   return (
     <TextLink
@@ -52,6 +54,7 @@ export function ContactLink({
       external={external}
       href={href}
       onClick={() => posthog.capture("contact_link_clicked", { label, location })}
+      underline={underline}
     >
       {label}
     </TextLink>

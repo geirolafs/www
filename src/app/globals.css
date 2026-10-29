@@ -48,6 +48,7 @@
   --color-surface-footer: #dbd8d2; /* foreground on it is 10.6:1 */
   --color-selection: #ffe577; /* the stripe's last stop; foreground 12:1, muted 3.78:1 */
   --color-highlight: #ffff23; /* The freshest of yellows for the freshest of highlights. */
+  --color-link-arrow: #d42424; /* An external link's `↗` when it answers a hover: 5.02:1 on the background */
   --color-hy-track: #e7e5df; /* The /localhost package pages: a button's and a panel's border, the hover fill. A field's border is `border` (3:1). */
   --color-hy-surface: #f7f5ef; /* The /localhost package pages: code blocks, a button's hover fill, a highlighted option */
   /* The /localhost package pages: the two highlights. Signal is for what must be
@@ -81,7 +82,7 @@
   --font-weight-book: 400; /* paragraphs, multi-line body copy */
   --font-weight-regular: 430; /* a word, a line, a lone sentence */
   --font-weight-medium: 500; /* work titles, the contact email */
-  --font-weight-semibold: 600; /* the clock, footer labels */
+  --font-weight-semibold: 600; /* the clock, footer labels, a link at rest */
 
   /* ---- Type ------------------------------------------------------------ */
   /* Six steps. `display`, `body` and `meta` are fluid 402 → 1440; `link` and
@@ -348,6 +349,36 @@
      documents. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
+  /* Something already on screen changing shape: slow start, slow finish. The
+     link underline wiping out and back in. */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* A small spring, about 8% overshoot, sampled into `linear()`. The link
+     arrow settling into place as it turns. Use it on `rotate` and
+     `translate` only, never on opacity or colour. */
+  --ease-spring: linear(
+    0,
+    0.052,
+    0.179,
+    0.342,
+    0.512,
+    0.67,
+    0.805,
+    0.911,
+    0.989,
+    1.041,
+    1.07,
+    1.082,
+    1.082,
+    1.074,
+    1.062,
+    1.047,
+    1.034,
+    1.021,
+    1.011,
+    1.004,
+    1
+  );
+
   /* /localhost/ambient-stripe: the glow swelling and settling. Ten seconds is
      slower than a resting breath on purpose — at that pace it reads as the
      light being alive rather than as something animating. Amplitude follows
@@ -504,14 +535,34 @@
      documents above. */
   --measure-prose: 34em;
 
-  /* Links are underlined in foreground even where the text is muted. */
-  --underline-thickness: 8%;
+  /* Static underlines (MDX links, `animateUnderline={false}`) are drawn in
+     foreground even where the text is muted. */
+  --underline-thickness: 0.08em;
+  /* Where that bar sits: Same Univers puts its underline 0.1em below the
+     baseline (post.underlinePosition -100) and its descent is 0.174em, so the
+     bar's bottom edge is that far above the bottom of the line box. */
+  --underline-bar-bottom: calc(0.074em - var(--underline-bar-thickness));
+  /* The drawn bar matches the text underline's thickness and sits a hair
+     higher, tucked under the glyphs. */
+  --underline-bar-thickness: 0.08em;
+  --underline-bar-lift: 0.05em;
+  /* The bar is the link's own text colour at this alpha, so it is always
+     lighter than the glyphs whatever colour they are. */
+  --underline-bar-opacity: 50%;
   --underline-color: var(--color-foreground);
 
   /* Read as an arbitrary value — `duration-[var(--duration-feedback)]` — for
-     the namespace reason logged next to `--ease-out` above. One step,
-     because one thing animates. */
+     the namespace reason logged next to `--ease-out` above. Feedback is the
+     response to a hover or press; the arrow is the one flourish on top. */
   --duration-feedback: 120ms; /* hover, press */
+  --duration-arrow: 260ms; /* the external-link arrow turning in on hover */
+
+  /* Where the hidden `reveal` arrow waits before hover: back towards the
+     label, below its line, and turned clockwise. It springs from here into
+     place. */
+  --arrow-reveal-x: -0.6em;
+  --arrow-reveal-y: 0.3em;
+  --arrow-reveal-rotate: 45deg;
 
   /* The scroll reveal's timing is not a token: it is a Motion spring —
      `visualDuration: 0.6`, `bounce: 0.12`, per-row `delay: index * 0.07` —

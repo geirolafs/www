@@ -34,14 +34,12 @@ export function ContactFooter() {
             {group.links.map(link => (
               <li data-reveal-item key={link.href}>
                 <ContactLink
-                  className={cn(
-                    "text-foreground no-underline hover:underline focus-visible:underline",
-                    link.weight === "medium" ? "font-medium" : "font-regular"
-                  )}
+                  className="text-foreground"
                   external={link.external}
                   href={link.href}
                   label={link.label}
                   location="footer"
+                  underline="hover"
                 />
               </li>
             ))}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { TextLink } from "@/app/components/home/text-link";
 import { ExperimentPage } from "@/app/components/localhost/experiment-page";
 import { ArrowLink } from "@/app/components/localhost/variable-weight/arrow-link";
 import { CopyEmailBtn } from "@/app/components/localhost/variable-weight/copy-email-btn";
@@ -126,6 +127,66 @@ export default function Page() {
               {sections.arrowLink.text}
             </ArrowLink>
           </div>
+        </DemoRow>
+
+        {sections.linkVariants.variants.flatMap(variant =>
+          [false, true].map(animated => (
+            <DemoRow
+              hint={
+                animated
+                  ? `${variant.hint}, ${sections.linkVariants.animatedHint}`
+                  : variant.hint
+              }
+              key={`${variant.arrow}-${animated}`}
+              label={sections.linkVariants.label}
+            >
+              <p className="text-pretty font-book text-body text-muted">
+                {sections.linkVariants.before}
+                <TextLink
+                  animateUnderline={animated}
+                  arrow={variant.arrow}
+                  external
+                  href={sections.linkVariants.href}
+                >
+                  {sections.linkVariants.text}
+                </TextLink>
+              </p>
+            </DemoRow>
+          ))
+        )}
+
+        <DemoRow
+          hint={sections.linkVariants.wipeInHint}
+          label={sections.linkVariants.label}
+        >
+          <p className="text-pretty font-book text-body text-muted">
+            {sections.linkVariants.before}
+            <TextLink
+              arrow="reveal"
+              external
+              href={sections.linkVariants.href}
+              underline="hover"
+            >
+              {sections.linkVariants.text}
+            </TextLink>
+          </p>
+        </DemoRow>
+
+        <DemoRow
+          hint={sections.linkVariants.noUnderlineHint}
+          label={sections.linkVariants.label}
+        >
+          <p className="text-pretty font-book text-body text-muted">
+            {sections.linkVariants.before}
+            <TextLink
+              arrow="reveal"
+              external
+              href={sections.linkVariants.href}
+              underline="none"
+            >
+              {sections.linkVariants.text}
+            </TextLink>
+          </p>
         </DemoRow>
 
         <DemoRow label={sections.copyEmail.label}>

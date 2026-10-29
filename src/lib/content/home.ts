@@ -159,17 +159,16 @@ export const selectedWorkContent: WorkSectionContent = {
       title: "Gangverk",
       subtitle: "digital product studio, Reykjavík and New York",
       description: [
-        { kind: "text", value: "Design and principal development of " },
+        {
+          kind: "text",
+          value:
+            "Design and principal development of the studio’s site. Art direction, type system, motion and the production frontend. Next.js, React, TypeScript, WebGL, scroll-driven theming, 28 routes. ",
+        },
         {
           kind: "link",
           label: "gangverk.com",
           href: "https://gangverk.com",
           external: true,
-        },
-        {
-          kind: "text",
-          value:
-            " Art direction, type system, motion and the production frontend. Next.js, React, TypeScript, WebGL, scroll-driven theming, 28 routes.",
         },
       ],
     },
@@ -338,7 +337,6 @@ export interface ContactLink {
   label: string;
   href: string;
   external?: boolean;
-  weight: "regular" | "medium";
   /**
    * Which footer group it sits in. `localhost` is the easter egg: its own
    * group, over the colophon on desktop and last before the copyright on
@@ -368,40 +366,34 @@ export const contactFooterContent: ContactFooterContent = {
     {
       label: siteConfig.email,
       href: `mailto:${siteConfig.email}`,
-      weight: "regular",
       group: "contact",
     },
     {
       label: "download cv",
       href: siteConfig.cv.path,
-      weight: "regular",
       group: "contact",
     },
     {
       label: "/ notes",
       href: "/notes",
-      weight: "regular",
       group: "contact",
       hidden: true,
     },
     {
       label: "/ localhost",
       href: "/localhost",
-      weight: "regular",
       group: "localhost",
     },
     {
       label: "linkedin",
       href: siteConfig.social.linkedin,
       external: true,
-      weight: "regular",
       group: "social",
     },
     {
       label: "github",
       href: siteConfig.social.github,
       external: true,
-      weight: "regular",
       group: "social",
     },
   ],

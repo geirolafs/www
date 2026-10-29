@@ -31,6 +31,20 @@ export const localhostVariableWeightContent = {
       href: "https://github.com",
       newTab: "(opens in new tab)",
     },
+    linkVariants: {
+      label: "TextLink arrows",
+      before: "Brand strategy, marketing site and collateral. ",
+      href: "https://gangverk.com",
+      text: "gangverk.com",
+      animatedHint: "underline wipes out",
+      wipeInHint: "Arrow hidden until hover, underline wipes in",
+      noUnderlineHint: "Arrow hidden until hover, no underline",
+      variants: [
+        { arrow: "none", hint: "Weight only" },
+        { arrow: "persist", hint: "Arrow shows, turns red on hover" },
+        { arrow: "reveal", hint: "Arrow hidden until hover" },
+      ],
+    },
     copyEmail: {
       label: "Copy email",
       email: "hello@example.com",

@@ -70,7 +70,7 @@ The site is meant to be nearly still. That's a decision, not an unfinished
 state.
 
 - Animate `transform` and `opacity` only. The hero moves, it doesn't fade — its
-  first paragraph is the LCP element. Two exceptions:
+  first paragraph is the LCP element. Three exceptions:
   - The page tint moves `--color-background` with the scroll (`usePageTint` in
     `components/home/ambient-stripe/tint.ts`).
   - A box that grows with what you type may transition its `height`, so it
@@ -78,6 +78,15 @@ state.
 content`), and a wrapper follows its height with a `ResizeObserver`
     (`Composer` on /localhost/skiptingar). Short, ease-out, and none under
     reduced motion.
+  - `TextLink` moves its label's `font-weight`, Semibold to Book, on hover,
+    focus and press. A width guard keeps the words around it still, so only
+    the glyphs change. Feedback duration, and none under reduced motion.
+    An external link's `↗` has three variants (`arrow` prop): `reveal`, the
+    default, takes no space on a device that can hover and fades in on hover,
+    drawn over whatever follows; `persist` shows at rest and turns and goes red
+    on hover; `none` leaves only the weight. The underline is a bar that wipes
+    out on hover (`animateUnderline`, on by default; a fade under reduced
+    motion). Links sit at the end of a paragraph, never inside one.
 - Respect reduced motion with `useLiveReducedMotion()` for anything JS-driven,
   `motion-reduce:` for pure CSS.
 - The stripe is the ambient glow (`SiteStripe`, tuned as preset 1 on
