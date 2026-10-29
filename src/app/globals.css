@@ -396,6 +396,259 @@
       transform: scaleX(calc(1 + 0.22 * var(--breath-strength, 1)));
     }
   }
+
+  /* The alternate flight for a `mailto:` link's `→` (`flight="arch"`): a
+     paper plane taking off and landing. It leaves the line behind the label
+     pointing ↗, climbs, crests level, then comes down nose first and lands
+     in its place pointing ↘. It turns about its centre and stays between
+     the baseline and the cap height the whole way. The path is sampled into
+     keyframes and played linearly: the horizontal run eases in and out (the
+     take-off roll and the landing), the height is an arch over that run,
+     and the pitch turns steadily from ↗ to ↘ with the arch's slope. Runs on
+     hover only; leaving the link fades it out in place. */
+  --animate-paper-plane: paper-plane var(--duration-arrow) linear both;
+
+  @keyframes paper-plane {
+    0% {
+      opacity: 0;
+      translate: var(--paper-plane-x) var(--paper-plane-ground);
+      rotate: var(--paper-plane-pitch);
+    }
+    10% {
+      opacity: 0.7;
+      translate: calc(var(--paper-plane-x) * 0.972)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.109);
+      rotate: calc(var(--paper-plane-pitch) * 0.951);
+    }
+    20% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.896)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.373);
+      rotate: calc(var(--paper-plane-pitch) * 0.809);
+    }
+    30% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.784)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.677);
+      rotate: calc(var(--paper-plane-pitch) * 0.588);
+    }
+    40% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.648)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.912);
+      rotate: calc(var(--paper-plane-pitch) * 0.309);
+    }
+    50% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.5)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift));
+      rotate: 0deg;
+    }
+    60% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.352)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.912);
+      rotate: calc(var(--paper-plane-pitch) * -0.309);
+    }
+    70% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.216)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.677);
+      rotate: calc(var(--paper-plane-pitch) * -0.588);
+    }
+    80% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.104)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.373);
+      rotate: calc(var(--paper-plane-pitch) * -0.809);
+    }
+    90% {
+      opacity: 1;
+      translate: calc(var(--paper-plane-x) * 0.028)
+        calc(var(--paper-plane-ground) + var(--paper-plane-lift) * 0.109);
+      rotate: calc(var(--paper-plane-pitch) * -0.951);
+    }
+    100% {
+      opacity: 1;
+      translate: 0 var(--paper-plane-ground);
+      rotate: calc(var(--paper-plane-pitch) * -1);
+    }
+  }
+
+  /* The default flight for a `mailto:` link's `→` (`flight="loop"`),
+     traced from a drawing set against the link text: it appears just after
+     the label at mid height, curls up and over in a clockwise
+     loop-the-loop, and shoots up and right to finish above the cap height,
+     nose along the path, turning the last few degrees on the final climb
+     to land at `↗`, the external link's angle (`--paper-loop-end-rotate`).
+     The whole path is lifted by `--paper-loop-ground` so no part of the
+     turned glyph ever goes below the baseline. The path and the curve are sampled into keyframes evenly along
+     the path, timed by the curve (a hard ease-out: most of the loop is flown
+     in the first half, then it glides in), and played linearly. */
+  --animate-paper-loop: paper-loop var(--duration-loop) linear both;
+
+  @keyframes paper-loop {
+    0% {
+      opacity: 0;
+      translate: calc(var(--paper-loop-size) * -0.212)
+        calc(var(--paper-loop-size) * -0.144 - var(--paper-loop-ground));
+      rotate: -54deg;
+    }
+    1.5% {
+      opacity: 0.17;
+      translate: calc(var(--paper-loop-size) * -0.158)
+        calc(var(--paper-loop-size) * -0.215 - var(--paper-loop-ground));
+      rotate: -50deg;
+    }
+    3.0% {
+      opacity: 0.33;
+      translate: calc(var(--paper-loop-size) * -0.094)
+        calc(var(--paper-loop-size) * -0.277 - var(--paper-loop-ground));
+      rotate: -32deg;
+    }
+    4.5% {
+      opacity: 0.5;
+      translate: calc(var(--paper-loop-size) * -0.009)
+        calc(var(--paper-loop-size) * -0.305 - var(--paper-loop-ground));
+      rotate: -8deg;
+    }
+    5.9% {
+      opacity: 0.67;
+      translate: calc(var(--paper-loop-size) * 0.079)
+        calc(var(--paper-loop-size) * -0.3 - var(--paper-loop-ground));
+      rotate: 15deg;
+    }
+    7.4% {
+      opacity: 0.83;
+      translate: calc(var(--paper-loop-size) * 0.16)
+        calc(var(--paper-loop-size) * -0.262 - var(--paper-loop-ground));
+      rotate: 36deg;
+    }
+    8.8% {
+      translate: calc(var(--paper-loop-size) * 0.22)
+        calc(var(--paper-loop-size) * -0.197 - var(--paper-loop-ground));
+      rotate: 59deg;
+    }
+    10.2% {
+      translate: calc(var(--paper-loop-size) * 0.25)
+        calc(var(--paper-loop-size) * -0.113 - var(--paper-loop-ground));
+      rotate: 84deg;
+    }
+    11.7% {
+      translate: calc(var(--paper-loop-size) * 0.24)
+        calc(var(--paper-loop-size) * -0.025 - var(--paper-loop-ground));
+      rotate: 104deg;
+    }
+    13.1% {
+      translate: calc(var(--paper-loop-size) * 0.209)
+        calc(var(--paper-loop-size) * 0.059 - var(--paper-loop-ground));
+      rotate: 117deg;
+    }
+    14.5% {
+      translate: calc(var(--paper-loop-size) * 0.16)
+        calc(var(--paper-loop-size) * 0.134 - var(--paper-loop-ground));
+      rotate: 128deg;
+    }
+    15.9% {
+      translate: calc(var(--paper-loop-size) * 0.099)
+        calc(var(--paper-loop-size) * 0.199 - var(--paper-loop-ground));
+      rotate: 139deg;
+    }
+    17.3% {
+      translate: calc(var(--paper-loop-size) * 0.025)
+        calc(var(--paper-loop-size) * 0.249 - var(--paper-loop-ground));
+      rotate: 154deg;
+    }
+    18.7% {
+      translate: calc(var(--paper-loop-size) * -0.06)
+        calc(var(--paper-loop-size) * 0.277 - var(--paper-loop-ground));
+      rotate: 171deg;
+    }
+    20.1% {
+      translate: calc(var(--paper-loop-size) * -0.149)
+        calc(var(--paper-loop-size) * 0.28 - var(--paper-loop-ground));
+      rotate: 184deg;
+    }
+    21.5% {
+      translate: calc(var(--paper-loop-size) * -0.237)
+        calc(var(--paper-loop-size) * 0.262 - var(--paper-loop-ground));
+      rotate: 199deg;
+    }
+    22.9% {
+      translate: calc(var(--paper-loop-size) * -0.317)
+        calc(var(--paper-loop-size) * 0.222 - var(--paper-loop-ground));
+      rotate: 214deg;
+    }
+    24.3% {
+      translate: calc(var(--paper-loop-size) * -0.384)
+        calc(var(--paper-loop-size) * 0.163 - var(--paper-loop-ground));
+      rotate: 228deg;
+    }
+    25.7% {
+      translate: calc(var(--paper-loop-size) * -0.434)
+        calc(var(--paper-loop-size) * 0.09 - var(--paper-loop-ground));
+      rotate: 243deg;
+    }
+    27.2% {
+      translate: calc(var(--paper-loop-size) * -0.467)
+        calc(var(--paper-loop-size) * 0.006 - var(--paper-loop-ground));
+      rotate: 253deg;
+    }
+    28.7% {
+      translate: calc(var(--paper-loop-size) * -0.48)
+        calc(var(--paper-loop-size) * -0.082 - var(--paper-loop-ground));
+      rotate: 272deg;
+    }
+    30.2% {
+      translate: calc(var(--paper-loop-size) * -0.464)
+        calc(var(--paper-loop-size) * -0.17 - var(--paper-loop-ground));
+      rotate: 286deg;
+    }
+    31.8% {
+      translate: calc(var(--paper-loop-size) * -0.433)
+        calc(var(--paper-loop-size) * -0.254 - var(--paper-loop-ground));
+      rotate: 292deg;
+    }
+    33.5% {
+      translate: calc(var(--paper-loop-size) * -0.398)
+        calc(var(--paper-loop-size) * -0.336 - var(--paper-loop-ground));
+      rotate: 294deg;
+    }
+    35.4% {
+      translate: calc(var(--paper-loop-size) * -0.361)
+        calc(var(--paper-loop-size) * -0.417 - var(--paper-loop-ground));
+      rotate: 297deg;
+    }
+    37.5% {
+      translate: calc(var(--paper-loop-size) * -0.321)
+        calc(var(--paper-loop-size) * -0.498 - var(--paper-loop-ground));
+      rotate: 301deg;
+    }
+    39.9% {
+      translate: calc(var(--paper-loop-size) * -0.281)
+        calc(var(--paper-loop-size) * -0.578 - var(--paper-loop-ground));
+      rotate: 304deg;
+    }
+    43.0% {
+      translate: calc(var(--paper-loop-size) * -0.241)
+        calc(var(--paper-loop-size) * -0.658 - var(--paper-loop-ground));
+      rotate: 306deg;
+    }
+    47.1% {
+      translate: calc(var(--paper-loop-size) * -0.201)
+        calc(var(--paper-loop-size) * -0.738 - var(--paper-loop-ground));
+      rotate: 310deg;
+    }
+    54.0% {
+      translate: calc(var(--paper-loop-size) * -0.158)
+        calc(var(--paper-loop-size) * -0.817 - var(--paper-loop-ground));
+      rotate: 314deg;
+    }
+    100% {
+      translate: var(--paper-loop-end-x) var(--paper-loop-end-y);
+      rotate: var(--paper-loop-end-rotate);
+    }
+  }
 }
 
 /* Geist (text), Bespoke Serif (titles) and Geist Mono (code) by default;
@@ -560,9 +813,38 @@
   /* Where the hidden `reveal` arrow waits before hover: back towards the
      label, below its line, and turned clockwise. It springs from here into
      place. */
+  --link-arrow-gap: 0.12em; /* label to `↗` / `→`; a word space is 0.24em */
   --arrow-reveal-x: -0.6em;
   --arrow-reveal-y: 0.3em;
   --arrow-reveal-rotate: 45deg;
+
+  /* The alternate arch flight of a `mailto:` link's `→` (`flight="arch"`; it takes
+     `--duration-arrow`, like the external `↗`): how far behind the label it takes off, and the pitch at take-off (↗),
+     mirrored at landing (↘), where it rests. It turns about the glyph's
+     centre (`--paper-plane-origin`, measured from Same Univers' `→` at 600
+     in a `leading-none` box). `--paper-plane-ground` lifts it so the turned
+     arrow touches the baseline at take-off and landing (unturned, the `→`
+     dips 0.049em below it). `--paper-plane-lift` is the extra height at the
+     crest; with the ground it keeps the arrow under the cap height, so 0.11em
+     is the ceiling at this pitch. */
+  --paper-plane-x: -0.8em;
+  --paper-plane-pitch: -45deg;
+  --paper-plane-origin: 0.427em 0.51em;
+  --paper-plane-ground: -0.03em;
+  --paper-plane-lift: -0.11em;
+  /* The loop flight (`--animate-paper-loop`). `--paper-loop-size` scales
+     the drawing: 1em reproduces it at the size it was drawn against the
+     text. `--paper-loop-ground` is the lift that keeps the turned glyph
+     above the baseline at the bottom of the loop, measured from Same
+     Univers' `→` at 600 for a size of 1em; change the size and it needs
+     measuring again. The arrow waits, hidden, where the flight ends
+     (`--paper-loop-end-*`), so leaving the link fades it out in place. */
+  --duration-loop: 600ms;
+  --paper-loop-size: 0.5em;
+  --paper-loop-ground: 0.032em;
+  --paper-loop-end-x: calc(var(--paper-loop-size) * -0);
+  --paper-loop-end-y: calc(var(--paper-loop-size) * -0.695 - var(--paper-loop-ground));
+  --paper-loop-end-rotate: 315deg;
 
   /* The scroll reveal's timing is not a token: it is a Motion spring —
      `visualDuration: 0.6`, `bounce: 0.12`, per-row `delay: index * 0.07` —

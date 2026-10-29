@@ -51,6 +51,7 @@ export function AvailabilityLine({ className }: Props) {
         href={`mailto:${email}`}
         label={email}
         location="intro"
+        underline="hover"
       />
     </p>
   );

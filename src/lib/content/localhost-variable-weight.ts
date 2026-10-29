@@ -39,6 +39,11 @@ export const localhostVariableWeightContent = {
       animatedHint: "underline wipes out",
       wipeInHint: "Arrow hidden until hover, underline wipes in",
       noUnderlineHint: "Arrow hidden until hover, no underline",
+      mailBefore: "Write to me at ",
+      mailHref: "mailto:hello@example.com",
+      mailText: "hello@example.com",
+      mailArchHint: "Email, paper plane flies an arch",
+      mailLoopHint: "Email, paper plane flies a loop",
       variants: [
         { arrow: "none", hint: "Weight only" },
         { arrow: "persist", hint: "Arrow shows, turns red on hover" },

@@ -189,6 +189,34 @@ export default function Page() {
           </p>
         </DemoRow>
 
+        <DemoRow
+          hint={sections.linkVariants.mailArchHint}
+          label={sections.linkVariants.label}
+        >
+          <p className="text-pretty font-book text-body text-muted">
+            {sections.linkVariants.mailBefore}
+            <TextLink
+              flight="arch"
+              href={sections.linkVariants.mailHref}
+              underline="hover"
+            >
+              {sections.linkVariants.mailText}
+            </TextLink>
+          </p>
+        </DemoRow>
+
+        <DemoRow
+          hint={sections.linkVariants.mailLoopHint}
+          label={sections.linkVariants.label}
+        >
+          <p className="text-pretty font-book text-body text-muted">
+            {sections.linkVariants.mailBefore}
+            <TextLink href={sections.linkVariants.mailHref} underline="hover">
+              {sections.linkVariants.mailText}
+            </TextLink>
+          </p>
+        </DemoRow>
+
         <DemoRow label={sections.copyEmail.label}>
           <div className="text-foreground text-link">
             <CopyEmailBtn email={sections.copyEmail.email} labels={sections.copyEmail} />

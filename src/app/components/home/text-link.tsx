@@ -23,10 +23,17 @@ type TextLinkProps = {
    */
   animateUnderline?: boolean;
   /**
-   * The `↗` on an external link. `reveal` hides it until hover; `persist`
-   * shows it at rest in the text colour; `none` leaves only the weight change.
+   * The symbol after an external link (`↗`) or a `mailto:` link (`→`).
+   * `reveal` hides it until hover; `persist` shows it at rest in the text
+   * colour; `none` leaves only the weight change.
    */
   arrow?: "none" | "persist" | "reveal";
+  /**
+   * How a `mailto:` link's `→` flies in with `arrow="reveal"`: `loop`, the
+   * default, curls up through a loop-the-loop and shoots up into place;
+   * `arch` takes off and lands on the baseline.
+   */
+  flight?: "arch" | "loop";
   /**
    * Only ever supplied by a client component — this file carries no
    * `"use client"` of its own so that server trees keep rendering it on the
@@ -124,7 +131,9 @@ const GUARD_LABEL_CLASSES =
   "font-semibold after:content-[attr(data-text)] after:[speak:never]";
 
 /**
- * The `↗` on external links, in one of three variants.
+ * The symbol after external (`↗`) and `mailto:` (`→`) links, in one of three
+ * variants. The comments below describe `↗`; `→` moves the same way, so it
+ * rests turned to `↘` and turns into `→`.
  *
  * `reveal`: on a device that can hover it takes no space. It is positioned
  * just past the label's last glyph, waits hidden, turned an eighth clockwise
@@ -138,13 +147,30 @@ const GUARD_LABEL_CLASSES =
  * or focus it turns anticlockwise into `↑` and goes red. The guard copy holds
  * an arrow too, so the box keeps its rest width.
  *
- * Both stay Semibold while the label lightens. Under reduced motion the turn
+ * The gap before the symbol is `--link-arrow-gap`, narrower than a word
+ * space. Both stay Semibold while the label lightens. Under reduced motion the turn
  * and slide go; the fade and the colour stay.
  */
 const ARROW_CLASSES = {
   reveal:
-    "pointer-events-none whitespace-pre font-semibold text-link-arrow [@media(hover:hover)]:absolute [@media(hover:hover)]:left-full",
-  persist: "whitespace-pre font-semibold",
+    "pointer-events-none ps-(--link-arrow-gap) font-semibold text-link-arrow [@media(hover:hover)]:absolute [@media(hover:hover)]:left-full",
+  persist: "ps-(--link-arrow-gap) font-semibold",
+} as const;
+
+/**
+ * `reveal` on a `mailto:` link: the `→` does not turn in. On hover it is
+ * flown in like a paper plane. `flight="loop"`, the default, flies it through
+ * a loop-the-loop (`animate-paper-loop` in globals.css) and leaves it at `↗`
+ * above the cap height; on a device that can hover it waits there, hidden,
+ * so leaving fades it out in place. `flight="arch"` flies it from `↗` on the
+ * baseline, over an arch below the cap height, to `↘` on the baseline
+ * (`animate-paper-plane`). `leading-none` fixes the box the turn's origin is
+ * measured in. On leaving it fades out in place. Under reduced motion it only
+ * fades.
+ */
+const MAIL_REVEAL_GLYPH_CLASSES = {
+  arch: "inline-block leading-none origin-(--paper-plane-origin) transition-opacity duration-[var(--duration-arrow)] ease-(--ease-out) [@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-hover:animate-paper-plane group-focus-visible:opacity-100 group-focus-visible:animate-paper-plane motion-reduce:animate-none!",
+  loop: "inline-block leading-none origin-(--paper-plane-origin) [@media(hover:hover)]:translate-x-(--paper-loop-end-x) [@media(hover:hover)]:translate-y-(--paper-loop-end-y) [@media(hover:hover)]:rotate-(--paper-loop-end-rotate) motion-reduce:translate-none! motion-reduce:rotate-none! transition-opacity duration-[var(--duration-arrow)] ease-(--ease-out) [@media(hover:hover)]:opacity-0 group-hover:opacity-100 group-hover:animate-paper-loop group-focus-visible:opacity-100 group-focus-visible:animate-paper-loop motion-reduce:animate-none!",
 } as const;
 
 const ARROW_GLYPH_CLASSES = {
@@ -167,14 +193,24 @@ export function TextLink({
   underline = "always",
   animateUnderline = true,
   arrow = "reveal",
+  flight = "loop",
   onClick,
 }: TextLinkProps) {
   const anchorClasses = cn("group", className);
-  const arrowVariant = external && arrow !== "none" ? arrow : null;
+  const isMail = href.startsWith("mailto:");
+  const arrowVariant = (external || isMail) && arrow !== "none" ? arrow : null;
+  const symbol = external ? linkContent.externalSymbol : linkContent.mailSymbol;
   const arrowNode = arrowVariant ? (
     <span aria-hidden="true" className={ARROW_CLASSES[arrowVariant]}>
-      {" "}
-      <span className={ARROW_GLYPH_CLASSES[arrowVariant]}>↗</span>
+      <span
+        className={
+          isMail && arrowVariant === "reveal"
+            ? MAIL_REVEAL_GLYPH_CLASSES[flight]
+            : ARROW_GLYPH_CLASSES[arrowVariant]
+        }
+      >
+        {symbol}
+      </span>
     </span>
   ) : null;
   const content = (
@@ -198,7 +234,7 @@ export function TextLink({
           <span aria-hidden="true" className={GUARD_COPY_CLASSES}>
             <span className={GUARD_LABEL_CLASSES} data-text={children} />
             {arrowVariant ? (
-              <span className={ARROW_CLASSES[arrowVariant]}> ↗</span>
+              <span className={ARROW_CLASSES[arrowVariant]}>{symbol}</span>
             ) : null}
           </span>
         ) : null}
@@ -208,7 +244,7 @@ export function TextLink({
   );
 
   // Next's <Link> is for in-site navigation; external and mailto: stay <a>.
-  if (external || href.startsWith("mailto:")) {
+  if (external || isMail) {
     return (
       <a
         className={anchorClasses}
