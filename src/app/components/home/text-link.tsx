@@ -197,8 +197,8 @@ export function TextLink({
         {typeof children === "string" ? (
           <span aria-hidden="true" className={GUARD_COPY_CLASSES}>
             <span className={GUARD_LABEL_CLASSES} data-text={children} />
-            {arrowVariant === "persist" ? (
-              <span className={ARROW_CLASSES.persist}> ↗</span>
+            {arrowVariant ? (
+              <span className={ARROW_CLASSES[arrowVariant]}> ↗</span>
             ) : null}
           </span>
         ) : null}
